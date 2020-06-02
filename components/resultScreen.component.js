@@ -3,7 +3,7 @@ import { Text, View, Platform, StatusBar, SafeAreaView, Image, TouchableOpacity 
 import { Badge } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function App() {
+function ResultScreen() {
   return (
     <SafeAreaView 
       style={{
@@ -25,7 +25,7 @@ export default function App() {
       </Text>
 
       <Image 
-        source={require('./assets/imagesTest/Atalante.png')}
+        source={require('../assets/imagesTest/Atalante.png')}
         style={{
           marginTop: 12,
           width:'100%'}}
@@ -199,3 +199,5 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
+export default ResultScreen
