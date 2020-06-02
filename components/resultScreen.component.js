@@ -20,6 +20,9 @@ import {
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
 
+// fake data pour travailler l'intégration
+const suggestions = require('../assets/datas/suggestions.json');
+
 function ResultScreen({navigation}) {
 
   let [fontsLoaded] = useFonts({
