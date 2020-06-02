@@ -18,30 +18,7 @@ import {
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
 
-<<<<<<< HEAD
-export default function App() {
-=======
-function ResultScreen() {
-  return (
-    <SafeAreaView 
-      style={{
-        flex: 1,
-        backgroundColor: '#fff',
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-        }}>
-
-      <Text 
-        style={{
-          textAlign:'center',
-          color: '#FF8367', 
-          fontWeight:'bold', 
-          fontStyle:'italic', 
-          fontSize: 24}}>
-
-            Shake'n'Go
-
-      </Text>
->>>>>>> 8293bc688a5bba28167fe983c359d83521214655
+export default function resultScreen() {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -57,15 +34,8 @@ function ResultScreen() {
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerLogo}> Shake'n'Go </Text>
       <Image 
-<<<<<<< HEAD
-        source={require('./assets/imagesTest/Atalante.png')}
-        style={styles.picture}
-=======
         source={require('../assets/imagesTest/Atalante.png')}
-        style={{
-          marginTop: 12,
-          width:'100%'}}
->>>>>>> 8293bc688a5bba28167fe983c359d83521214655
+        style={styles.picture}
       />
       <Button
         icon={
@@ -153,7 +123,6 @@ function ResultScreen() {
   );
   }
 }
-<<<<<<< HEAD
 const styles = StyleSheet.create({
   headerLogo: {
     textAlign:'center',
@@ -245,7 +214,3 @@ const styles = StyleSheet.create({
     right: 16
   }
 });
-=======
-
-export default ResultScreen
->>>>>>> 8293bc688a5bba28167fe983c359d83521214655
