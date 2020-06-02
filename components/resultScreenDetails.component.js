@@ -8,7 +8,8 @@ import {
   Image, 
   TouchableOpacity, 
   StyleSheet } from 'react-native';
-import { Badge, Button } from 'react-native-elements';
+import MapView from 'react-native-maps';
+import { ListItem } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import {
@@ -16,14 +17,54 @@ import {
   PTSans_400Regular,
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
+import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
 
 export default function resultScreenDetails() {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
     OpenSans_400Regular,
-    Bangers_400Regular,
   });
+
+  const list = [
+    {
+      name: 'Jean-Pierre',
+      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+      rating: 4,
+      comment: 'Une sélection de bière pointue. Des tapas d\'une rare qualité.'
+    },
+    {
+      name: 'Chantal',
+      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+      rating: 5,
+      comment: 'Un de mes spots favoris dans le 19ème pour boire une bonne bière !'
+    },// more items
+  ]
+
+  let comments = list.map((l,i)=> {
+      let rating = [];
+      for(let i = 0 ; i < 5 ; i++){
+          if(i < l.rating){
+              rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
+          } else {
+              rating.push(<AntDesign key={i} name="staro" size={16} color="#FF8367" />)
+          }
+      }
+      return(
+          <View style={styles.listItemContainer}>
+            <ListItem
+                key={i}
+                containerStyle={styles.ListItem}
+                titleStyle={styles.name}
+                leftAvatar={{ source: { uri: l.avatar_url },containerStyle: styles.avatar}}
+                title={l.name}
+                subtitle={<Text>{rating}</Text>}
+            />
+            <Text style={styles.comment}>{l.comment}</Text>
+          </View>
+      )
+  });
+
   if(!fontsLoaded) {
     return (
       <AppLoading />
@@ -31,185 +72,68 @@ export default function resultScreenDetails() {
   } else {
     return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerLogo}> Comment on y va ? </Text>
-      <Image 
-        source={require('../assets/imagesTest/Atalante.png')}
-        style={styles.picture}
-      />
-      <Button
-        icon={
-          <AntDesign name="hearto" size={24} color="#FFFFFF" />
-        }
-        containerStyle= {styles.likeButtonContainer}
-        buttonStyle= {styles.likeButton}
-      />
-      <View style={styles.containerCard}>
-        <Text style={styles.title}>L'Atalante</Text>
-        <Text style={styles.rating}>
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="staro" size={16} color="#FF8367" />
-        </Text>
-        <View style={styles.containerAdress}>
-          <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
-          <Text style={styles.adressText}>
-            26 Quai de la Marne, 75019 Paris
-          </Text>
+        <Text style={styles.title}> Comment on y va ? </Text>
+        <View style={styles.mapContainer} >
+            <MapView style={styles.mapStyle}
+                initialRegion={{
+                latitude: 48.890169,
+                longitude: 2.382937,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+                }}
+            />
         </View>
 
-        <View style={styles.containerBadges}>
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-
-        </View>
-      
-        <Text style={styles.description}>
-          Cet espace contemporain avec terrasse et vue sur le canal sert bières artisanales, planches et glaces.
-        </Text>
-
-      </View>
-      
-      <TouchableOpacity style={{
-        marginTop:'auto',
-        marginBottom: 15,
-        alignItems: 'center',      
-      }}>
-        <Text style={{
-          color:'#FF8367',
-          fontSize: 14,
-          fontWeight:'bold'
-          }}>
-          En savoir plus <AntDesign name="down" size={16} color="#FF8367" />
-
-        </Text>
-
-      </TouchableOpacity>
+        <Text style={styles.title}>Quelques avis</Text>
+        {comments}
     </SafeAreaView>
   );
   }
 }
 const styles = StyleSheet.create({
-  headerLogo: {
-    textAlign:'center',
-    color: '#FF8367',
-    fontFamily: 'PTSans_400Regular',
-    fontStyle:'italic',
-    fontWeight:'bold',
-    fontSize: 24
-  },
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-  },
-  containerCard: {
-    position:'absolute',
-    top:'37%',
-    backgroundColor:'#FFFFFF',
-    borderTopLeftRadius: 32,
-    display:'flex',
-    flexDirection:'column'
-  },
-  picture: {
-    marginTop: 12,
-    width:'100%'
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   title: {
     fontFamily: 'PTSans_400Regular',
-    fontSize: 32,
-    fontWeight:'bold',
-    marginLeft: 26,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 32,
     marginTop: 32
   },
-  rating: {
-    marginLeft: 26,
-    marginTop: 8
+  mapContainer: {
+    marginTop:16,
+    marginHorizontal: 32,
+    height:120,
+    borderRadius: 8,
+    overflow:'hidden'
   },
-  containerAdress: {
-    display:'flex', 
-    flexDirection:'row', 
-    alignItems:'center', 
-    marginTop:8, 
-    marginLeft:26
+  mapStyle: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8
   },
-  adressText: {
-    marginLeft: 8,
-    color: 'rgba(42, 43, 42, 0.4)',
-    fontFamily:'OpenSans_400Regular',
-    fontSize: 16
+  listItemContainer: {
+      marginHorizontal: 32,
+      marginTop: 16
   },
-  containerBadges: {
-    display:'flex', 
-    flexDirection:'row',
-    flexWrap:'wrap', 
-    alignItems:'center', 
-    marginTop:8, 
-    marginLeft:26,
-    marginEnd: 26,
+  ListItem: {
+      paddingLeft:0,
+      paddingRight: 16,
+      paddingVertical:0
   },
-  badgeText: {
-    fontSize: 16,
-    fontFamily:'OpenSans_400Regular',
-    color:'#FF8367', 
-    paddingHorizontal: 16, 
-    paddingVertical: 3
+  avatar: {
+      width: 44,
+      height: 44,
+      borderRadius: 50,
   },
-  badgeStyle: {
-    backgroundColor: 'rgba(255, 131, 103, 0.24)',
-    borderColor: '#FF8367',
-    height:28,
-    borderRadius: 20
+  name: {
+    marginBottom:6
   },
-  description: {
-    marginLeft:26,
-    fontFamily: 'OpenSans_400Regular',
-    marginTop: 32,
-    marginRight: 26,
-    flexGrow:1
-  },
-  likeButton: {
-    width:44,
-    height: 44,
-    backgroundColor: '#FF8367',
-    borderRadius: 40
-  },
-  likeButtonContainer: {
-    position:'absolute',
-    top: '12%',
-    right: 16
+  comment: {
+      marginTop: 8
   }
 });

@@ -20,7 +20,7 @@ import {
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
 
-function ResultScreen() {
+function ResultScreen({navigation}) {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -40,7 +40,7 @@ function ResultScreen() {
       />
       <Button
         icon={
-          <AntDesign name="hearto" size={24} color="#FFFFFF" />
+          <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
         }
         containerStyle= {styles.likeButtonContainer}
         buttonStyle= {styles.likeButton}
@@ -111,6 +111,7 @@ function ResultScreen() {
         marginBottom: 15,
         alignItems: 'center',   
       }}
+        onPress={() => navigation.navigate('Details')}
       >
         <Text style={{
           color:'#FF8367',
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
   },
   likeButtonContainer: {
     position:'absolute',
-    top: '12%',
+    top: '12.5%',
     right: 16
   }
 });
@@ -222,6 +223,9 @@ const styles = StyleSheet.create({
 var StackNavigator = createStackNavigator({
     Result: ResultScreen,
     Details: ResultScreenDetails
+  },
+  {
+      headerMode:'none'
   });
 
 const Navigation = createAppContainer(StackNavigator);
