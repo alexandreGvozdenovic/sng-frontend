@@ -9,21 +9,22 @@ import {
   TouchableOpacity, 
   StyleSheet } from 'react-native';
 import { Badge, Button } from 'react-native-elements';
+import {createAppContainer } from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import ResultScreenDetails from './resultScreenDetails.component';
 import { AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import {
   useFonts,
-  Bangers_400Regular,
   PTSans_400Regular,
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
 
-export default function resultScreen() {
+function ResultScreen() {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
     OpenSans_400Regular,
-    Bangers_400Regular,
   });
   if(!fontsLoaded) {
     return (
@@ -104,11 +105,13 @@ export default function resultScreen() {
 
       </View>
       
-      <TouchableOpacity style={{
+      <TouchableOpacity 
+        style={{
         marginTop:'auto',
         marginBottom: 15,
-        alignItems: 'center',      
-      }}>
+        alignItems: 'center',   
+      }}
+      >
         <Text style={{
           color:'#FF8367',
           fontSize: 14,
@@ -123,6 +126,7 @@ export default function resultScreen() {
   );
   }
 }
+
 const styles = StyleSheet.create({
   headerLogo: {
     textAlign:'center',
@@ -214,3 +218,20 @@ const styles = StyleSheet.create({
     right: 16
   }
 });
+
+var StackNavigator = createStackNavigator({
+    Result: ResultScreen,
+    Details: ResultScreenDetails
+  });
+
+const Navigation = createAppContainer(StackNavigator);
+
+export default function result() {
+    return(
+        <Navigation/>
+    );
+}
+
+
+
+
