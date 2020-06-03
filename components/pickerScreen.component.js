@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput } from 'react-native';
+import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput, Picker } from 'react-native';
 import { Button, Card } from 'react-native-elements';
 import {
   useFonts,
@@ -10,15 +10,13 @@ import {
 } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
-import {Picker} from '@react-native-community/picker';
 
 
 var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
-const {quartiers} = require('../assets/datas/quartiers.json');
+const {quartiers} = require('../scripts/quartiers');
 
 console.log(quartiers)
-
 
 function HomeScreen() {
 
