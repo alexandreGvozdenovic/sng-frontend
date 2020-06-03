@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Text, 
   View, 
@@ -25,6 +25,7 @@ import {
 const suggestions = require('../assets/datas/suggestions.json');
 //console.log(suggestions);
 function ResultScreen({navigation}) {
+  const [open, setOpen] = useState(true);
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -51,18 +52,28 @@ function ResultScreen({navigation}) {
       />
       <View style={styles.containerCard}>
         <Text style={styles.title}>L'Atalante</Text>
-        <Text style={styles.rating}>
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="star" size={16} color="#FF8367" />
-          <AntDesign name="staro" size={16} color="#FF8367" />
-        </Text>
+        <View style={styles.containerRatingOpen}>
+          <Text>
+            <AntDesign name="star" size={16} color="#FF8367" />
+            <AntDesign name="star" size={16} color="#FF8367" />
+            <AntDesign name="star" size={16} color="#FF8367" />
+            <AntDesign name="star" size={16} color="#FF8367" />
+            <AntDesign name="staro" size={16} color="#FF8367" />
+          </Text>
+          <View style={styles.containerOpen}>
+            <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{marginRight:4}} />
+            <Text style={{color:'#1DBC84'},styles.open}>
+              Ouvert
+            </Text>
+          </View>
+        </View>
+
         <View style={styles.containerAdress}>
           <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
           <Text style={styles.adressText}>
             26 Quai de la Marne, 75019 Paris
           </Text>
+
         </View>
 
         <View style={styles.containerBadges}>
@@ -146,9 +157,29 @@ const styles = StyleSheet.create({
     marginLeft: 26,
     marginTop: 32
   },
-  rating: {
+  containerRatingOpen: {
     marginLeft: 26,
-    marginTop: 8
+    marginTop: 8,
+    display:'flex',
+    flexDirection:'row'
+  },
+  containerOpen: {
+    display:'flex',
+    flexDirection:'row',
+    marginLeft:20,
+    alignItems:'center'
+  },
+  open: {
+    color: '#1DBC84',
+    fontFamily:'OpenSans_400Regular',
+    fontSize: 14,
+    fontWeight:'bold'
+  },
+  close:{
+    color: '#DB331F',
+    fontFamily:'OpenSans_400Regular',
+    fontSize: 14,
+    fontWeight:'bold'
   },
   containerAdress: {
     display:'flex', 

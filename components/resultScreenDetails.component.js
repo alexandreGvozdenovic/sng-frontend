@@ -18,6 +18,7 @@ import {
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
 import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
+import { ScrollView } from 'react-native-gesture-handler';
 
 // fake data pour travailler l'intégration
 const suggestions = require('../assets/datas/suggestions.json');
@@ -41,16 +42,27 @@ export default function resultScreenDetails() {
       avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
       rating: 5,
       comment: 'Un de mes spots favoris dans le 19ème pour boire une bonne bière !'
-    },// more items
+    },    {
+      name: 'Jean-Pierre',
+      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+      rating: 4,
+      comment: 'Une sélection de bière pointue. Des tapas d\'une rare qualité.'
+    },
+    {
+      name: 'Chantal',
+      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+      rating: 5,
+      comment: 'Un de mes spots favoris dans le 19ème pour boire une bonne bière !'
+    }// more items
   ]
 
   let comments = list.map((l,i)=> {
       let rating = [];
-      for(let i = 0 ; i < 5 ; i++){
-          if(i < l.rating){
-              rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
+      for(let j = 0 ; j < 5 ; j++){
+          if(j < l.rating){
+              rating.push(<AntDesign key={j} name="star" size={16} color="#FF8367" />)
           } else {
-              rating.push(<AntDesign key={i} name="staro" size={16} color="#FF8367" />)
+              rating.push(<AntDesign key={j} name="staro" size={16} color="#FF8367" />)
           }
       }
       return(
@@ -75,6 +87,7 @@ export default function resultScreenDetails() {
   } else {
     return (
     <SafeAreaView style={styles.container}>
+      <ScrollView>
         <Text style={styles.title}> Comment on y va ? </Text>
         <View style={styles.mapContainer} >
             <MapView style={styles.mapStyle}
@@ -86,9 +99,33 @@ export default function resultScreenDetails() {
                 }}
             />
         </View>
+        <Text style={styles.title}>Horaires</Text>
+        <View style={styles.containerHoraires}>
+          <View style={styles.containerJours}>
+            <Text style={styles.textJours}>lundi</Text>
+            <Text style={styles.textJours}>mardi</Text>
+            <Text style={styles.textJoursToday}>mercredi</Text>
+            <Text style={styles.textJours}>jeudi</Text>
+            <Text style={styles.textJours}>vendredi</Text>
+            <Text style={styles.textJours}>samedi</Text>
+            <Text style={styles.textJours}>dimanche</Text>
+          </View>
 
+          <View>
+            <Text style={styles.textHoraires}>Fermé</Text>
+            <Text style={styles.textHoraires}>Fermé</Text>
+            <Text style={styles.textHorairesToday}>16:00–20:00</Text>
+            <Text style={styles.textHoraires}>16:00–20:30</Text>
+            <Text style={styles.textHoraires}>16:00–20:30</Text>
+            <Text style={styles.textHoraires}>12:00–20:30</Text>
+            <Text style={styles.textHoraires}>12:00–20:00</Text>
+          </View>
+          
+	
+        </View>
         <Text style={styles.title}>Quelques avis</Text>
         {comments}
+        </ScrollView>
     </SafeAreaView>
   );
   }
@@ -119,9 +156,40 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 8
   },
+  containerHoraires: {
+    display:'flex',
+    flexDirection:'row',
+    marginLeft:32,
+    marginTop: 16
+  },
+  containerJours: {
+    marginRight:26
+  },
+  textJours: {
+    fontFamily: 'OpenSans_400Regular',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  textJoursToday: {
+    fontFamily: 'OpenSans_400Regular',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color:'#FF8367'
+  },
+  textHoraires: {
+    fontFamily: 'OpenSans_400Regular',
+    fontSize: 16
+  },
+  textHorairesToday: {
+    fontFamily: 'OpenSans_400Regular',
+    fontSize: 16,
+    fontWeight:'bold',
+    color:'#FF8367'
+  },
   listItemContainer: {
       marginHorizontal: 32,
-      marginTop: 16
+      marginTop: 16,
+      marginBottom: 15
   },
   ListItem: {
       paddingLeft:0,
