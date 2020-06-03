@@ -23,13 +23,8 @@ import {
 } from '@expo-google-fonts/dev';
 
 // fake data pour travailler l'intégration
-<<<<<<< HEAD
-const suggestions = require('../assets/datas/suggestions.json');
-//console.log(suggestions);
-=======
 const {suggestions} = require('../assets/datas/suggestions.json');
 
->>>>>>> 3258709c9ff0fa07a9d94287e44e1e59c022c5ec
 function ResultScreen({navigation}) {
   const [open, setOpen] = useState(true);
 
