@@ -9,8 +9,8 @@ import HistoryScreen from './components/historyScreen.component';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 //icons
-import { Icon } from 'react-native-elements';
-// import { AntDesign } from '@expo/vector-icons';
+// import { Icon } from 'react-native-elements';
+import { AntDesign } from '@expo/vector-icons';
 
 
 var BottomNav = createBottomTabNavigator({
@@ -23,13 +23,13 @@ var BottomNav = createBottomTabNavigator({
       tabBarIcon:({tintColor}) => {
         var iconName;
         if (navigation.state.routeName ==='Home') {
-          iconName = 'ios-home'
-        } else if (navigation.state.routeName ==='Result') {
-          iconName = 'ios-clipboard'
-        } else if (navigation.state.routeName ==='Bookmarks') {
-          iconName = 'ios-radio'
+          iconName = 'home'
+        } else if (navigation.state.routeName ==='Results') {
+          iconName = 'shake'
+        } else if (navigation.state.routeName ==='Bookmarks','History') {
+          iconName = 'hearto'
         } 
-        return <Icon type='ionicon' name={iconName} size={24} color={tintColor} />;
+        return <AntDesign name={iconName} size={24} color={tintColor} />;
       }, 
       tabBarOptions: {
         activeTintColor: '#FF8367',

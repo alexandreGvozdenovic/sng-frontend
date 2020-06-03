@@ -1,22 +1,88 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar} from 'react-native';
 import { Badge, Button, Card, Icon } from 'react-native-elements';
 import {
     useFonts,
     PTSans_400Regular,
-    OpenSans_400Regular
+    PTSans_700Bold,
+    OpenSans_400Regular,
+    OpenSans_700Bold,
   } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
 
-
+// fake data pour travailler l'intégration
+const {suggestions} = require('../assets/datas/suggestions.json');
 
 var backgroundTexture = require('../assets/images/Texture.png')
 
 function HistoryScreen() {
+
+    const [filter, setFilter] = useState('Bar');
+    const [isFiltered, setIsFiltered] = useState(false);
+
+    let filterList = []
+    suggestions.map(e => {
+        const type = e.type;
+        if (!filterList.includes(type)) {
+            filterList.push(type)
+        }
+    })
+    const filters = filterList.map(e => {
+        return <Badge 
+            containerStyle={{marginRight: 8, marginTop:8}} 
+            value={
+        <Text style={styles.badgeText}>
+            {e}
+        </Text>}
+            badgeStyle={styles.badgeInactiveStyle}
+            onPress={()=> {setFilter(e);setIsFiltered(true)}}
+        />
+    })
+
+    // console.log(filterList)
+
+    let filteredWishlist = []
+    function filterByCat(categorie) {
+        if(isFiltered) {
+            filteredWishlist = suggestions.filter((e => e.type === categorie))
+        }
+        else {
+            filteredWishlist = suggestions;
+        }
+    }
+    
+    filterByCat(filter)
+
+    let wishlist = [];
+    wishlist = filteredWishlist.map((p,i) => {
+        var rating = []
+        for (var i = 0; i<5; i++){
+            if(i<Math.floor(p.rating)) {
+                rating.push(<AntDesign key={i+''+p.place_id} name="star" size={16} color="#FF8367" />)
+            } else {
+                rating.push(<AntDesign key={i+''+p.place_id} name="staro" size={16} color="#FF8367" />)
+            }
+        };
+        return <Card
+            key={p.place_id+''+i}
+            containerStyle={styles.cardContainer}>
+            <Image source={{uri:p.photo}} style={styles.cardImage}></Image>
+            <Text style={styles.cardTitle}>{p.nom}</Text>
+            <Text style={styles.rating}>
+                {rating}
+            </Text>
+            <Text style={styles.text}>
+                {p.reviews[0].texte}
+            </Text>
+        </Card>
+    })
+
     let [fontsLoaded] = useFonts({
         PTSans_400Regular,
+        PTSans_700Bold,
         OpenSans_400Regular,
+        OpenSans_700Bold
       });
     if(!fontsLoaded) {
         return (
@@ -31,14 +97,25 @@ function HistoryScreen() {
                     </View>
                     <ScrollView>
                         <Text style={styles.title}>Ma wishlist</Text>
-                        <View style={styles.containerBadges}>
+                        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.containerBadges}>
                             <Badge 
+                                containerStyle={{marginRight: 8, marginTop:8}} 
+                                value={
+                                <Text style={styles.badgeText}>
+                                    Tout
+                                </Text>}
+                                badgeStyle={styles.badgeActiveStyle}
+                                onPress={()=> {setIsFiltered(false)}}
+                            />
+                            {filters}
+                            {/* <Badge 
                                 containerStyle={{marginRight: 8, marginTop:8}} 
                                 value={
                                 <Text style={styles.badgeText}>
                                     Bar
                                 </Text>}
-                                badgeStyle={styles.badgeActiveStyle}
+                                badgeStyle={styles.badgeInactiveStyle}
+                                onPress={()=> {setFilter('Bar');setIsFiltered(true)}}
                             />
 
                             <Badge 
@@ -48,26 +125,20 @@ function HistoryScreen() {
                                     Restaurant
                                 </Text>}
                                 badgeStyle={styles.badgeInactiveStyle}
+                                onPress={()=> {setFilter('Restaurant');setIsFiltered(true)}}
                             />
-                        </View>
+                            <Badge 
+                                containerStyle={{marginRight: 8, marginTop:8}} 
+                                value={
+                                <Text style={styles.badgeText}>
+                                    Supermarché
+                                </Text>}
+                                badgeStyle={styles.badgeInactiveStyle}
+                                onPress={()=> {setFilter('Supermarket');setIsFiltered(true)}}
+                            /> */}
+                        </ScrollView>
                         <View>
-                            <Card
-                                containerStyle={{borderRadius:8}}
-                                image={require('../assets/imagesTest/Atalante.png')}
-                                imageWrapperStyle={{marginTop:16,marginLeft:16, marginRight:16}}
-                                imageStyle={{borderRadius:8}}>
-                                {/* <Image source={require('../assets/imagesTest/Atalante.png')}></Image> */}
-                                <Text style={styles.cardTitle}>Paname Brewing Company</Text>
-                                <Text style={styles.rating}>
-                                    <AntDesign name="star" size={16} color="#FF8367" />
-                                    <AntDesign name="star" size={16} color="#FF8367" />
-                                    <AntDesign name="star" size={16} color="#FF8367" />
-                                    <AntDesign name="star" size={16} color="#FF8367" />
-                                    <AntDesign name="staro" size={16} color="#FF8367" />
-                                </Text>
-                                <Text style={styles.text}>
-                                Bar à l'esprit loft, habillé de matériaux bruts, servant un menu street food et des bières artisanales.</Text>
-                            </Card>
+                            {wishlist}
                         </View>
                     </ScrollView>
                 </SafeAreaView>
@@ -106,7 +177,7 @@ const styles = StyleSheet.create({
         fontSize: 24
       },
     title: {
-        fontFamily: 'PTSans_400Regular',
+        fontFamily: 'PTSans_700Bold',
         fontSize: 32,
         fontWeight:'bold',
         marginLeft: 26,
@@ -116,7 +187,7 @@ const styles = StyleSheet.create({
         display:'flex', 
         flexDirection:'row',
         flexWrap:'wrap', 
-        alignItems:'center', 
+        // alignItems:'center', 
         marginTop:8, 
         marginLeft:26,
         marginEnd: 26,
@@ -140,10 +211,30 @@ const styles = StyleSheet.create({
         height:28,
         borderRadius: 20
       },
+    cardContainer: {
+        borderRadius:8,
+        borderWidth:.5,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 1,
+
+        elevation: 3,
+    },
     cardTitle: {
-        fontFamily: 'OpenSans_400Regular',
+        fontFamily: 'OpenSans_700Bold',
         fontSize: 16,
+        lineHeight:22,
         fontWeight:'bold',
+        marginBottom:8
+    },
+    cardImage: {
+        width:'auto', 
+        height:150, 
+        borderRadius:8, 
         marginBottom:8
     },
     text: {

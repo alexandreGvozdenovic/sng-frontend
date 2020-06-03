@@ -15,18 +15,22 @@ import { AppLoading } from 'expo';
 import {
   useFonts,
   PTSans_400Regular,
-  OpenSans_400Regular
+  PTSans_700Bold,
+  OpenSans_400Regular,
+  OpenSans_700Bold
 } from '@expo-google-fonts/dev';
 import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
 
 // fake data pour travailler l'intégration
-const suggestions = require('../assets/datas/suggestions.json');
+const {suggestions} = require('../assets/datas/suggestions.json');
 
 export default function resultScreenDetails() {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
+    PTSans_700Bold,
     OpenSans_400Regular,
+    OpenSans_700Bold
   });
 
   const list = [
@@ -47,7 +51,7 @@ export default function resultScreenDetails() {
   let comments = list.map((l,i)=> {
       let rating = [];
       for(let i = 0 ; i < 5 ; i++){
-          if(i < l.rating){
+          if(i < Math.floor(l.rating)){
               rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
           } else {
               rating.push(<AntDesign key={i} name="staro" size={16} color="#FF8367" />)
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   title: {
-    fontFamily: 'PTSans_400Regular',
+    fontFamily: 'PTSans_700Bold',
     fontSize: 24,
     fontWeight: 'bold',
     marginLeft: 32,
@@ -134,9 +138,11 @@ const styles = StyleSheet.create({
       borderRadius: 50,
   },
   name: {
+    fontFamily:'OpenSans_700Bold',
     marginBottom:6
   },
   comment: {
-      marginTop: 8
+    fontFamily:'OpenSans_400Regular',
+    marginTop: 8
   }
 });
