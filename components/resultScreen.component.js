@@ -24,9 +24,32 @@ import {
 
 // fake data pour travailler l'intégration
 const {suggestions} = require('../assets/datas/suggestions.json');
-
 function ResultScreen({navigation}) {
-  const [open, setOpen] = useState(true);
+
+  var currentlyOpened = 
+  <View style={styles.containerOpen}>
+    <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{marginRight:4}} />
+    <Text style={styles.open}>
+      Ouvert
+    </Text>
+  </View>
+  var currentlyClosed = 
+  <View style={styles.containerOpen}>
+    <AntDesign name="clockcircleo" size={16} color="#DB331F" style={{marginRight:4}} />
+    <Text style={styles.close}>
+      Fermé
+    </Text>
+  </View>
+
+  var rating = [];
+  console.log(suggestions[0].rating)
+  for(let i = 0; i < suggestions[0].rating; i++) {
+    if(i < Math.round(suggestions[0].rating)) {
+      rating.push(<AntDesign name="star" size={16} color="#FF8367" />)
+    } else {
+      rating.push(<AntDesign name="staro" size={16} color="#FF8367" />)
+    }
+  }
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -41,7 +64,8 @@ function ResultScreen({navigation}) {
     return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        source={require('../assets/imagesTest/Atalante.png')}
+        //source={require('../assets/imagesTest/Atalante.png')}
+        source={{uri: suggestions[0].photo}}
         style={styles.picture}
       >
       <Header />
@@ -53,27 +77,22 @@ function ResultScreen({navigation}) {
         buttonStyle= {styles.likeButton}
       />
       <View style={styles.containerCard}>
-        <Text style={styles.title}>L'Atalante</Text>
+      <Text style={styles.title}>{suggestions[0].nom}</Text>
         <View style={styles.containerRatingOpen}>
           <Text>
-            <AntDesign name="star" size={16} color="#FF8367" />
-            <AntDesign name="star" size={16} color="#FF8367" />
-            <AntDesign name="star" size={16} color="#FF8367" />
-            <AntDesign name="star" size={16} color="#FF8367" />
-            <AntDesign name="staro" size={16} color="#FF8367" />
+            {rating}
           </Text>
-          <View style={styles.containerOpen}>
-            <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{marginRight:4}} />
-            <Text style={{color:'#1DBC84'},styles.open}>
-              Ouvert
-            </Text>
-          </View>
+          {  
+            suggestions[0].isOpen === true
+            ? currentlyOpened
+            : currentlyClosed
+          }
         </View>
 
         <View style={styles.containerAdress}>
           <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
           <Text style={styles.adressText}>
-            26 Quai de la Marne, 75019 Paris
+            {suggestions[0].adresse}
           </Text>
 
         </View>
@@ -83,33 +102,7 @@ function ResultScreen({navigation}) {
             containerStyle={{marginRight: 8, marginTop:8}} 
             value={
               <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
-              </Text>}
-            badgeStyle={styles.badgeStyle}
-          />
-          <Badge 
-            containerStyle={{marginRight: 8, marginTop:8}} 
-            value={
-              <Text style={styles.badgeText}>
-                Bar à bières
+                {suggestions[0].type}
               </Text>}
             badgeStyle={styles.badgeStyle}
           />
