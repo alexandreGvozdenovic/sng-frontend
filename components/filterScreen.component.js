@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         fontFamily: "PT Sans",
         fontStyle: "italic",
         fontWeight: "bold",
-        fontSize: "24px",
+        fontSize: 24,
         lineHeight: "31px",
         paddingTop: "3%",
         
