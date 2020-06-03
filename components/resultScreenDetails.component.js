@@ -8,7 +8,7 @@ import {
   Image, 
   TouchableOpacity, 
   StyleSheet } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { ListItem } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
@@ -32,37 +32,13 @@ export default function resultScreenDetails() {
     OpenSans_400Regular,
     OpenSans_700Bold
   });
+  var today = new Date();
+  console.log(today.getDay());
 
-  const list = [
-    {
-      name: 'Jean-Pierre',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-      rating: 4,
-      comment: 'Une sélection de bière pointue. Des tapas d\'une rare qualité.'
-    },
-    {
-      name: 'Chantal',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      rating: 5,
-      comment: 'Un de mes spots favoris dans le 19ème pour boire une bonne bière !'
-    },    {
-      name: 'Jean-Pierre',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-      rating: 4,
-      comment: 'Une sélection de bière pointue. Des tapas d\'une rare qualité.'
-    },
-    {
-      name: 'Chantal',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      rating: 5,
-      comment: 'Un de mes spots favoris dans le 19ème pour boire une bonne bière !'
-    }// more items
-  ]
-
-  let comments = list.map((l,i)=> {
+  let comments = suggestions[0].reviews.map((l,i)=> {
       let rating = [];
       for(let j = 0 ; j < 5 ; j++){
-          if(j < l.rating){
+          if(j < Math.round(l.note)){
               rating.push(<AntDesign key={j} name="star" size={16} color="#FF8367" />)
           } else {
               rating.push(<AntDesign key={j} name="staro" size={16} color="#FF8367" />)
@@ -74,11 +50,11 @@ export default function resultScreenDetails() {
                 key={i}
                 containerStyle={styles.ListItem}
                 titleStyle={styles.name}
-                leftAvatar={{ source: { uri: l.avatar_url },containerStyle: styles.avatar}}
-                title={l.name}
+                leftAvatar={{ source: { uri: l.avatar },containerStyle: styles.avatar}}
+                title={l.auteur}
                 subtitle={<Text>{rating}</Text>}
             />
-            <Text style={styles.comment}>{l.comment}</Text>
+            <Text style={styles.comment}>{l.texte}</Text>
           </View>
       )
   });
@@ -95,33 +71,135 @@ export default function resultScreenDetails() {
         <View style={styles.mapContainer} >
             <MapView style={styles.mapStyle}
                 initialRegion={{
-                latitude: 48.890169,
-                longitude: 2.382937,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
+                latitude: suggestions[0].coords.lat,
+                longitude: suggestions[0].coords.lng,
+                latitudeDelta: 0.0015,
+                longitudeDelta: 0.0015,
                 }}
-            />
+            >
+              <Marker
+                coordinate={{latitude: suggestions[0].coords.lat, longitude: suggestions[0].coords.lng}}
+              />
+            </MapView>
         </View>
         <Text style={styles.title}>Horaires</Text>
         <View style={styles.containerHoraires}>
           <View style={styles.containerJours}>
-            <Text style={styles.textJours}>lundi</Text>
-            <Text style={styles.textJours}>mardi</Text>
-            <Text style={styles.textJoursToday}>mercredi</Text>
-            <Text style={styles.textJours}>jeudi</Text>
-            <Text style={styles.textJours}>vendredi</Text>
-            <Text style={styles.textJours}>samedi</Text>
-            <Text style={styles.textJours}>dimanche</Text>
+            <Text style={
+              today.getDay() === 1
+              ? styles.textJoursToday
+              : styles.textJours
+            }
+            >
+              {suggestions[0].openingHours[0].slice(0,5)}
+            </Text>
+            <Text style={
+                today.getDay() === 2
+                ? styles.textJoursToday
+                : styles.textJours
+              }
+            >
+              {suggestions[0].openingHours[1].slice(0,5)}
+            </Text>
+            <Text style={
+                today.getDay() === 3
+                ? styles.textJoursToday
+                : styles.textJours
+              }
+            >
+              {suggestions[0].openingHours[2].slice(0,8)}
+            </Text>
+            <Text style={
+                today.getDay() === 4
+                ? styles.textJoursToday
+                : styles.textJours
+              }
+            >
+              {suggestions[0].openingHours[3].slice(0,5)}
+            </Text>
+            <Text style={
+                today.getDay() === 5
+                ? styles.textJoursToday
+                : styles.textJours
+              }
+            >
+              {suggestions[0].openingHours[4].slice(0,8)}
+            </Text>
+            <Text style={
+                today.getDay() === 6
+                ? styles.textJoursToday
+                : styles.textJours
+              }
+            >
+              {suggestions[0].openingHours[5].slice(0,6)}
+            </Text>
+            <Text style={
+                today.getDay() === 0
+                ? styles.textJoursToday
+                : styles.textJours
+              }
+            >
+              {suggestions[0].openingHours[6].slice(0,8)}
+            </Text>
           </View>
 
           <View>
-            <Text style={styles.textHoraires}>Fermé</Text>
-            <Text style={styles.textHoraires}>Fermé</Text>
-            <Text style={styles.textHorairesToday}>16:00–20:00</Text>
-            <Text style={styles.textHoraires}>16:00–20:30</Text>
-            <Text style={styles.textHoraires}>16:00–20:30</Text>
-            <Text style={styles.textHoraires}>12:00–20:30</Text>
-            <Text style={styles.textHoraires}>12:00–20:00</Text>
+            <Text style={
+                today.getDay() === 1
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[0].slice(7,suggestions[0].openingHours[0].length)}
+            </Text>
+            <Text style={
+                today.getDay() === 2
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[1].slice(7,suggestions[0].openingHours[1].length)}
+            </Text>
+            <Text style={
+                today.getDay() === 3
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[2].slice(10,suggestions[0].openingHours[2].length)}
+            </Text>
+            <Text style={
+                today.getDay() === 4
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[3].slice(7,suggestions[0].openingHours[3].length)}
+            </Text>
+            <Text style={
+                today.getDay() === 5
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[4].slice(10,suggestions[0].openingHours[4].length)}
+            </Text>
+            <Text style={
+                today.getDay() === 6
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[5].slice(8,suggestions[0].openingHours[5].length)}
+            </Text>
+            <Text style={
+                today.getDay() === 0
+                ? styles.textHorairesToday
+                : styles.textHoraires
+              }
+            >
+              {suggestions[0].openingHours[6].slice(10,suggestions[0].openingHours[6].length)}
+            </Text>
           </View>
           
 	
