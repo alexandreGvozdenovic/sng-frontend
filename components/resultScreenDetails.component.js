@@ -17,7 +17,6 @@ import {
   PTSans_400Regular,
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
-import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
 import { ScrollView } from 'react-native-gesture-handler';
 
 // fake data pour travailler l'intégration
@@ -202,9 +201,14 @@ const styles = StyleSheet.create({
       borderRadius: 50,
   },
   name: {
-    marginBottom:6
+    marginBottom:6,
+    fontFamily: 'OpenSans_400Regular',
+    fontSize: 16,
+    fontWeight:'bold'
   },
   comment: {
-      marginTop: 8
+      marginTop: 8,
+      fontFamily: 'OpenSans_400Regular',
+      fontSize: 16
   }
 });
