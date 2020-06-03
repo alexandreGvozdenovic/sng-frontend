@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput } from 'react-native';
 import { Button, Card } from 'react-native-elements';
-import { DatePicker, List } from '@ant-design/react-native';
 import {
   useFonts,
   PTSans_400Regular,
@@ -11,12 +10,19 @@ import {
 } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
+import {Picker} from '@react-native-community/picker';
 
-var backgroundTexture = require('../assets/images/Texture.png')
-var pizzaBackground = require('../assets/images/pizzabackground.png')
+
+var backgroundTexture = require('../assets/images/Texture.png');
+var pizzaBackground = require('../assets/images/pizzabackground.png');
+const {quartiers} = require('../assets/datas/quartiers.json');
+
+console.log(quartiers)
 
 
 function HomeScreen() {
+
+  const [quartier,setQuartier] = useState('Combat');
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -30,8 +36,8 @@ function HomeScreen() {
       )
   } else {
     return (
-      <ImageBackground source={backgroundTexture} style={styles.container}>
-        <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <ImageBackground source={backgroundTexture} style={styles.container}>
           <View style={styles.headerBackground}>
               <Text style={styles.headerLogo}> Shake'n'Go </Text>
           </View>
@@ -39,20 +45,28 @@ function HomeScreen() {
 
           <Text style={styles.title}>On sort ?</Text>
           <View style={styles.pickerContainer}>
-
-          <Button
-            title="On y va !"
-            buttonStyle={styles.btnPrimary}
-            onPress={() => console.log('Simple Button pressed')}/>
-          </View>
+          <Picker
+            selectedValue={quartier}
+            style={{height: 50, width: 100}}
+            onValueChange={(itemValue, itemIndex) =>
+              setQuartier({language: itemValue})
+            }>
+            <Picker.Item label="Java" value="java" />
+            <Picker.Item label="JavaScript" value="js" />
+          </Picker>
+            <Button
+              title="On y va !"
+              buttonStyle={styles.btnPrimary}
+              onPress={() => console.log('Simple Button pressed')}/>        
+            </View>
 
           {/* <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" /> */}
           <TextInput style={styles.locationInput} name="" id=""></TextInput>
 
 
   
-        </SafeAreaView>
-      </ImageBackground>
+        </ImageBackground>
+      </SafeAreaView>
       
     )
   };

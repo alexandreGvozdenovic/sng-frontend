@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, StatusBar, Platform } from 'react-native';
-=======
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar} from 'react-native';
->>>>>>> 3258709c9ff0fa07a9d94287e44e1e59c022c5ec
 import { Badge, Button, Card, Icon } from 'react-native-elements';
 import {
     useFonts,
@@ -95,8 +90,8 @@ function HistoryScreen() {
         )
     } else {
         return (
-            <ImageBackground source={backgroundTexture} style={styles.container}>
-                <SafeAreaView style={styles.container}>
+            <SafeAreaView style={styles.container}>
+                <ImageBackground source={backgroundTexture} style={styles.container}>
                     <View style={styles.headerBackground}>
                         <Text style={styles.headerLogo}> Shake'n'Go </Text>
                     </View>
@@ -146,8 +141,8 @@ function HistoryScreen() {
                             {wishlist}
                         </View>
                     </ScrollView>
-                </SafeAreaView>
-            </ImageBackground>    
+                </ImageBackground>    
+            </SafeAreaView>
         )
     }
 };
