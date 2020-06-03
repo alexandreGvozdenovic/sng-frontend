@@ -5,9 +5,10 @@ import {
   Platform, 
   StatusBar, 
   SafeAreaView, 
-  Image, 
   TouchableOpacity, 
-  StyleSheet } from 'react-native';
+  StyleSheet, 
+  ImageBackground} from 'react-native';
+import Header from './headerScreen.component';
 import { Badge, Button } from 'react-native-elements';
 import {createAppContainer } from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -22,7 +23,7 @@ import {
 
 // fake data pour travailler l'intégration
 const suggestions = require('../assets/datas/suggestions.json');
-
+//console.log(suggestions);
 function ResultScreen({navigation}) {
 
   let [fontsLoaded] = useFonts({
@@ -36,11 +37,11 @@ function ResultScreen({navigation}) {
   } else {
     return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerLogo}> Shake'n'Go </Text>
-      <Image 
+      <ImageBackground
         source={require('../assets/imagesTest/Atalante.png')}
         style={styles.picture}
-      />
+      >
+      <Header />
       <Button
         icon={
           <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
@@ -107,55 +108,36 @@ function ResultScreen({navigation}) {
         </Text>
 
       </View>
-      
-      <TouchableOpacity 
-        style={{
-        marginTop:'auto',
-        marginBottom: 15,
-        alignItems: 'center',   
-      }}
+    </ImageBackground>
+    <TouchableOpacity 
+        style={styles.moreDetails}
         onPress={() => navigation.navigate('Details')}
-      >
-        <Text style={{
-          color:'#FF8367',
-          fontSize: 14,
-          fontWeight:'bold'
-          }}>
+    >
+        <Text style={styles.moreDetailsText}>
           En savoir plus <AntDesign name="down" size={16} color="#FF8367" />
-
         </Text>
-
-      </TouchableOpacity>
+    </TouchableOpacity>
     </SafeAreaView>
   );
   }
 }
 
 const styles = StyleSheet.create({
-  headerLogo: {
-    textAlign:'center',
-    color: '#FF8367',
-    fontFamily: 'PTSans_400Regular',
-    fontStyle:'italic',
-    fontWeight:'bold',
-    fontSize: 24
-  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor:'#FFFFFF',
+    height:'100%'
   },
   containerCard: {
-    position:'absolute',
-    top:'37%',
+    marginTop:128,
     backgroundColor:'#FFFFFF',
     borderTopLeftRadius: 32,
     display:'flex',
-    flexDirection:'column'
   },
   picture: {
-    marginTop: 12,
-    width:'100%'
+    height:275
   },
   title: {
     fontFamily: 'PTSans_400Regular',
@@ -208,7 +190,6 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans_400Regular',
     marginTop: 32,
     marginRight: 26,
-    flexGrow:1
   },
   likeButton: {
     width:44,
@@ -217,9 +198,19 @@ const styles = StyleSheet.create({
     borderRadius: 40
   },
   likeButtonContainer: {
-    position:'absolute',
-    top: '12.5%',
-    right: 16
+    alignSelf:'flex-end',
+    marginRight: 16,
+    marginTop: 16
+  },
+  moreDetails: {
+    alignItems: 'center',
+    marginTop: 'auto',
+    marginBottom: 15
+  },
+  moreDetailsText: {
+    color:'#FF8367',
+    fontSize: 14,
+    fontWeight:'bold'
   }
 });
 
