@@ -5,6 +5,7 @@ import React from 'react';
 import HomeScreen from './components/pickerScreen.component';
 import ResultScreen from './components/resultScreen.component';
 import BookmarksScreen from './components/bookmarksScreen.component';
+import HistoryScreen from './components/historyScreen.component';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 //icons
@@ -16,6 +17,7 @@ var BottomNav = createBottomTabNavigator({
     Home:HomeScreen,
     Results:ResultScreen,
     Bookmarks:BookmarksScreen,
+    History:HistoryScreen,
   }, {
     defaultNavigationOptions:({navigation}) => ({
       tabBarIcon:({tintColor}) => {
@@ -31,7 +33,7 @@ var BottomNav = createBottomTabNavigator({
       }, 
       tabBarOptions: {
         activeTintColor: '#FF8367',
-        inactiveTintColor:'#2A2B2A',
+        inactiveTintColor:'rgba(42, 43, 42, 0.4)',
         tabStyle:{backgroundColor: '#ffffff'},
       }
     })

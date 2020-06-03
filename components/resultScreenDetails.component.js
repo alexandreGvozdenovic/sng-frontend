@@ -19,6 +19,9 @@ import {
 } from '@expo-google-fonts/dev';
 import { getCustomTabsSupportingBrowsersAsync } from 'expo-web-browser';
 
+// fake data pour travailler l'intégration
+const suggestions = require('../assets/datas/suggestions.json');
+
 export default function resultScreenDetails() {
 
   let [fontsLoaded] = useFonts({
