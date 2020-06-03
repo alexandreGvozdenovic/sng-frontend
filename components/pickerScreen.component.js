@@ -9,6 +9,7 @@ import {
   OpenSans_700Bold,
 } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
+import Header from './headerScreen.component';
 import { AntDesign } from '@expo/vector-icons';
 
 
@@ -34,11 +35,10 @@ function HomeScreen() {
       )
   } else {
     return (
-      <SafeAreaView style={styles.container}>
-        <ImageBackground source={backgroundTexture} style={styles.container}>
-          <View style={styles.headerBackground}>
-              <Text style={styles.headerLogo}> Shake'n'Go </Text>
-          </View>
+      
+        <SafeAreaView style={styles.container}>
+          <ImageBackground source={backgroundTexture} style={styles.background}>
+          <Header/>
           {/* <Image source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage}></Image> */}
 
           <Text style={styles.title}>On sort ?</Text>
@@ -178,6 +178,9 @@ const styles = StyleSheet.create({
       marginTop:8
 
   },
+  background: {
+    height:'100%'
+  }
 });
 
           {/* <List>

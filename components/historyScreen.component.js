@@ -8,6 +8,7 @@ import {
     OpenSans_400Regular,
     OpenSans_700Bold,
   } from '@expo-google-fonts/dev';
+import Header from './headerScreen.component';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -90,11 +91,10 @@ function HistoryScreen() {
         )
     } else {
         return (
-            <SafeAreaView style={styles.container}>
-                <ImageBackground source={backgroundTexture} style={styles.container}>
-                    <View style={styles.headerBackground}>
-                        <Text style={styles.headerLogo}> Shake'n'Go </Text>
-                    </View>
+            
+                <SafeAreaView style={styles.container}>
+                    <ImageBackground source={backgroundTexture} style={styles.background}>
+                    <Header/>
                     <ScrollView>
                         <Text style={styles.title}>Ma wishlist</Text>
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.containerBadges}>
@@ -244,6 +244,9 @@ const styles = StyleSheet.create({
         marginTop:8
 
     },
+    background: {
+        height:'100%'
+      }
   });
 
 export default HistoryScreen

@@ -6,7 +6,6 @@ import HomeScreen from './components/pickerScreen.component';
 import ResultScreen from './components/resultScreen.component';
 import BookmarksScreen from './components/bookmarksScreen.component';
 import FilterScreen from './components/filterScreen.component';
-import HistoryScreen from './components/historyScreen.component';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 //icons
@@ -18,7 +17,6 @@ var BottomNav = createBottomTabNavigator({
     Home:HomeScreen,
     Results:ResultScreen,
     Bookmarks:BookmarksScreen,
-    History:HistoryScreen,
     Filter:FilterScreen,
   }, {
     defaultNavigationOptions:({navigation}) => ({

@@ -10,6 +10,8 @@ import {
 } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
+import Header from './headerScreen.component';
+
 
 
 var backgroundTexture = require('../assets/images/Texture.png');
@@ -32,9 +34,7 @@ function FilterScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <ImageBackground source={backgroundTexture} style={styles.container}>
-            <View style={styles.headerBackground}>
-                <Text style={styles.headerLogo}> Shake'n'Go </Text>
-            </View>
+        <Header/>
             <Text style={styles.title}>Un peu moins de hasard ?</Text>
             <Text style={styles.subtitle}>Commence par choisir parmi ces propositions :</Text>
             <View style={styles.containerBadges}>
