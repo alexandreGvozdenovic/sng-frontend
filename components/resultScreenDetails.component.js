@@ -15,18 +15,22 @@ import { AppLoading } from 'expo';
 import {
   useFonts,
   PTSans_400Regular,
-  OpenSans_400Regular
+  PTSans_700Bold,
+  OpenSans_400Regular,
+  OpenSans_700Bold
 } from '@expo-google-fonts/dev';
 import { ScrollView } from 'react-native-gesture-handler';
 
 // fake data pour travailler l'intégration
-const suggestions = require('../assets/datas/suggestions.json');
+const {suggestions} = require('../assets/datas/suggestions.json');
 
 export default function resultScreenDetails() {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
+    PTSans_700Bold,
     OpenSans_400Regular,
+    OpenSans_700Bold
   });
 
   const list = [
@@ -57,9 +61,15 @@ export default function resultScreenDetails() {
 
   let comments = list.map((l,i)=> {
       let rating = [];
+<<<<<<< HEAD
       for(let j = 0 ; j < 5 ; j++){
           if(j < l.rating){
               rating.push(<AntDesign key={j} name="star" size={16} color="#FF8367" />)
+=======
+      for(let i = 0 ; i < 5 ; i++){
+          if(i < Math.floor(l.rating)){
+              rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
+>>>>>>> 3258709c9ff0fa07a9d94287e44e1e59c022c5ec
           } else {
               rating.push(<AntDesign key={j} name="staro" size={16} color="#FF8367" />)
           }
@@ -137,7 +147,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   title: {
-    fontFamily: 'PTSans_400Regular',
+    fontFamily: 'PTSans_700Bold',
     fontSize: 24,
     fontWeight: 'bold',
     marginLeft: 32,
@@ -201,6 +211,7 @@ const styles = StyleSheet.create({
       borderRadius: 50,
   },
   name: {
+<<<<<<< HEAD
     marginBottom:6,
     fontFamily: 'OpenSans_400Regular',
     fontSize: 16,
@@ -210,5 +221,13 @@ const styles = StyleSheet.create({
       marginTop: 8,
       fontFamily: 'OpenSans_400Regular',
       fontSize: 16
+=======
+    fontFamily:'OpenSans_700Bold',
+    marginBottom:6
+  },
+  comment: {
+    fontFamily:'OpenSans_400Regular',
+    marginTop: 8
+>>>>>>> 3258709c9ff0fa07a9d94287e44e1e59c022c5ec
   }
 });

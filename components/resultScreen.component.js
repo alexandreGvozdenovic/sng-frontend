@@ -18,17 +18,24 @@ import { AppLoading } from 'expo';
 import {
   useFonts,
   PTSans_400Regular,
+  PTSans_700Bold,
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
 
 // fake data pour travailler l'intégration
+<<<<<<< HEAD
 const suggestions = require('../assets/datas/suggestions.json');
 //console.log(suggestions);
+=======
+const {suggestions} = require('../assets/datas/suggestions.json');
+
+>>>>>>> 3258709c9ff0fa07a9d94287e44e1e59c022c5ec
 function ResultScreen({navigation}) {
   const [open, setOpen] = useState(true);
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
+    PTSans_700Bold,
     OpenSans_400Regular,
   });
   if(!fontsLoaded) {
@@ -151,7 +158,7 @@ const styles = StyleSheet.create({
     height:275
   },
   title: {
-    fontFamily: 'PTSans_400Regular',
+    fontFamily: 'PTSans_700Bold',
     fontSize: 32,
     fontWeight:'bold',
     marginLeft: 26,

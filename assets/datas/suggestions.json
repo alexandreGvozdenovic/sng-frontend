@@ -3,6 +3,7 @@
     "suggestions": [
       {
         "place_id": "ChIJGZJeECVy5kcRqLxoR1gp0Qk",
+        "type":"Bar",
         "nom": "Le Limousin",
         "coords": {
           "lat": 48.8272221,
@@ -44,6 +45,7 @@
       },
       {
         "place_id": "ChIJr9UiBO1x5kcR44kL6JMcmww",
+        "type":"Restaurant",
         "nom": "Au Bon Coin",
         "coords": {
           "lat": 48.8381245,
@@ -85,6 +87,7 @@
       },
       {
         "place_id": "ChIJ3aTdwY5x5kcRG7-4gMxDrkc",
+        "type":"Supermarket",
         "nom": "Tang Frères",
         "coords": {
           "lat": 48.82931,
