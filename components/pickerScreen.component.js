@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput } from 'react-native';
 import { Button, Card } from 'react-native-elements';
+import Header from './headerScreen.component';
 import { DatePicker, List } from '@ant-design/react-native';
 import {
   useFonts,
@@ -30,11 +31,10 @@ function HomeScreen() {
       )
   } else {
     return (
-      <ImageBackground source={backgroundTexture} style={styles.container}>
+      
         <SafeAreaView style={styles.container}>
-          <View style={styles.headerBackground}>
-              <Text style={styles.headerLogo}> Shake'n'Go </Text>
-          </View>
+          <ImageBackground source={backgroundTexture} style={styles.background}>
+          <Header/>
           {/* <Image source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage}></Image> */}
 
           <Text style={styles.title}>On sort ?</Text>
@@ -50,9 +50,9 @@ function HomeScreen() {
           <TextInput style={styles.locationInput} name="" id=""></TextInput>
 
 
-  
+          </ImageBackground>
         </SafeAreaView>
-      </ImageBackground>
+      
       
     )
   };
@@ -166,6 +166,9 @@ const styles = StyleSheet.create({
       marginTop:8
 
   },
+  background: {
+    height:'100%'
+  }
 });
 
           {/* <List>

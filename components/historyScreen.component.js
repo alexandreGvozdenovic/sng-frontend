@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, StatusBar, Platform } from 'react-native';
-=======
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar} from 'react-native';
->>>>>>> 3258709c9ff0fa07a9d94287e44e1e59c022c5ec
 import { Badge, Button, Card, Icon } from 'react-native-elements';
 import {
     useFonts,
@@ -13,6 +8,7 @@ import {
     OpenSans_400Regular,
     OpenSans_700Bold,
   } from '@expo-google-fonts/dev';
+import Header from './headerScreen.component';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -95,11 +91,10 @@ function HistoryScreen() {
         )
     } else {
         return (
-            <ImageBackground source={backgroundTexture} style={styles.container}>
+            
                 <SafeAreaView style={styles.container}>
-                    <View style={styles.headerBackground}>
-                        <Text style={styles.headerLogo}> Shake'n'Go </Text>
-                    </View>
+                    <ImageBackground source={backgroundTexture} style={styles.background}>
+                    <Header/>
                     <ScrollView>
                         <Text style={styles.title}>Ma wishlist</Text>
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.containerBadges}>
@@ -146,8 +141,8 @@ function HistoryScreen() {
                             {wishlist}
                         </View>
                     </ScrollView>
+                </ImageBackground>
                 </SafeAreaView>
-            </ImageBackground>    
         )
     }
 };
@@ -249,6 +244,9 @@ const styles = StyleSheet.create({
         marginTop:8
 
     },
+    background: {
+        height:'100%'
+      }
   });
 
 export default HistoryScreen

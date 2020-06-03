@@ -45,7 +45,9 @@ const styles = StyleSheet.create({
     backgroundColor:'#FFFFFF',
     display: 'flex',
     alignItems:'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderBottomColor: 'rgba(42, 43, 42, 0.08)',
+    borderBottomWidth: 0.8
   }
 });
 
