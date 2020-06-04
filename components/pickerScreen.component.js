@@ -25,30 +25,36 @@ function HomeScreen() {
   const [position, setPosition] = useState();
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showPositionPicker, setShowPositionPicker] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === 'ios');
     setDate(currentDate);
   };
  
   const onSubmit = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === 'ios');
     setDate(currentDate);
   };
 
   const showMode = currentMode => {
-    setShow(!show);
+    setShowDatePicker(!showDatePicker);
     setMode(currentMode);
   };
  
-  const showDatepicker = () => {
+  const showDatePickerModal = () => {
     showMode('date');
   };
  
+  const showPositionPickerModal = () => {
+    setShowPositionPicker(!showPositionPicker);
+    setPosition()
+  };
+
   const toggleOverlay = () => {
     setVisible(!visible);
   }
@@ -66,10 +72,37 @@ function HomeScreen() {
     displayTitle = `Choisis ton quartier !`
   }
 
+  let displayPositionPicker;
+  if(showPositionPicker) {
+    displayDatePicker = <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay()}}>
+    <Text style={styles.overlayText}>Choisis un quartier parisien : </Text>
+    <View style={{width:320, height:240, margin:8}}>
+    <Picker
+      selectedValue={quartier}
+      style={{width: 320}}
+      onValueChange={(value) =>
+        {setQuartier(value)}
+      }>
+      {displayListeQuartiers}
+    </Picker>
+    </View>
+    <View style={styles.overlayBtns}>
+      <Button
+        title="Fermer"
+        titleStyle={styles.btnTextDismiss}
+        buttonStyle={styles.btnModalDismiss}
+        onPress={() => {toggleOverlay(); showPositionPickerModal()}}/> 
+    </View>
+  </Overlay>
+  }
+
   //Date picker infos
-  var displayDatePicker;
-  if(show) {
-      displayDatePicker = <DateTimePicker
+  let displayDatePicker;
+  if(showDatePicker) {
+      displayDatePicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
+      <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
+      <View style={{width:320, height:240}}>
+      <DateTimePicker
                               testID="dateTimePicker"
                               locale="fr-FR"
                               value={date}
@@ -77,9 +110,20 @@ function HomeScreen() {
                               display="default"
                               onChange={onChange}
                             />
-  }
+      </View>
+      <View style={styles.overlayBtns}>
+        <Button
+          title="Fermer"
+          titleStyle={styles.btnTextDismiss}
+          buttonStyle={styles.btnModalDismiss}
+          onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
+      </View>
+    </Overlay>
 
-  var options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
+  }
+  const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
+
+
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -106,16 +150,16 @@ function HomeScreen() {
           <View style={styles.pickerContainer}>
             <View>
               <Button 
-                  onPress={() => {console.log('list picker')}}
+                  onPress={() => {showPositionPickerModal();toggleOverlay()}}
                   icon={          
                     <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
                 } 
-                  title={`${quartiers[0].label}`}
+                  title={displayTitle}
                   titleStyle={styles.pickerText}
                   buttonStyle={styles.pickers} 
                   />
               <Button 
-                  onPress={() => {showDatepicker();toggleOverlay()}}
+                  onPress={() => {showDatePickerModal();toggleOverlay()}}
                   icon={          
                     <AntDesign name="calendar" size={24} color="rgba(42, 43, 42, 0.4)" />
                 } 
@@ -130,23 +174,8 @@ function HomeScreen() {
               buttonStyle={styles.btnPrimary}
               onPress={() => console.log(date)}/>        
           </View>
-
-          <TextInput style={styles.locationInput} name="" id=""></TextInput>
-
-          <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatepicker()}}>
-            <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
-            <View style={{width:320, height:240}}>
-              {displayDatePicker}
-            </View>
-            <View style={styles.overlayBtns}>
-              <Button
-                title="Fermer"
-                titleStyle={styles.btnTextDismiss}
-                buttonStyle={styles.btnModalDismiss}
-                onPress={() => {toggleOverlay();showDatepicker()}}/> 
-            </View>
-          </Overlay>
-  
+          
+          {displayDatePicker}
         </ImageBackground>
       </SafeAreaView>
       

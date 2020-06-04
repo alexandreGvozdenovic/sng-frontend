@@ -1,6 +1,6 @@
 const rawQuartiers = require('../assets/datas/quartiers.json');
 
-let quartiers = [];
+let quartiers = [{label:'',value:''}];
 rawQuartiers.map((q) => {
     quartiers.push({
         label:q.fields.l_qu,
