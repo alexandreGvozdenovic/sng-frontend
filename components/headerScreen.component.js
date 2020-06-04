@@ -6,15 +6,13 @@ import {
 import { AppLoading } from 'expo';
 import {
   useFonts,
-  PTSans_400Regular,
-  OpenSans_400Regular
+  PTSans_700Bold_Italic
 } from '@expo-google-fonts/dev';
 
 export default function HeaderScreen() {
 
   let [fontsLoaded] = useFonts({
-    PTSans_400Regular,
-    OpenSans_400Regular,
+    PTSans_700Bold_Italic,
   });
   if(!fontsLoaded) {
     return (
@@ -34,7 +32,7 @@ const styles = StyleSheet.create({
   headerLogo: {
     textAlign:'center',
     color: '#FF8367',
-    fontFamily: 'PTSans_400Regular',
+    fontFamily: 'PTSans_700Bold_Italic',
     fontStyle:'italic',
     fontWeight:'bold',
     fontSize: 24

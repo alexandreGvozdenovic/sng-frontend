@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF8367",
     borderRadius:8,
     width:320,
+    height:56,
   },
   btnText:{
     fontFamily:'PTSans_700Bold',

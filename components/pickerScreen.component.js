@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput, Picker } from 'react-native';
-import { Button, Card } from 'react-native-elements';
+import { Button, Overlay } from 'react-native-elements';
 import {
   useFonts,
   PTSans_400Regular,
@@ -10,6 +10,7 @@ import {
 } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import Header from './headerScreen.component';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
 
 
@@ -17,11 +18,68 @@ var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-console.log(quartiers)
 
 function HomeScreen() {
 
-  const [quartier,setQuartier] = useState('Combat');
+  const [quartier, setQuartier] = useState();
+  const [position, setPosition] = useState();
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+ 
+  const onSubmit = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showMode = currentMode => {
+    setShow(!show);
+    setMode(currentMode);
+  };
+ 
+  const showDatepicker = () => {
+    showMode('date');
+  };
+ 
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  }
+
+  // Quartier picker infos
+  let displayListeQuartiers;
+  displayListeQuartiers = quartiers.map(q => {
+    return <Picker.Item key={q.value} label={q.label} value={q.label} position={q.value}/>
+  })
+
+  let displayTitle;
+  if(quartier) {
+    displayTitle = quartier;
+  } else {
+    displayTitle = `Choisis ton quartier !`
+  }
+
+  //Date picker infos
+  var displayDatePicker;
+  if(show) {
+      displayDatePicker = <DateTimePicker
+                              testID="dateTimePicker"
+                              locale="fr-FR"
+                              value={date}
+                              mode={mode}
+                              display="default"
+                              onChange={onChange}
+                            />
+  }
+
+  var options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -39,29 +97,55 @@ function HomeScreen() {
         <SafeAreaView style={styles.container}>
           <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
-          {/* <Image source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage}></Image> */}
+          <View style={styles.suggestionImageContainer}>
+            <Image source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage}></Image>
+          </View>
+          <Text style={styles.suggestionText}>Envie de pizza?</Text>
 
           <Text style={styles.title}>On sort ?</Text>
           <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={quartier}
-            style={{height: 50, width: 100}}
-            onValueChange={(itemValue, itemIndex) =>
-              setQuartier({language: itemValue})
-            }>
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
-          </Picker>
+            <View>
+              <Button 
+                  onPress={() => {console.log('list picker')}}
+                  icon={          
+                    <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
+                } 
+                  title={`${quartiers[0].label}`}
+                  titleStyle={styles.pickerText}
+                  buttonStyle={styles.pickers} 
+                  />
+              <Button 
+                  onPress={() => {showDatepicker();toggleOverlay()}}
+                  icon={          
+                    <AntDesign name="calendar" size={24} color="rgba(42, 43, 42, 0.4)" />
+                } 
+                  title={`${new Intl.DateTimeFormat('fr-FR', options).format(date)}`}
+                  titleStyle={styles.pickerText}
+                  buttonStyle={styles.pickers} 
+                  />
+            </View>
             <Button
               title="On y va !"
+              titleStyle={styles.btnTextOK}
               buttonStyle={styles.btnPrimary}
-              onPress={() => console.log('Simple Button pressed')}/>        
-            </View>
+              onPress={() => console.log(date)}/>        
+          </View>
 
-          {/* <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" /> */}
           <TextInput style={styles.locationInput} name="" id=""></TextInput>
 
-
+          <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatepicker()}}>
+            <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
+            <View style={{width:320, height:240}}>
+              {displayDatePicker}
+            </View>
+            <View style={styles.overlayBtns}>
+              <Button
+                title="Fermer"
+                titleStyle={styles.btnTextDismiss}
+                buttonStyle={styles.btnModalDismiss}
+                onPress={() => {toggleOverlay();showDatepicker()}}/> 
+            </View>
+          </Overlay>
   
         </ImageBackground>
       </SafeAreaView>
@@ -73,8 +157,6 @@ function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  //   justifyContent:'center',
-  //   alignItems:'center',
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headerBackground:{
@@ -104,13 +186,25 @@ const styles = StyleSheet.create({
       fontSize: 32,
       fontWeight:'bold',
       marginLeft: 26,
-      marginTop: 32
+      marginTop: 48
+  },
+  suggestionImageContainer: {
+    marginTop:32,
+    alignItems:"center",
   },
   suggestionImage: {
     width:320,
     height:150, 
-    borderRadius:8, 
-    marginBottom:8
+    borderRadius:8,
+  },
+  suggestionText: {
+    color:'#FFFFFF',
+    fontFamily: 'PTSans_700Bold',
+    fontWeight:'bold',
+    fontSize: 24,
+    lineHeight:31,
+    marginLeft: 48,
+    marginTop:-40,
   },
   pickerContainer:{
     flex:1,
@@ -141,13 +235,14 @@ const styles = StyleSheet.create({
   btnPrimary: {
     backgroundColor: "#FF8367",
     borderRadius:8,
-    width:320
+    width:320,
+    height:56,
+    marginTop:16,
   },
   containerBadges: {
       display:'flex', 
       flexDirection:'row',
       flexWrap:'wrap', 
-      // alignItems:'center', 
       marginTop:8, 
       marginLeft:26,
       marginEnd: 26,
@@ -176,138 +271,64 @@ const styles = StyleSheet.create({
       fontFamily:'OpenSans_400Regular',
       fontSize: 14,
       marginTop:8
-
+  },
+  pickers:{
+    backgroundColor:'#FFFFFF',
+    borderWidth:1,
+    borderColor:'rgba(42, 43, 42, 0.16)',
+    width:320,
+    marginBottom:16,
+    justifyContent:'flex-start',
+  },
+  pickerText:{
+    color:'rgba(42, 43, 42, 0.8)',
+    fontFamily:'OpenSans_400Regular',
+    fontSize: 16,
+    lineHeight: 22,
+    marginLeft:10,
+  },
+  overlayText:{
+    textAlign:'left',
+    fontFamily:'PTSans_700Bold',
+    color: '#FF8367',
+    width:250,
+    fontSize:24,
+    lineHeight:31,
+    marginTop:8, 
+    marginLeft:16,
+  },
+  overlayBtns:{
+    alignItems:'flex-end'
+  },
+  btnModalSubmit:{
+    width:150,
+    margin:10,
+    backgroundColor:'#FF8367'
+  },
+  btnTextOK:{
+    fontFamily:'PTSans_700Bold',
+    fontSize:18,
+    lineHeight:23,
+    color:"#FFFFFF",
+  },
+  btnTextDismiss:{
+    fontFamily:'PTSans_700Bold',
+    fontSize:18,
+    lineHeight:23,
+    color:"#FF8367",
+  },
+  btnModalDismiss:{
+    width:150,
+    margin:10,
+    backgroundColor:'#FFFFFF',
+    borderWidth:1,
+    borderColor:"#FF8367"
   },
   background: {
     height:'100%'
   }
 });
 
-          {/* <List>
-            <DatePicker
-              value=''
-              mode="date"
-              defaultDate={new Date()}
-              minDate={new Date(2015, 7, 6)}
-              maxDate={new Date(2026, 11, 3)}
-              onChange={() => {}}
-              format="YYYY-MM-DD"
-              >
-              <List.Item arrow="horizontal">Select Date</List.Item>
-            
-            </DatePicker> 
-          </List> */}
-// const styles = StyleSheet.create({
-//   header:{
-//     left: "0%",
-//     right: "0%",
-//     top: "0%",
-//     bottom: "0%",
-//     maxHeight: "60px",
-//     // /* Cloud */
-    
-//     backgroundColor: "#FFFFFF",
-//     shadowOffset:{width: 0, height: 8},
-//     shadowRadius: 16,
-//     shadowColor: "#2a2b2a",
-//   },
-//   container: {
-//     flex: 1,
-//     justifyContent:'center',
-//     alignItems:'center',
-//     backgroundColor: '#ffffff',
-//     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-//   },
-//   h1: { 
-//     textAlign: "center",
-//     fontFamily: "PT Sans",
-//     fontStyle: "italic",
-//     fontWeight: "bold",
-//     fontSize: 24,
-//     lineHeight: 31,
-//     paddingTop: 3,
-//     color: "#FF8367",
-    
-//   },
-  
-//   content: {
-//     marginTop: "112px",
-//     marginLeft: "auto",
-//     marginRight: "auto",
-//     width: "80%",
-//   },
-  
-//   bottomleft : {
-//     /* Envie de pizza ? */
-//     /* H2 */
-    
-//     fontFamily: "PT Sans",
-//     fontStyle: "normal",
-//     fontWeight: "bold",
-//     fontSize: 24,
-//     lineHeight: 31,
-//     /* identical to box height */
-    
-    
-//     color: "#FFFFFF",
-//     position: "absolute",
-//     width: "164px",
-//     height: "31px",
-//     left: "48px",
-//     top: "179px",
-//   },
-  
-//   image: {
-//     borderRadius: 8,
-//     width: "100%",
-//     minHeight: "100px",
-//     backgroundImage: 'url("restaurant.webp")',
-//     backgroundSize: "cover",
-//   },
-  
-//   input: {
-    
-//     /* Cloud */
-    
-//     backgroundColor: "#FFFFFF",
-//     border: "1px solid rgba(42, 43, 42, 0.16)",
-//     boxSizing: "borderBox",
-//     borderRadius: "8px",
-//     width: "100%",
-//     padding: "15px",
-    
-    
-//   },
-  
-//   locationInput: {
-//     marginBottom: "16px",
-    
-//   },
-  
-//   btnPrimary: {
-    
-//     /* Salmon */
-    
-//     backgroundColor: "#FF8367 !important",
-//     borderColor: "#FF8367 !important",
-//     marginTop: "32px",
-    
-//   },
-  
-//   /* H2 */
-  
-//   title : {
-    
-//     fontFamily: "PT Sans",
-//     fontStyle: "normal",
-//     fontWeight: "bold",
-//     fontSize: "32px",
-//     lineHeight: "41px",
-//     marginTop:"32px",
-//     marginBottom: "32px",
-    
-//   }
-// });  
 
 export default HomeScreen
   
