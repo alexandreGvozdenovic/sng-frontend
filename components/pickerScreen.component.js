@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput, Picker } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
-import {
-  useFonts,
-  PTSans_400Regular,
-  PTSans_700Bold,
-  OpenSans_400Regular,
-  OpenSans_700Bold,
-} from '@expo-google-fonts/dev';
+import { useFonts, PTSans_400Regular, PTSans_700Bold, OpenSans_400Regular, OpenSans_700Bold} from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import Header from './headerScreen.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
-
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions'; 
 
 var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
-
 
 function HomeScreen() {
 
@@ -28,6 +22,20 @@ function HomeScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showPositionPicker, setShowPositionPicker] = useState(false);
   const [visible, setVisible] = useState(false);
+
+  console.log(position)
+  useEffect(() => {
+    async function askPermissions() {
+        var { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status === 'granted') {
+          let location = await Location.getCurrentPositionAsync({});
+          setPosition({latitude:location.coords.latitude, longitude:location.coords.longitude});
+        } else {
+            console.log('autorisation refusée')
+        };
+    };
+    askPermissions();
+}, []);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -72,9 +80,12 @@ function HomeScreen() {
     displayTitle = `Choisis ton quartier !`
   }
 
-  let displayPositionPicker;
+  // variable d'accueil et de display des pickers
+  let displayPicker;
+  //Date Position infos
+
   if(showPositionPicker) {
-    displayDatePicker = <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay()}}>
+    displayPicker = <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay()}}>
     <Text style={styles.overlayText}>Choisis un quartier parisien : </Text>
     <View style={{width:320, height:240, margin:8}}>
     <Picker
@@ -97,9 +108,8 @@ function HomeScreen() {
   }
 
   //Date picker infos
-  let displayDatePicker;
   if(showDatePicker) {
-      displayDatePicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
+      displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
       <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
       <View style={{width:320, height:240}}>
       <DateTimePicker
@@ -142,9 +152,10 @@ function HomeScreen() {
           <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
           <View style={styles.suggestionImageContainer}>
-            <Image source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage}></Image>
+            <ImageBackground source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage} imageStyle={{borderRadius:8}}>
+              <Text style={styles.suggestionText}>Envie de pizza?</Text>
+            </ImageBackground>
           </View>
-          <Text style={styles.suggestionText}>Envie de pizza?</Text>
 
           <Text style={styles.title}>On sort ?</Text>
           <View style={styles.pickerContainer}>
@@ -172,10 +183,9 @@ function HomeScreen() {
               title="On y va !"
               titleStyle={styles.btnTextOK}
               buttonStyle={styles.btnPrimary}
-              onPress={() => console.log(date)}/>        
+              onPress={() => console.log(date, position)}/>        
           </View>
-          
-          {displayDatePicker}
+          {displayPicker}
         </ImageBackground>
       </SafeAreaView>
       
@@ -218,13 +228,14 @@ const styles = StyleSheet.create({
       marginTop: 48
   },
   suggestionImageContainer: {
+    alignSelf:"center",
     marginTop:32,
-    alignItems:"center",
+    borderRadius:8,
   },
   suggestionImage: {
+    justifyContent:'flex-end',
     width:320,
     height:150, 
-    borderRadius:8,
   },
   suggestionText: {
     color:'#FFFFFF',
@@ -232,8 +243,9 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     fontSize: 24,
     lineHeight:31,
-    marginLeft: 48,
-    marginTop:-40,
+    marginLeft: 24,
+    marginBottom:16,
+    alignSelf:'baseline',
   },
   pickerContainer:{
     flex:1,

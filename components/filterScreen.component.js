@@ -13,7 +13,6 @@ import { AntDesign } from '@expo/vector-icons';
 import Header from './headerScreen.component';
 
 
-
 var backgroundTexture = require('../assets/images/Texture.png');
 
 function FilterScreen() {
