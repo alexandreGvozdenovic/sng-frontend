@@ -19,33 +19,56 @@ var backgroundTexture = require('../assets/images/Texture.png')
 
 function HistoryScreen() {
 
-    const [filter, setFilter] = useState('Bar');
+    const [filter, setFilter] = useState('Tout');
     const [isFiltered, setIsFiltered] = useState(false);
+    const [isActive, setIsActive] = useState(false);
 
-    let filterList = []
+
+    let filterList = ['Tout']
     suggestions.map(e => {
         const type = e.type;
         if (!filterList.includes(type)) {
             filterList.push(type)
         }
     })
-    const filters = filterList.map(e => {
-        return <Badge 
+
+    // let activeArray;
+    // for (let i = 0; filters.length; i++) {
+
+    // }
+    
+    const isActiveFunct = type => {
+        let badgeStyle = type === filter || type === '' ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
+        return badgeStyle
+    }
+    const filters = [
+    //     <Badge 
+    //     containerStyle={{marginRight: 8, marginTop:8}} 
+    //     value={
+    //     <Text style={styles.badgeText}>
+    //         Tout
+    //     </Text>}
+    //     badgeStyle={isActiveFunct('')}
+    //     onPress={()=> {setIsFiltered(false)}}
+    // />
+    ]
+    filterList.map((e, i) => {
+        filters.push(<Badge 
             containerStyle={{marginRight: 8, marginTop:8}} 
             value={
         <Text style={styles.badgeText}>
             {e}
         </Text>}
-            badgeStyle={styles.badgeInactiveStyle}
-            onPress={()=> {setFilter(e);setIsFiltered(true)}}
-        />
+        badgeStyle={isActiveFunct(e)}
+        onPress={()=> {setFilter(e);setIsFiltered(true)}}
+        />)
     })
 
     // console.log(filterList)
 
     let filteredWishlist = []
     function filterByCat(categorie) {
-        if(isFiltered) {
+        if(isFiltered && filter !== 'Tout') {
             filteredWishlist = suggestions.filter((e => e.type === categorie))
         }
         else {
@@ -98,44 +121,7 @@ function HistoryScreen() {
                     <ScrollView>
                         <Text style={styles.title}>Ma wishlist</Text>
                         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.containerBadges}>
-                            <Badge 
-                                containerStyle={{marginRight: 8, marginTop:8}} 
-                                value={
-                                <Text style={styles.badgeText}>
-                                    Tout
-                                </Text>}
-                                badgeStyle={styles.badgeActiveStyle}
-                                onPress={()=> {setIsFiltered(false)}}
-                            />
                             {filters}
-                            {/* <Badge 
-                                containerStyle={{marginRight: 8, marginTop:8}} 
-                                value={
-                                <Text style={styles.badgeText}>
-                                    Bar
-                                </Text>}
-                                badgeStyle={styles.badgeInactiveStyle}
-                                onPress={()=> {setFilter('Bar');setIsFiltered(true)}}
-                            />
-
-                            <Badge 
-                                containerStyle={{marginRight: 8, marginTop:8}} 
-                                value={
-                                <Text style={styles.badgeText}>
-                                    Restaurant
-                                </Text>}
-                                badgeStyle={styles.badgeInactiveStyle}
-                                onPress={()=> {setFilter('Restaurant');setIsFiltered(true)}}
-                            />
-                            <Badge 
-                                containerStyle={{marginRight: 8, marginTop:8}} 
-                                value={
-                                <Text style={styles.badgeText}>
-                                    Supermarché
-                                </Text>}
-                                badgeStyle={styles.badgeInactiveStyle}
-                                onPress={()=> {setFilter('Supermarket');setIsFiltered(true)}}
-                            /> */}
                         </ScrollView>
                         <View>
                             {wishlist}
