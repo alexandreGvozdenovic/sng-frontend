@@ -11,11 +11,12 @@ import {
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
 import Header from './headerScreen.component';
+import { connect } from 'react-redux';
 
 
 var backgroundTexture = require('../assets/images/Texture.png');
 
-function FilterScreen() {
+function FilterScreen({updateUserType}) {
 
   const [selected, setSelected] = useState('')
 
@@ -46,7 +47,7 @@ function FilterScreen() {
             {t}
         </Text>}
     badgeStyle={isActiveBadge(t)}
-    onPress={() => {setSelected(t)}}
+    onPress={() => {updateUserType(t);setSelected(t)}}
     />
   })
 
@@ -75,7 +76,7 @@ function FilterScreen() {
                     title="Montre-moi les résultats"
                     titleStyle={styles.btnText}
                     buttonStyle={styles.btnPrimary}
-                    onPress={() => console.log('Simple Button pressed')}
+                    onPress={() => updateUserType(selected)}
                 />
             </View>
         </ImageBackground>
@@ -84,7 +85,20 @@ function FilterScreen() {
     )
   };
 };
-  
+
+function mapStateToProps(state) {
+  return {}
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateUserType: function (userType) {dispatch({type:'updateUserType', userType:userType})}
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterScreen)
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -224,9 +238,3 @@ const styles = StyleSheet.create({
 
   },
 });
-
-export default FilterScreen
-  
-  
-
-    

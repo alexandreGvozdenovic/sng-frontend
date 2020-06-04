@@ -9,9 +9,14 @@ import FilterScreen from './components/filterScreen.component';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
 //icons
-// import { Icon } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
+//Redux
+import {Provider} from 'react-redux';
+import { createStore, combineReducers } from 'redux';
+import userPosition from './reducers/userPosition.reducer';
+import userType from './reducers/userType.reducer';
 
+const store = createStore(combineReducers({userPosition, userType}))
 
 var BottomNav = createBottomTabNavigator({
     Home:HomeScreen,
@@ -43,7 +48,9 @@ var BottomNav = createBottomTabNavigator({
   
   export default function App() {
     return (
+      <Provider store={store}>
         <Navigation />
+      </Provider>
     );
   }
   

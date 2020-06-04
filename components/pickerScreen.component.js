@@ -8,12 +8,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions'; 
+import { connect } from 'react-redux';
 
 var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-function HomeScreen() {
+function HomeScreen({userPosition, updateUserPosition}) {
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
@@ -23,13 +24,13 @@ function HomeScreen() {
   const [showPositionPicker, setShowPositionPicker] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  console.log(position)
   useEffect(() => {
     async function askPermissions() {
         var { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status === 'granted') {
           let location = await Location.getCurrentPositionAsync({});
           setPosition({latitude:location.coords.latitude, longitude:location.coords.longitude});
+          updateUserPosition({latitude:location.coords.latitude, longitude:location.coords.longitude})
         } else {
             console.log('autorisation refusée')
         };
@@ -192,7 +193,23 @@ function HomeScreen() {
     )
   };
 };
+
+function mapStateToProps(state) {
+  return {
+    userPosition:state.userPosition,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})}
+  }
+};
   
+export default connect(mapStateToProps, mapDispatchToProps) (HomeScreen)
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -368,10 +385,6 @@ const styles = StyleSheet.create({
   background: {
     height:'100%'
   }
-});
-
-
-export default HomeScreen
-  
+});  
   
   

@@ -256,6 +256,6 @@ export default function result() {
     );
 }
 
-
+/// À L'AIDE : COMMENT INTEGRER LE CONNECT REDUX ???
 
 
