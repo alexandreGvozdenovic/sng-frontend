@@ -23,7 +23,6 @@ function HistoryScreen() {
     const [isFiltered, setIsFiltered] = useState(false);
     const [isActive, setIsActive] = useState(false);
 
-
     let filterList = ['Tout']
     suggestions.map(e => {
         const type = e.type;
@@ -31,27 +30,12 @@ function HistoryScreen() {
             filterList.push(type)
         }
     })
-
-    // let activeArray;
-    // for (let i = 0; filters.length; i++) {
-
-    // }
     
     const isActiveFunct = type => {
         let badgeStyle = type === filter || type === '' ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
         return badgeStyle
     }
-    const filters = [
-    //     <Badge 
-    //     containerStyle={{marginRight: 8, marginTop:8}} 
-    //     value={
-    //     <Text style={styles.badgeText}>
-    //         Tout
-    //     </Text>}
-    //     badgeStyle={isActiveFunct('')}
-    //     onPress={()=> {setIsFiltered(false)}}
-    // />
-    ]
+    const filters = []
     filterList.map((e, i) => {
         filters.push(<Badge 
             containerStyle={{marginRight: 8, marginTop:8}} 
@@ -63,8 +47,6 @@ function HistoryScreen() {
         onPress={()=> {setFilter(e);setIsFiltered(true)}}
         />)
     })
-
-    // console.log(filterList)
 
     let filteredWishlist = []
     function filterByCat(categorie) {

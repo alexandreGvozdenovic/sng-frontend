@@ -18,7 +18,38 @@ var backgroundTexture = require('../assets/images/Texture.png');
 
 function FilterScreen() {
 
-  const [quartier,setQuartier] = useState('Combat');
+  const [selected, setSelected] = useState('')
+
+  let typeList = ['Bar', 'Restaurant', 'Supermarket', 'Spectacle'];
+
+  const isActiveBadge = type => {
+    let badgeStyle = type === selected ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
+    return badgeStyle
+  }
+
+  const isActiveText = type => {
+    let textStyle = type === selected ? styles.badgeActiveText : styles.badgeInactiveText;
+    return textStyle
+  }
+
+  const isCheck = type => {
+    let check = type === selected ? <AntDesign name="check" size={16} color="#FFFFFF" /> : '';
+    return check
+  }
+
+  let types = typeList.map((t, i) => {
+    return <Badge 
+    key={i}
+    containerStyle={{marginRight: 8, marginTop:8}} 
+    value={
+        <Text style={isActiveText(t)}>
+                {isCheck(t)}
+            {t}
+        </Text>}
+    badgeStyle={isActiveBadge(t)}
+    onPress={() => {setSelected(t)}}
+    />
+  })
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -38,39 +69,7 @@ function FilterScreen() {
             <Text style={styles.title}>Un peu moins de hasard ?</Text>
             <Text style={styles.subtitle}>Commence par choisir parmi ces propositions :</Text>
             <View style={styles.containerBadges}>
-                <Badge 
-                    containerStyle={{marginRight: 8, marginTop:8}} 
-                    value={
-                        <Text style={styles.badgeActiveText}>
-                                <AntDesign name="check" size={16} color="#FFFFFF" />
-                            Bar
-                        </Text>}
-                    badgeStyle={styles.badgeActiveStyle}
-                    />
-                <Badge 
-                    containerStyle={{marginRight: 8, marginTop:8}} 
-                    value={
-                        <Text style={styles.badgeInactiveText}>
-                            Restaurant
-                        </Text>}
-                    badgeStyle={styles.badgeInactiveStyle}
-                    />
-                <Badge 
-                    containerStyle={{marginRight: 8, marginTop:8}} 
-                    value={
-                        <Text style={styles.badgeInactiveText}>
-                            Club
-                        </Text>}
-                    badgeStyle={styles.badgeInactiveStyle}
-                    />
-                <Badge 
-                    containerStyle={{marginRight: 8, marginTop:8}} 
-                    value={
-                        <Text style={styles.badgeInactiveText}>
-                            Spectacle
-                        </Text>}
-                    badgeStyle={styles.badgeInactiveStyle}
-                    />
+              {types}
             </View>
             <View style={styles.btnContainer}>
                 <Button
