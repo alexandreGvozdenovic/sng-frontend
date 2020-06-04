@@ -45,9 +45,9 @@ function ResultScreen({navigation}) {
   console.log(suggestions[0].rating)
   for(let i = 0; i < suggestions[0].rating; i++) {
     if(i < Math.round(suggestions[0].rating)) {
-      rating.push(<AntDesign name="star" size={16} color="#FF8367" />)
+      rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
     } else {
-      rating.push(<AntDesign name="staro" size={16} color="#FF8367" />)
+      rating.push(<AntDesign key={i} name="staro" size={16} color="#FF8367" />)
     }
   }
 

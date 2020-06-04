@@ -9,6 +9,8 @@ import {
   OpenSans_700Bold,
 } from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 import Header from './headerScreen.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
