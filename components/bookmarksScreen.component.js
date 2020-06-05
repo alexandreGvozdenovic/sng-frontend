@@ -11,20 +11,21 @@ import {
 import Header from './headerScreen.component';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 // fake data pour travailler l'intégration
-const {suggestions} = require('../assets/datas/suggestions.json');
+// const {suggestions} = require('../assets/datas/suggestions.json');
 
 var backgroundTexture = require('../assets/images/Texture.png')
 
-function HistoryScreen() {
+function BookMarksScreen({userWishlist}) {
 
     const [filter, setFilter] = useState('Tout');
     const [isFiltered, setIsFiltered] = useState(false);
     const [isActive, setIsActive] = useState(false);
-
+    
     let filterList = ['Tout']
-    suggestions.map(e => {
+    userWishlist.map(e => {
         const type = e.type;
         if (!filterList.includes(type)) {
             filterList.push(type)
@@ -51,10 +52,10 @@ function HistoryScreen() {
     let filteredWishlist = []
     function filterByCat(categorie) {
         if(isFiltered && filter !== 'Tout') {
-            filteredWishlist = suggestions.filter((e => e.type === categorie))
+            filteredWishlist = userWishlist.filter((e => e.type === categorie))
         }
         else {
-            filteredWishlist = suggestions;
+            filteredWishlist = userWishlist;
         }
     }
     
@@ -114,6 +115,12 @@ function HistoryScreen() {
         )
     }
 };
+
+function mapStateToProps(state) {
+    return{userWishlist:state.wishlist}
+}
+
+export default connect(mapStateToProps, null)(BookMarksScreen)
 
 const styles = StyleSheet.create({
     container: {
@@ -215,5 +222,3 @@ const styles = StyleSheet.create({
         height:'100%'
       }
   });
-
-export default HistoryScreen

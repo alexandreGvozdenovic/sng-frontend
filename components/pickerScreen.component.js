@@ -16,7 +16,7 @@ var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-function HomeScreen({userPosition, updateUserPosition}) {
+function HomeScreen({navigation, userPosition, updateUserPosition}) {
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
@@ -110,8 +110,12 @@ function HomeScreen({userPosition, updateUserPosition}) {
   </Overlay>
   }
 
+  // gestion du timeOut selon le device
+  let latency = Platform.OS === "android" ? 1000 : 0;
+
   //Date picker infos
   if(showDatePicker) {
+    setTimeout(() => {
       displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
       <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
       <View style={{width:320, height:240}}>
@@ -132,7 +136,7 @@ function HomeScreen({userPosition, updateUserPosition}) {
           onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
       </View>
     </Overlay>
-
+    }, latency);
   }
   const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
 
@@ -186,7 +190,7 @@ function HomeScreen({userPosition, updateUserPosition}) {
               title="On y va !"
               titleStyle={styles.btnTextOK}
               buttonStyle={styles.btnPrimary}
-              onPress={() => console.log(date, position)}/>        
+              onPress={() => navigation.navigate('Result')}/>        
           </View>
           {displayPicker}
         </ImageBackground>

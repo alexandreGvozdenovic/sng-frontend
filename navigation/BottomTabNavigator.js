@@ -1,12 +1,10 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Badge, Button } from 'react-native-elements';
 
 //navigation
-import HomeScreen from '../components/pickerScreen.component';
-import ResultScreen from '../components/resultScreen.component';
+import StackNavigator from './StackNavigator';
 import BookmarksScreen from '../components/bookmarksScreen.component';
-import FilterScreen from '../components/filterScreen.component';
 
 //icons
 // import { Icon } from 'react-native-elements';
@@ -37,11 +35,10 @@ export default function BottomTabNavigator({ navigation, route }) {
             activeTintColor: '#FF8367',
             inactiveTintColor:'rgba(42, 43, 42, 0.4)',
             showLabel: false
-        }}
-    >
+        }}>
       <BottomTab.Screen
         name="Home"
-        component={HomeScreen}
+        component={StackNavigator}
         options={{
           title: 'Result',
           tabBarIcon: ({ color }) => <AntDesign color={color} name="home" size={24} />,
@@ -55,14 +52,14 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Result"
         component={ResultScreen}
         options={{
           title: 'Result',
           tabBarIcon: ({ color }) => <AntDesign color={color} name="shake" size={24} />,
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Bookmarks"
         component={BookmarksScreen}
@@ -71,14 +68,14 @@ export default function BottomTabNavigator({ navigation, route }) {
           tabBarIcon: ({ color }) => <AntDesign color={color} name="hearto" size={24} />,
         }}
       />
-      <BottomTab.Screen
-        name="History"
+      {/* <BottomTab.Screen
+        name="Filter"
         component={FilterScreen}
         options={{
-          title: 'History',
+          title: 'Filter',
           tabBarIcon: ({ color }) => <AntDesign color={color} name="hearto" size={24} />,
         }}
-      />
+      /> */}
     </BottomTab.Navigator>
   );
 }

@@ -20,7 +20,7 @@ function FilterScreen({updateUserType}) {
 
   const [selected, setSelected] = useState('')
 
-  let typeList = ['Bar', 'Restaurant', 'Supermarket', 'Spectacle'];
+  let typeList = ['Bar', 'Restaurant', 'Supermarket'];
 
   const isActiveBadge = type => {
     let badgeStyle = type === selected ? styles.badgeActiveStyle : styles.badgeInactiveStyle;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Text, 
   View, 
@@ -27,8 +27,8 @@ import { connect } from 'react-redux';
 
 // fake data pour travailler l'intégration
 const {suggestions} = require('../assets/datas/suggestions.json');
-function ResultScreen({navigation, addToWishlist}) {
 
+function ResultScreen({navigation, addToWishlist}) {
   var currentlyOpened = 
   <View style={styles.containerOpen}>
     <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{marginRight:4}} />
@@ -45,7 +45,6 @@ function ResultScreen({navigation, addToWishlist}) {
   </View>
 
   var rating = [];
-  console.log(suggestions[0].rating)
   for(let i = 0; i < suggestions[0].rating; i++) {
     if(i < Math.round(suggestions[0].rating)) {
       rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
@@ -78,7 +77,7 @@ function ResultScreen({navigation, addToWishlist}) {
         }
         containerStyle= {styles.likeButtonContainer}
         buttonStyle= {styles.likeButton}
-        onPress= {() => {console.log('bookmark!');addToWishlist(suggestions[0])}}
+        onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[0])}}
       />
       <View style={styles.containerCard}>
       <Text style={styles.title}>{suggestions[0].nom}</Text>
@@ -124,13 +123,25 @@ function ResultScreen({navigation, addToWishlist}) {
         onPress={() => navigation.navigate('Details')}
     >
         <Text style={styles.moreDetailsText}>
-          En savoir plus <AntDesign name="down" size={16} color="#FF8367" />
+          En savoir plus {/*  <AntDesign name="down" size={16} color="#FF8367" /> */}
         </Text>
     </TouchableOpacity>
     </SafeAreaView>
   );
   }
 }
+
+function mapStateToProps(state) {
+  return {}
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addToWishlist: function(place) {dispatch({type:'addToWishlist', place:place})}
+  }
+};
+  
+export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
 
 const styles = StyleSheet.create({
   container: {
@@ -241,35 +252,3 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   }
 });
-
-var StackNavigator = createStackNavigator({
-    Result: ResultScreen,
-    Details: ResultScreenDetails
-  },
-  {
-      headerMode:'none'
-  });
-
-function mapStateToProps(state) {
-  return {wishlist:state.wishist}
-};
-
-function mapDispatchToProps(dispatch) {
-  return {
-    addToWishlist: function(place) {dispatch({type:'addToWishlist', place:place})}
-  }
-};
-
-const ResultScreenRedux = connect(mapStateToProps, mapDispatchToProps)(StackNavigator)
-
-const Navigation = createAppContainer(ResultScreenRedux);
-
-export default function result() {
-    return(
-        <Navigation/>
-    );
-}
-
-/// À L'AIDE : COMMENT INTEGRER LE CONNECT REDUX ???
-
-

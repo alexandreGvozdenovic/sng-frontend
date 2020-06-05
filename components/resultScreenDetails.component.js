@@ -24,7 +24,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 // fake data pour travailler l'intégration
 const {suggestions} = require('../assets/datas/suggestions.json');
 
-export default function resultScreenDetails() {
+export default function resultScreenDetails({navigation}) {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -211,8 +211,8 @@ export default function resultScreenDetails() {
   );
   }
 }
-const styles = StyleSheet.create({
 
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
