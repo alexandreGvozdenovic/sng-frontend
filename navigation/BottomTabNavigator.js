@@ -10,6 +10,7 @@ import BookmarksScreen from '../components/bookmarksScreen.component';
 // import { Icon } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
+import ShakerButton from './ShakerButton';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -45,13 +46,8 @@ export default function BottomTabNavigator({ navigation, route }) {
         tabBarOptions={{
             activeTintColor: '#FF8367',
             inactiveTintColor:'rgba(42, 43, 42, 0.4)',
-<<<<<<< HEAD
-            showLabel: false
-        }}>
-=======
         }}
     >
->>>>>>> 750bbe96ad701fe7c3f6c26f541aef0308fca43f
       <BottomTab.Screen
         name="Home"
         component={StackNavigator}
@@ -64,7 +60,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name='Shaker'
         component={Shaker}
         options={{
-          tabBarIcon: () => (<ButtonTest/>),
+          tabBarIcon: () => (<ShakerButton/>),
           tabBarLabel: () => null
         }}
       
