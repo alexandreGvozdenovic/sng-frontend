@@ -11,6 +11,7 @@ import FilterScreen from '../components/filterScreen.component';
 //icons
 // import { Icon } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -18,10 +19,20 @@ const INITIAL_ROUTE_NAME = 'Home';
 function ButtonTest () {
   return (
     <Button 
-      title='test'
-      buttonStyle={{
-        backgroundColor:'#FF8367'
+      containerStyle={{
+        bottom:13
       }}
+      buttonStyle={{
+        backgroundColor:'#FF8367',
+        borderRadius:100,
+        width:56,
+        height:56,
+        borderWidth:3,
+        borderColor:'#fff'
+      }}
+      icon={
+        <Fontisto name="cocktail" size={24} color="#fff" />
+      }
       onPress={() => console.log('Je clique')}
     />
   )
@@ -36,7 +47,6 @@ export default function BottomTabNavigator({ navigation, route }) {
         tabBarOptions={{
             activeTintColor: '#FF8367',
             inactiveTintColor:'rgba(42, 43, 42, 0.4)',
-            showLabel: false
         }}
     >
       <BottomTab.Screen
@@ -51,7 +61,8 @@ export default function BottomTabNavigator({ navigation, route }) {
         name='Shaker'
         component={Shaker}
         options={{
-          tabBarButton: () => (<ButtonTest/>)
+          tabBarIcon: () => (<ButtonTest/>),
+          tabBarLabel: () => null
         }}
       
       />
