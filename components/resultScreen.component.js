@@ -21,10 +21,13 @@ import {
   PTSans_700Bold,
   OpenSans_400Regular
 } from '@expo-google-fonts/dev';
+//redux
+import { connect } from 'react-redux';
+
 
 // fake data pour travailler l'intégration
 const {suggestions} = require('../assets/datas/suggestions.json');
-function ResultScreen({navigation}) {
+function ResultScreen({navigation, addToWishlist}) {
 
   var currentlyOpened = 
   <View style={styles.containerOpen}>
@@ -75,6 +78,7 @@ function ResultScreen({navigation}) {
         }
         containerStyle= {styles.likeButtonContainer}
         buttonStyle= {styles.likeButton}
+        onPress= {() => {console.log('bookmark!');addToWishlist(suggestions[0])}}
       />
       <View style={styles.containerCard}>
       <Text style={styles.title}>{suggestions[0].nom}</Text>
@@ -248,7 +252,19 @@ var StackNavigator = createStackNavigator({
       headerMode:'none'
   });
 
-const Navigation = createAppContainer(StackNavigator);
+function mapStateToProps(state) {
+  return {wishlist:state.wishist}
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addToWishlist: function(place) {dispatch({type:'addToWishlist', place:place})}
+  }
+};
+
+const ResultScreenRedux = connect(mapStateToProps, mapDispatchToProps)(StackNavigator)
+
+const Navigation = createAppContainer(ResultScreenRedux);
 
 export default function result() {
     return(

@@ -195,9 +195,7 @@ function HomeScreen({userPosition, updateUserPosition}) {
 };
 
 function mapStateToProps(state) {
-  return {
-    userPosition:state.userPosition,
-  }
+  return {userPosition:state.userPosition,}
 }
 
 function mapDispatchToProps(dispatch) {
