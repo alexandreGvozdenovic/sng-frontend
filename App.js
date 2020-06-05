@@ -1,21 +1,15 @@
-//navigation
-// import HomeScreen from './components/pickerScreen.component';
-// import ResultScreen from './components/resultScreen.component';
-// import BookmarksScreen from './components/bookmarksScreen.component';
-// import FilterScreen from './components/filterScreen.component';
-// import TestPicker from './components/picker.component';
-// import { createBottomTabNavigator } from 'react-navigation-tabs';
-// import { createAppContainer } from 'react-navigation';
-//icons
-// import { Icon } from 'react-native-elements';
-// import { AntDesign } from '@expo/vector-icons';
 console.disableYellowBox = true;
 import React from 'react';
 import { StyleSheet, StatusBar, Platform, View } from 'react-native';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import {createStackNavigator} from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-
+//Redux
+import {Provider} from 'react-redux';
+import { createStore, combineReducers } from 'redux';
+import userPosition from './reducers/userPosition.reducer';
+import userType from './reducers/userType.reducer';
+const store = createStore(combineReducers({userPosition, userType}))
 
 // var BottomNav = createBottomTabNavigator({
 //     Home:HomeScreen,
@@ -51,12 +45,14 @@ import { NavigationContainer } from '@react-navigation/native';
     return (
       <View style={styles.container}>
       <NavigationContainer>
+        <Provider store={store}>
         <Stack.Navigator 
           screenOptions={{headerShown: false}}
 
         >
           <Stack.Screen name="Root" component={BottomTabNavigator} />
         </Stack.Navigator>
+        </Provider>
       </NavigationContainer>
       </View>
     );

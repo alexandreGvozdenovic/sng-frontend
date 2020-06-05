@@ -1,56 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput, Picker } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
-import {
-  useFonts,
-  PTSans_400Regular,
-  PTSans_700Bold,
-  OpenSans_400Regular,
-  OpenSans_700Bold,
-} from '@expo-google-fonts/dev';
+import { useFonts, PTSans_400Regular, PTSans_700Bold, OpenSans_400Regular, OpenSans_700Bold} from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import 'intl';
 import 'intl/locale-data/jsonp/fr-FR';
 import Header from './headerScreen.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
-
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions'; 
+import { connect } from 'react-redux';
 
 var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-
-function HomeScreen() {
+function HomeScreen({userPosition, updateUserPosition}) {
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showPositionPicker, setShowPositionPicker] = useState(false);
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    async function askPermissions() {
+        var { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status === 'granted') {
+          let location = await Location.getCurrentPositionAsync({});
+          setPosition({latitude:location.coords.latitude, longitude:location.coords.longitude});
+          updateUserPosition({latitude:location.coords.latitude, longitude:location.coords.longitude})
+        } else {
+            console.log('autorisation refusée')
+        };
+    };
+    askPermissions();
+}, []);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === 'ios');
     setDate(currentDate);
   };
  
   const onSubmit = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === 'ios');
     setDate(currentDate);
   };
 
   const showMode = currentMode => {
-    setShow(!show);
+    setShowDatePicker(!showDatePicker);
     setMode(currentMode);
   };
  
-  const showDatepicker = () => {
+  const showDatePickerModal = () => {
     showMode('date');
   };
  
+  const showPositionPickerModal = () => {
+    setShowPositionPicker(!showPositionPicker);
+    setPosition()
+  };
+
   const toggleOverlay = () => {
     setVisible(!visible);
   }
@@ -68,10 +83,39 @@ function HomeScreen() {
     displayTitle = `Choisis ton quartier !`
   }
 
+  // variable d'accueil et de display des pickers
+  let displayPicker;
+  //Date Position infos
+
+  if(showPositionPicker) {
+    displayPicker = <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay()}}>
+    <Text style={styles.overlayText}>Choisis un quartier parisien : </Text>
+    <View style={{width:320, height:240, margin:8}}>
+    <Picker
+      selectedValue={quartier}
+      style={{width: 320}}
+      onValueChange={(value) =>
+        {setQuartier(value)}
+      }>
+      {displayListeQuartiers}
+    </Picker>
+    </View>
+    <View style={styles.overlayBtns}>
+      <Button
+        title="Fermer"
+        titleStyle={styles.btnTextDismiss}
+        buttonStyle={styles.btnModalDismiss}
+        onPress={() => {toggleOverlay(); showPositionPickerModal()}}/> 
+    </View>
+  </Overlay>
+  }
+
   //Date picker infos
-  var displayDatePicker;
-  if(show) {
-      displayDatePicker = <DateTimePicker
+  if(showDatePicker) {
+      displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
+      <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
+      <View style={{width:320, height:240}}>
+      <DateTimePicker
                               testID="dateTimePicker"
                               locale="fr-FR"
                               value={date}
@@ -79,9 +123,20 @@ function HomeScreen() {
                               display="default"
                               onChange={onChange}
                             />
-  }
+      </View>
+      <View style={styles.overlayBtns}>
+        <Button
+          title="Fermer"
+          titleStyle={styles.btnTextDismiss}
+          buttonStyle={styles.btnModalDismiss}
+          onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
+      </View>
+    </Overlay>
 
-  var options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
+  }
+  const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
+
+
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -100,24 +155,25 @@ function HomeScreen() {
           <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
           <View style={styles.suggestionImageContainer}>
-            <Image source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage}></Image>
+            <ImageBackground source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage} imageStyle={{borderRadius:8}}>
+              <Text style={styles.suggestionText}>Envie de pizza?</Text>
+            </ImageBackground>
           </View>
-          <Text style={styles.suggestionText}>Envie de pizza?</Text>
 
           <Text style={styles.title}>On sort ?</Text>
           <View style={styles.pickerContainer}>
             <View>
               <Button 
-                  onPress={() => {console.log('list picker')}}
+                  onPress={() => {showPositionPickerModal();toggleOverlay()}}
                   icon={          
                     <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
                 } 
-                  title={`${quartiers[0].label}`}
+                  title={displayTitle}
                   titleStyle={styles.pickerText}
                   buttonStyle={styles.pickers} 
                   />
               <Button 
-                  onPress={() => {showDatepicker();toggleOverlay()}}
+                  onPress={() => {showDatePickerModal();toggleOverlay()}}
                   icon={          
                     <AntDesign name="calendar" size={24} color="rgba(42, 43, 42, 0.4)" />
                 } 
@@ -130,32 +186,32 @@ function HomeScreen() {
               title="On y va !"
               titleStyle={styles.btnTextOK}
               buttonStyle={styles.btnPrimary}
-              onPress={() => console.log(date)}/>        
+              onPress={() => console.log(date, position)}/>        
           </View>
-
-          <TextInput style={styles.locationInput} name="" id=""></TextInput>
-
-          <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatepicker()}}>
-            <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
-            <View style={{width:320, height:240}}>
-              {displayDatePicker}
-            </View>
-            <View style={styles.overlayBtns}>
-              <Button
-                title="Fermer"
-                titleStyle={styles.btnTextDismiss}
-                buttonStyle={styles.btnModalDismiss}
-                onPress={() => {toggleOverlay();showDatepicker()}}/> 
-            </View>
-          </Overlay>
-  
+          {displayPicker}
         </ImageBackground>
       </SafeAreaView>
       
     )
   };
 };
+
+function mapStateToProps(state) {
+  return {
+    userPosition:state.userPosition,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})}
+  }
+};
   
+export default connect(mapStateToProps, mapDispatchToProps) (HomeScreen)
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -191,13 +247,14 @@ const styles = StyleSheet.create({
       marginTop: 48
   },
   suggestionImageContainer: {
+    alignSelf:"center",
     marginTop:32,
-    alignItems:"center",
+    borderRadius:8,
   },
   suggestionImage: {
+    justifyContent:'flex-end',
     width:320,
     height:150, 
-    borderRadius:8,
   },
   suggestionText: {
     color:'#FFFFFF',
@@ -205,8 +262,9 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     fontSize: 24,
     lineHeight:31,
-    marginLeft: 48,
-    marginTop:-40,
+    marginLeft: 24,
+    marginBottom:16,
+    alignSelf:'baseline',
   },
   pickerContainer:{
     flex:1,
@@ -329,10 +387,6 @@ const styles = StyleSheet.create({
   background: {
     height:'100%'
   }
-});
-
-
-export default HomeScreen
-  
+});  
   
   

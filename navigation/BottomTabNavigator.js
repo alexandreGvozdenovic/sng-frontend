@@ -7,12 +7,10 @@ import HomeScreen from '../components/pickerScreen.component';
 import ResultScreen from '../components/resultScreen.component';
 import BookmarksScreen from '../components/bookmarksScreen.component';
 import FilterScreen from '../components/filterScreen.component';
-import TestPicker from '../components/picker.component';
 
 //icons
 // import { Icon } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
-import HistoryScreen from '../components/bookmarksScreen.component';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
