@@ -39,9 +39,9 @@ export default function resultScreenDetails() {
       let rating = [];
       for(let j = 0 ; j < 5 ; j++){
           if(j < Math.round(l.note)){
-              rating.push(<AntDesign key={j} name="star" size={16} color="#FF8367" />)
+              rating.push(<AntDesign key={i+j} name="star" size={16} color="#FF8367" />)
           } else {
-              rating.push(<AntDesign key={j} name="staro" size={16} color="#FF8367" />)
+              rating.push(<AntDesign key={i+j} name="staro" size={16} color="#FF8367" />)
           }
       }
       return(

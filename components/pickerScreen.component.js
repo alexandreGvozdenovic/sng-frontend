@@ -3,6 +3,8 @@ import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, Image
 import { Button, Overlay } from 'react-native-elements';
 import { useFonts, PTSans_400Regular, PTSans_700Bold, OpenSans_400Regular, OpenSans_700Bold} from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
+import 'intl';
+import 'intl/locale-data/jsonp/fr-FR';
 import Header from './headerScreen.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
@@ -211,7 +213,7 @@ export default connect(mapStateToProps, mapDispatchToProps) (HomeScreen)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    //paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headerBackground:{
       backgroundColor: '#ffffff',
