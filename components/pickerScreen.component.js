@@ -26,6 +26,9 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
   const [showPositionPicker, setShowPositionPicker] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  const shakeImg = require('../assets/images/shaking-dog.gif');
+
+
   useEffect(() => {
     async function askPermissions() {
         var { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -169,7 +172,6 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
               <Text style={styles.suggestionText}>Envie de pizza?</Text>
             </ImageBackground>
           </View>
-
           <Text style={styles.title}>On sort ?</Text>
           <View style={styles.pickerContainer}>
             <View>
@@ -213,7 +215,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})},
-    resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})}
+    resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})},
   }
 };
   

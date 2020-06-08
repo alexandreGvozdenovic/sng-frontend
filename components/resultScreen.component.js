@@ -24,9 +24,9 @@ import { connect } from 'react-redux';
 
 
 // fake data pour travailler l'intégration
-const {suggestions} = require('../assets/datas/suggestions.json');
+// const {suggestions} = require('../assets/datas/suggestions.json');
 
-function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNumber}) {
+function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNumber, suggestions}) {
 
   // Sharing logic  {onShare}
   const onShare = async (nom, adresse, type) => {
@@ -53,7 +53,6 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
     console.log('suggestionNumber',suggestionNumber)
     navigation.navigate('Filter')
   }
-  const { suggestions } = require('../assets/datas/suggestions.json');
 
   var currentlyOpened =
     <View style={styles.containerOpen}>
@@ -71,7 +70,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
     </View>
 
   var rating = [];
-  for(let i = 0; i < suggestions[suggestionNumber].rating; i++) {
+  for(let i = 0; i < 5; i++) {
     if(i < Math.round(suggestions[suggestionNumber].rating)) {
       rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
     } else {
@@ -85,7 +84,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
     OpenSans_400Regular,
   });
 
-  if(!fontsLoaded) {
+  if(!fontsLoaded && suggestions.length>0) {
     return (
       <AppLoading />
     )
@@ -97,22 +96,24 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
         style={styles.picture}
       >
       <Header />
-      <Button
-          onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
-              icon={
-                <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginTop: 'auto' }} />
-              }
-              containerStyle={styles.likeButtonContainer}
-              buttonStyle={styles.likeButton}
-            />
-      <Button
-        icon={
-          <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
-        }
-        containerStyle= {styles.likeButtonContainer}
-        buttonStyle= {styles.likeButton}
-        onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[suggestionNumber])}}
-      />
+      <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+        <Button
+            onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
+                icon={
+                  <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginTop: 'auto' }} />
+                }
+                containerStyle={styles.likeButtonContainer}
+                buttonStyle={styles.likeButton}
+              />
+        <Button
+          icon={
+            <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
+          }
+          containerStyle= {styles.likeButtonContainer}
+          buttonStyle= {styles.likeButton}
+          onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[suggestionNumber])}}
+        />
+      </View>
       <View style={styles.containerCard}>
       <Text style={styles.title}>{suggestions[suggestionNumber].nom}</Text>
         <View style={styles.containerRatingOpen}>
@@ -166,7 +167,11 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
 }
 
 function mapStateToProps(state) {
-  return {suggestionCount:state.suggestionCount, suggestionNumber:state.suggestionNumber}
+  return {
+    suggestionCount:state.suggestionCount, 
+    suggestionNumber:state.suggestionNumber,
+    suggestions:state.suggestions
+  }
 }
 
 function mapDispatchToProps(dispatch) {
