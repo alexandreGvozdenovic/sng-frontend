@@ -23,9 +23,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 
 // fake data pour travailler l'intégration
-const {suggestions} = require('../assets/datas/suggestions.json');
+// const {suggestions} = require('../assets/datas/suggestions.json');
 
-function resultScreenDetails({navigation, suggestionNumber}) {
+function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -214,7 +214,10 @@ function resultScreenDetails({navigation, suggestionNumber}) {
 }
 
 function mapStateToProps(state) {
-  return {suggestionNumber:state.suggestionNumber}
+  return {
+    suggestionNumber:state.suggestionNumber,
+    suggestions:state.suggestions
+  }
 }
 
 export default connect(mapStateToProps, null)(resultScreenDetails)
