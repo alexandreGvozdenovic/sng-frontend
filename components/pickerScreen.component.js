@@ -122,28 +122,26 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
 
   //Date picker infos
   if(showDatePicker) {
-    setTimeout(() => {
-      displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
-      <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
-      <View style={{width:320, height:240}}>
-      <DateTimePicker
-                              testID="dateTimePicker"
-                              locale="fr-FR"
-                              value={date}
-                              mode={mode}
-                              display="default"
-                              onChange={onChange}
-                            />
-      </View>
-      <View style={styles.overlayBtns}>
-        <Button
-          title="Fermer"
-          titleStyle={styles.btnTextDismiss}
-          buttonStyle={styles.btnModalDismiss}
-          onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
-      </View>
-    </Overlay>
-    }, latency);
+    displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
+    <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
+    <View style={{width:320, height:240}}>
+    <DateTimePicker
+                            testID="dateTimePicker"
+                            locale="fr-FR"
+                            value={date}
+                            mode={mode}
+                            display="default"
+                            onChange={onChange}
+                          />
+    </View>
+    <View style={styles.overlayBtns}>
+      <Button
+        title="Fermer"
+        titleStyle={styles.btnTextDismiss}
+        buttonStyle={styles.btnModalDismiss}
+        onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
+    </View>
+  </Overlay>
   }
   const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
 
