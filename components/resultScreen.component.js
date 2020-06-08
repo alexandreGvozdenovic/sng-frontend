@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react';
-import { 
-  Text, 
-  View, 
-  SafeAreaView, 
-  TouchableOpacity, 
-  StyleSheet, 
-  ImageBackground} from 'react-native';
+import React from 'react';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  Share
+} from 'react-native';
 import Header from './headerScreen.component';
 import { Badge, Button } from 'react-native-elements';
-import { withNavigationFocus } from 'react-navigation';
 import { AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import {
   useFonts,
+  
   PTSans_400Regular,
   PTSans_700Bold,
   OpenSans_400Regular
@@ -26,29 +28,51 @@ const {suggestions} = require('../assets/datas/suggestions.json');
 
 function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNumber}) {
 
+  // Sharing logic  {onShare}
+  const onShare = async (nom, adresse, type) => {
+    try {
+      const result = await Share.share({
+        message:
+          `Tiens, j'ai trouvé ce ${type} sur Shake'n'Go : ${nom}. C'est au ${adresse}. Ça te tente?`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+  }
+};
+
   if(suggestionCount > 3) {
     console.log('suggestionNumber',suggestionNumber)
     navigation.navigate('Filter')
   }
+  const { suggestions } = require('../assets/datas/suggestions.json');
 
-  var currentlyOpened = 
-  <View style={styles.containerOpen}>
-    <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{marginRight:4}} />
-    <Text style={styles.open}>
-      Ouvert
+  var currentlyOpened =
+    <View style={styles.containerOpen}>
+      <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{ marginRight: 4 }} />
+      <Text style={styles.open}>
+        Ouvert
     </Text>
-  </View>
-  var currentlyClosed = 
-  <View style={styles.containerOpen}>
-    <AntDesign name="clockcircleo" size={16} color="#DB331F" style={{marginRight:4}} />
-    <Text style={styles.close}>
-      Fermé
+    </View>
+  var currentlyClosed =
+    <View style={styles.containerOpen}>
+      <AntDesign name="clockcircleo" size={16} color="#DB331F" style={{ marginRight: 4 }} />
+      <Text style={styles.close}>
+        Fermé
     </Text>
-  </View>
+    </View>
 
   var rating = [];
-  for(let i = 0; i < suggestions[0].rating; i++) {
-    if(i < Math.round(suggestions[0].rating)) {
+  for(let i = 0; i < suggestions[suggestionNumber].rating; i++) {
+    if(i < Math.round(suggestions[suggestionNumber].rating)) {
       rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
     } else {
       rating.push(<AntDesign key={i} name="staro" size={16} color="#FF8367" />)
@@ -73,6 +97,14 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
         style={styles.picture}
       >
       <Header />
+      <Button
+          onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
+              icon={
+                <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginTop: 'auto' }} />
+              }
+              containerStyle={styles.likeButtonContainer}
+              buttonStyle={styles.likeButton}
+            />
       <Button
         icon={
           <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
@@ -100,7 +132,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
             {suggestions[suggestionNumber].adresse}
           </Text>
 
-        </View>
+            </View>
 
         <View style={styles.containerBadges}>
           <Badge 
@@ -112,24 +144,24 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
             badgeStyle={styles.badgeStyle}
           />
 
-        </View>
-      
-        <Text style={styles.description}>
-          Cet espace contemporain avec terrasse et vue sur le canal sert bières artisanales, planches et glaces.
+            </View>
+
+            <Text style={styles.description}>
+              Cet espace contemporain avec terrasse et vue sur le canal sert bières artisanales, planches et glaces.
         </Text>
 
-      </View>
-    </ImageBackground>
-    <TouchableOpacity 
-        style={styles.moreDetails}
-        onPress={() => navigation.navigate('Details')}
-    >
-        <Text style={styles.moreDetailsText}>
-          En savoir plus {/*  <AntDesign name="down" size={16} color="#FF8367" /> */}
-        </Text>
-    </TouchableOpacity>
-    </SafeAreaView>
-  );
+          </View>
+        </ImageBackground>
+        <TouchableOpacity
+          style={styles.moreDetails}
+          onPress={() => navigation.navigate('Details')}
+        >
+          <Text style={styles.moreDetailsText}>
+            En savoir plus <AntDesign name="down" size={16} color="#FF8367" />
+          </Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
   }
 }
 
@@ -146,103 +178,101 @@ function mapDispatchToProps(dispatch) {
   
 export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
 
-// export default withNavigationFocus(ReduxResult)
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#FFFFFF',
-    height:'100%'
+    backgroundColor: '#FFFFFF',
+    height: '100%'
   },
   containerCard: {
-    marginTop:128,
-    backgroundColor:'#FFFFFF',
+    marginTop: 128,
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 32,
-    display:'flex',
+    display: 'flex',
   },
   picture: {
-    height:275
+    height: 275
   },
   title: {
     fontFamily: 'PTSans_700Bold',
     fontSize: 32,
-    fontWeight:'bold',
+    fontWeight: 'bold',
     marginLeft: 26,
     marginTop: 32
   },
   containerRatingOpen: {
     marginLeft: 26,
     marginTop: 8,
-    display:'flex',
-    flexDirection:'row'
+    display: 'flex',
+    flexDirection: 'row'
   },
   containerOpen: {
-    display:'flex',
-    flexDirection:'row',
-    marginLeft:20,
-    alignItems:'center'
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 20,
+    alignItems: 'center'
   },
   open: {
     color: '#1DBC84',
-    fontFamily:'OpenSans_400Regular',
+    fontFamily: 'OpenSans_400Regular',
     fontSize: 14,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
-  close:{
+  close: {
     color: '#DB331F',
-    fontFamily:'OpenSans_400Regular',
+    fontFamily: 'OpenSans_400Regular',
     fontSize: 14,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   },
   containerAdress: {
-    display:'flex', 
-    flexDirection:'row', 
-    alignItems:'center', 
-    marginTop:8, 
-    marginLeft:26
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    marginLeft: 26
   },
   adressText: {
     marginLeft: 8,
     color: 'rgba(42, 43, 42, 0.4)',
-    fontFamily:'OpenSans_400Regular',
+    fontFamily: 'OpenSans_400Regular',
     fontSize: 16
   },
   containerBadges: {
-    display:'flex', 
-    flexDirection:'row',
-    flexWrap:'wrap', 
-    alignItems:'center', 
-    marginTop:8, 
-    marginLeft:26,
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    marginTop: 8,
+    marginLeft: 26,
     marginEnd: 26,
   },
   badgeText: {
     fontSize: 16,
-    fontFamily:'OpenSans_400Regular',
-    color:'#FF8367', 
-    paddingHorizontal: 16, 
+    fontFamily: 'OpenSans_400Regular',
+    color: '#FF8367',
+    paddingHorizontal: 16,
     paddingVertical: 3
   },
   badgeStyle: {
     backgroundColor: 'rgba(255, 131, 103, 0.24)',
     borderColor: '#FF8367',
-    height:28,
+    height: 28,
     borderRadius: 20
   },
   description: {
-    marginLeft:26,
+    marginLeft: 26,
     fontFamily: 'OpenSans_400Regular',
     marginTop: 32,
     marginRight: 26,
   },
   likeButton: {
-    width:44,
+    width: 44,
     height: 44,
     backgroundColor: '#FF8367',
     borderRadius: 40
   },
   likeButtonContainer: {
-    alignSelf:'flex-end',
+    alignSelf: 'flex-end',
     marginRight: 16,
     marginTop: 16
   },
@@ -252,8 +282,8 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   moreDetailsText: {
-    color:'#FF8367',
+    color: '#FF8367',
     fontSize: 14,
-    fontWeight:'bold'
+    fontWeight: 'bold'
   }
 });
