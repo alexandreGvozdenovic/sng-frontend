@@ -186,21 +186,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-<<<<<<< HEAD
-    backgroundColor:'#F8F8F8',
-    height:'100%'
-  },
-  containerCard: {
-    marginTop:128,
-    backgroundColor:'#F8F8F8',
-=======
     backgroundColor: '#FFFFFF',
     height: '100%'
   },
   containerCard: {
     marginTop: 128,
     backgroundColor: '#FFFFFF',
->>>>>>> 8318e9ee1d19d0ae068858407c17e079f90d5b77
     borderTopLeftRadius: 32,
     display: 'flex',
   },
