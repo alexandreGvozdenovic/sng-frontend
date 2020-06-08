@@ -52,7 +52,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Home"
         component={StackNavigator}
         options={{
-          title: 'Result',
+          title: 'Home',
           tabBarIcon: ({ color }) => <AntDesign color={color} name="home" size={24} />,
         }}
       />
