@@ -151,12 +151,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#FFFFFF',
+    backgroundColor:'#F8F8F8',
     height:'100%'
   },
   containerCard: {
     marginTop:128,
-    backgroundColor:'#FFFFFF',
+    backgroundColor:'#F8F8F8',
     borderTopLeftRadius: 32,
     display:'flex',
   },
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   moreDetails: {
     alignItems: 'center',
     marginTop: 'auto',
-    marginBottom: 15
+    marginBottom: 24
   },
   moreDetailsText: {
     color:'#FF8367',

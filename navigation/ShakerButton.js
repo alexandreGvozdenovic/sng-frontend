@@ -26,15 +26,17 @@ function ButtonTest ({changeSuggestionCount, changeSuggestionNumber, suggestionC
   return (
     <Button 
       containerStyle={{
-        bottom:13
+        bottom:8
       }}
       buttonStyle={{
         backgroundColor:'#FF8367',
-        borderRadius:100,
+        borderRadius:40,
         width:56,
         height:56,
-        borderWidth:3,
-        borderColor:'#fff'
+        borderWidth:4,
+        borderColor:'#fff',
+
+
       }}
       icon={
         <Fontisto name="cocktail" size={24} color="#fff" />
