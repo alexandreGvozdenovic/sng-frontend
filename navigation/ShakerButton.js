@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from 'react-native-elements';
 import { Fontisto } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 
 
-function ButtonTest ({navigation, changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount, userPosition, userType, userRadius, storeSuggestions}) {
+function ButtonTest ({navigation, changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount, userPosition, userType, userRadius, storeSuggestions, launchAnim}) {
   
   async function getSuggestions(userPosition, userType, userRadius) {
-    console.log('mon user Position :', userPosition.latitude,userPosition.longitude);
-    console.log('mon user Radius :', userRadius);
-    console.log('mon user Type :', userType);
-    console.log(`j'interroge mon backend`);
     let rawResponse = await fetch('http://192.168.1.59:3000/shake', {
         method:'POST',
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
@@ -19,13 +15,17 @@ function ButtonTest ({navigation, changeSuggestionCount, changeSuggestionNumber,
     let response = await rawResponse.json()
     storeSuggestions(response.suggestions);
   };
-  
+
   async function shake(userPosition, userType, userRadius) {
     if(suggestionCount === 0) {
+      launchAnim(true);
       await getSuggestions(userPosition, userType, userRadius);
-      changeSuggestionCount(1);
-      changeSuggestionNumber(suggestionCount);
-      changeShakeCount(1)
+      setTimeout(() => {
+        launchAnim(false);
+        changeSuggestionCount(1);
+        changeSuggestionNumber(suggestionCount);
+        changeShakeCount(1)
+      }, 3600)
     } else {
       changeSuggestionCount(1);
       changeSuggestionNumber(suggestionCount);
@@ -45,8 +45,6 @@ function ButtonTest ({navigation, changeSuggestionCount, changeSuggestionNumber,
         height:56,
         borderWidth:4,
         borderColor:'#fff',
-
-
       }}
       icon={
         <Fontisto name="cocktail" size={24} color="#fff" />
@@ -71,6 +69,7 @@ function mapDispatchToProps(dispatch) {
     changeSuggestionNumber: function(value) {dispatch({type:'changeSuggestionNumber', value:value})}, 
     changeShakeCount: function(value) {dispatch({type:'changeShakeCount', value:value})},
     storeSuggestions: function(array) {dispatch({type:'storeSuggestions', array:array})},
+    launchAnim: function(status) {dispatch({type:'launchAnim', status:status})}
   }
 };
   

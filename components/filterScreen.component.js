@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, ImageBackground} from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Image, ImageBackground} from 'react-native';
 import { Button, Badge, Divider } from 'react-native-elements';
 import {
   useFonts,
@@ -13,10 +13,10 @@ import { AntDesign } from '@expo/vector-icons';
 import Header from './headerScreen.component';
 import { connect } from 'react-redux';
 
-
 var backgroundTexture = require('../assets/images/Texture.png');
+const shakeImg = require('../assets/images/shaking-dog.gif');
 
-function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggestionCount, resetSuggestionNumber, shakeCount, userType, userRadius}) {
+function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggestionCount, resetSuggestionNumber, shakeCount, userType, userRadius, isAnim}) {
 
   const [selected, setSelected] = useState('');
   const [stillDisplay, setStillDisplay] = useState(true);
@@ -32,6 +32,15 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
       setStillDisplay(false);
     }
   },[]);
+
+  let screenDisplay;
+  if(isAnim) {
+    console.log(isAnim, 'on envoie le film')
+    screenDisplay = <Image source={shakeImg} style={{height:'90%', width:'100%'}}/>
+  } else {
+    console.log(isAnim, 'on arrête le film')
+    screenDisplay;
+  };
 
   const isActiveBadge = type => {
     let badgeStyle = type === selected ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
@@ -126,6 +135,7 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
   } else {
     return (
       <SafeAreaView style={styles.container}>
+        {screenDisplay}
         <ImageBackground source={backgroundTexture} style={styles.container}>
         <Header/>
           {messageDisplay}
@@ -148,7 +158,13 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
 };
 
 function mapStateToProps(state) {
-  return {suggestionCount:state.suggestionCount, shakeCount:state.shakeCount, userType:state.userType, userRadius:state.userRadius}
+  return {
+    suggestionCount:state.suggestionCount, 
+    shakeCount:state.shakeCount, 
+    userType:state.userType, 
+    userRadius:state.userRadius,
+    isAnim:state.isAnim
+  }
 };
 
 function mapDispatchToProps(dispatch) {

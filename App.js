@@ -17,8 +17,9 @@ import suggestionNumber from './reducers/suggestionNumber.reducer';
 import shakeCount from './reducers/shakeCount.reducer';
 import userRadius from './reducers/userRadius.reducer';
 import suggestions from './reducers/suggestions.reducer';
+import isAnim from './reducers/launchAnim.reducer';
 
-const store = createStore(combineReducers({userPosition, userType, wishlist, suggestionCount, suggestionNumber, shakeCount, userRadius, suggestions}))
+const store = createStore(combineReducers({userPosition, userType, wishlist, suggestionCount, suggestionNumber, shakeCount, userRadius, suggestions, isAnim}))
 
   
 const Stack = createStackNavigator();

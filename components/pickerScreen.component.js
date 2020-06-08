@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, Image, ImageBackground, TextInput, Picker } from 'react-native';
+import { SafeAreaView, View, Text, Image, Platform, StyleSheet, ImageBackground, Picker } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import { useFonts, PTSans_400Regular, PTSans_700Bold, OpenSans_400Regular, OpenSans_700Bold} from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
@@ -11,15 +11,13 @@ import { AntDesign } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions'; 
 import { connect } from 'react-redux';
-import { withNavigationFocus } from 'react-navigation';
 import { useFocusEffect } from '@react-navigation/native'
 
 
 var backgroundTexture = require('../assets/images/Texture.png');
-var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount, isFocused}) {
+function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount, isAnim}) {
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
@@ -44,17 +42,22 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
         };
     };
     askPermissions();
-}, []);
-
-  // useEffect(()=>{
-  //   resetSuggestionCount();
-  // },[]);
+  }, []);
 
   useFocusEffect(
     React.useCallback(()=> {
       resetSuggestionCount();
     }, [])
   );
+
+  let screenDisplay;
+  if(isAnim) {
+    console.log(isAnim, 'on envoie le film')
+    screenDisplay = <Image source={shakeImg} style={{height:'90%', width:'100%'}}/>
+  } else {
+    console.log(isAnim, 'on arrête le film')
+    screenDisplay;
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -158,11 +161,6 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
     navigation.navigate('Result')
   }
 
-  // var pickerScreenDisplay;
-  // if(isFocused){
-  //   pickerScreenDisplay;
-  // }
-  // console.log(isFocused);
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
     PTSans_700Bold,
@@ -177,6 +175,7 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
     return (
       
       <SafeAreaView style={styles.container}>
+        {screenDisplay}
         <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
           <View style={styles.suggestionImageContainer}>
@@ -206,11 +205,11 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
                   buttonStyle={styles.pickers} 
                   />
             </View>
-            <Button
+            {/* <Button
               title="On y va !"
               titleStyle={styles.btnTextOK}
               buttonStyle={styles.btnPrimary}
-              onPress={() => navigation.navigate('Result')}/>        
+              onPress={() => navigation.navigate('Result')}/>         */}
           </View>
           {displayPicker}
         </ImageBackground>
@@ -221,13 +220,18 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
 };
 
 function mapStateToProps(state) {
-  return {userPosition:state.userPosition, suggestionCount:state.suggestionCount}
+  return {
+    userPosition:state.userPosition, 
+    suggestionCount:state.suggestionCount,
+    isAnim:state.isAnim
+  }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})},
     resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})},
+    launchAnim: function(status) {dispatch({type:'launchAnim', status:status})}
   }
 };
   
