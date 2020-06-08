@@ -46,6 +46,12 @@ export default function BottomTabNavigator({ navigation, route }) {
         tabBarOptions={{
             activeTintColor: '#FF8367',
             inactiveTintColor:'rgba(42, 43, 42, 0.4)',
+            style: {
+              backgroundColor:'#FFFFFF',
+              borderTopColor:'transparent',
+              shadowColor:'transparent',
+              elevation:0
+            }
         }}
     >
       <BottomTab.Screen

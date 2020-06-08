@@ -11,12 +11,15 @@ import { AntDesign } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions'; 
 import { connect } from 'react-redux';
+import { withNavigationFocus } from 'react-navigation';
+import { useFocusEffect } from '@react-navigation/native'
+
 
 var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount}) {
+function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount, isFocused}) {
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
@@ -43,9 +46,15 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
     askPermissions();
 }, []);
 
-  useEffect(()=>{
-    resetSuggestionCount();
-  },[]);
+  // useEffect(()=>{
+  //   resetSuggestionCount();
+  // },[]);
+
+  useFocusEffect(
+    React.useCallback(()=> {
+      resetSuggestionCount();
+    }, [])
+  );
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -149,6 +158,11 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
     navigation.navigate('Result')
   }
 
+  // var pickerScreenDisplay;
+  // if(isFocused){
+  //   pickerScreenDisplay;
+  // }
+  // console.log(isFocused);
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
     PTSans_700Bold,
@@ -218,6 +232,7 @@ function mapDispatchToProps(dispatch) {
 };
   
 export default connect(mapStateToProps, mapDispatchToProps) (HomeScreen)
+
 
 
 
