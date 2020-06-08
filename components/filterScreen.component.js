@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, StatusBar, Platform, StyleSheet, ImageBackground} from 'react-native';
-import { Button, Badge } from 'react-native-elements';
+import { Button, Badge, Divider } from 'react-native-elements';
 import {
   useFonts,
   PTSans_400Regular,
@@ -16,11 +16,22 @@ import { connect } from 'react-redux';
 
 var backgroundTexture = require('../assets/images/Texture.png');
 
-function FilterScreen({updateUserType}) {
+function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggestionCount, resetSuggestionNumber, shakeCount, userType, userRadius}) {
 
-  const [selected, setSelected] = useState('')
+  const [selected, setSelected] = useState('');
+  const [stillDisplay, setStillDisplay] = useState(true);
 
   let typeList = ['Bar', 'Restaurant', 'Supermarket'];
+
+  useEffect(()=>{
+    console.log('je suis dans le filter')
+    resetSuggestionCount();
+    resetSuggestionNumber();
+    return () => {
+      resetSuggestionNumber();
+      setStillDisplay(false);
+    }
+  },[]);
 
   const isActiveBadge = type => {
     let badgeStyle = type === selected ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
@@ -47,9 +58,60 @@ function FilterScreen({updateUserType}) {
             {t}
         </Text>}
     badgeStyle={isActiveBadge(t)}
-    onPress={() => {updateUserType(t);setSelected(t)}}
+    onPress={() => {setStillDisplay(true);updateUserType(t);setSelected(t)}}
     />
   })
+
+  if(suggestionCount===1) {
+    navigation.navigate('Result')
+  }
+
+  let messageDisplay = shakeCount < 5 ? 
+      <Text style={styles.title}>Un peu moins de hasard ?
+      {/* <Text style={styles.subtitle}>Commence par choisir parmi ces propositions :</Text> */}
+    </Text> : shakeCount < 9 ?
+      <Text style={styles.title}>Es-tu sûr•e de vouloir sortir ?
+      {/* <Text style={styles.subtitle}>Tu peux toujours choisir parmi ces propositions :</Text> */}
+    </Text> :
+    <View>
+      <Text style={styles.title}>Choisir c'est renoncer !</Text>
+      <Text style={styles.subtitle}>Pour le moment tu n'es pas prêt à choisir. Quittes l'application et essayes à nouveau dans 5 minutes...</Text>
+    </View>;
+
+  let typeInvite;
+  if(shakeCount < 9 && userType ==='' || stillDisplay) {
+    typeInvite = 
+      <View>
+        <Text style={styles.subtitle}>Commence par choisir parmi ces propositions :</Text>
+        <View style={styles.containerBadges}>
+            {types}
+        </View>
+      </View>
+  }
+
+  let radiusInvite;
+  if(!userRadius && shakeCount < 9) {
+    radiusInvite = 
+      <View>
+        <Text style={styles.subtitle}>Tu peux décider d'élargir tes horizons :</Text>
+        <View style={styles.btnContainer}>
+          <Button
+              title="Je suis prêt•e à aller plus loin"
+              titleStyle={styles.btnText}
+              buttonStyle={styles.btnPrimary}
+              onPress={() => updateUserType(selected)}
+          />
+        </View>
+      </View>
+  }
+
+  let separateur;
+  if (shakeCount < 10 && userType === '' && !userRadius) {
+    separateur = 
+    <View style={{alignItems:"center"}}>
+      <Divider style={{width:320, height: 1.2, backgroundColor:'#FF8367', marginTop:16}}/>
+    </View>
+  }
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -66,19 +128,18 @@ function FilterScreen({updateUserType}) {
       <SafeAreaView style={styles.container}>
         <ImageBackground source={backgroundTexture} style={styles.container}>
         <Header/>
-            <Text style={styles.title}>Un peu moins de hasard ?</Text>
-            <Text style={styles.subtitle}>Commence par choisir parmi ces propositions :</Text>
-            <View style={styles.containerBadges}>
-              {types}
-            </View>
-            <View style={styles.btnContainer}>
-                <Button
-                    title="Montre-moi les résultats"
-                    titleStyle={styles.btnText}
-                    buttonStyle={styles.btnPrimary}
-                    onPress={() => updateUserType(selected)}
-                />
-            </View>
+          {messageDisplay}
+          {typeInvite}
+          {separateur}
+          {radiusInvite}
+          {/* <View style={styles.btnContainer}>
+            <Button
+                title="Montre-moi les résultats"
+                titleStyle={styles.btnText}
+                buttonStyle={styles.btnPrimary}
+                onPress={() => updateUserType(selected)}
+            />
+          </View> */}
         </ImageBackground>
       </SafeAreaView>
       
@@ -87,12 +148,14 @@ function FilterScreen({updateUserType}) {
 };
 
 function mapStateToProps(state) {
-  return {}
+  return {suggestionCount:state.suggestionCount, shakeCount:state.shakeCount, userType:state.userType, userRadius:state.userRadius}
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateUserType: function (userType) {dispatch({type:'updateUserType', userType:userType})}
+    updateUserType: function (userType) {dispatch({type:'updateUserType', userType:userType})},
+    resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})},
+    resetSuggestionNumber: function() {dispatch({type:'resetSuggestionNumber'})}
   }
 }
 
@@ -175,9 +238,9 @@ const styles = StyleSheet.create({
     color:"#FFFFFF",
   },
   btnContainer:{
-      flex:1,
+      // flex:1,
       alignItems:'center',
-      marginTop:48,
+      marginTop:24,
   },
   btnPrimary: {
     backgroundColor: "#FF8367",

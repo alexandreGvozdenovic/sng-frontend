@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PTSans_700Bold_Italic',
     fontStyle:'italic',
     fontWeight:'bold',
-    fontSize: 24
+    fontSize: 24,
   },
   headerLogoContainer: {
     height: 56,

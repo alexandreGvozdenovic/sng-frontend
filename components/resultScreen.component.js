@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { 
   Text, 
   View, 
-  Platform, 
-  StatusBar, 
   SafeAreaView, 
   TouchableOpacity, 
   StyleSheet, 
   ImageBackground} from 'react-native';
 import Header from './headerScreen.component';
 import { Badge, Button } from 'react-native-elements';
-import {createAppContainer } from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import ResultScreenDetails from './resultScreenDetails.component';
+import { withNavigationFocus } from 'react-navigation';
 import { AntDesign } from '@expo/vector-icons';
 import { AppLoading } from 'expo';
 import {
@@ -28,7 +24,13 @@ import { connect } from 'react-redux';
 // fake data pour travailler l'intégration
 const {suggestions} = require('../assets/datas/suggestions.json');
 
-function ResultScreen({navigation, addToWishlist}) {
+function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNumber}) {
+
+  if(suggestionCount > 3) {
+    console.log('suggestionNumber',suggestionNumber)
+    navigation.navigate('Filter')
+  }
+
   var currentlyOpened = 
   <View style={styles.containerOpen}>
     <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{marginRight:4}} />
@@ -58,6 +60,7 @@ function ResultScreen({navigation, addToWishlist}) {
     PTSans_700Bold,
     OpenSans_400Regular,
   });
+
   if(!fontsLoaded) {
     return (
       <AppLoading />
@@ -66,8 +69,7 @@ function ResultScreen({navigation, addToWishlist}) {
     return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        //source={require('../assets/imagesTest/Atalante.png')}
-        source={{uri: suggestions[0].photo}}
+        source={{uri: suggestions[suggestionNumber].photo}}
         style={styles.picture}
       >
       <Header />
@@ -77,16 +79,16 @@ function ResultScreen({navigation, addToWishlist}) {
         }
         containerStyle= {styles.likeButtonContainer}
         buttonStyle= {styles.likeButton}
-        onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[0])}}
+        onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[suggestionNumber])}}
       />
       <View style={styles.containerCard}>
-      <Text style={styles.title}>{suggestions[0].nom}</Text>
+      <Text style={styles.title}>{suggestions[suggestionNumber].nom}</Text>
         <View style={styles.containerRatingOpen}>
           <Text>
             {rating}
           </Text>
           {  
-            suggestions[0].isOpen === true
+            suggestions[suggestionNumber].isOpen === true
             ? currentlyOpened
             : currentlyClosed
           }
@@ -95,7 +97,7 @@ function ResultScreen({navigation, addToWishlist}) {
         <View style={styles.containerAdress}>
           <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
           <Text style={styles.adressText}>
-            {suggestions[0].adresse}
+            {suggestions[suggestionNumber].adresse}
           </Text>
 
         </View>
@@ -105,7 +107,7 @@ function ResultScreen({navigation, addToWishlist}) {
             containerStyle={{marginRight: 8, marginTop:8}} 
             value={
               <Text style={styles.badgeText}>
-                {suggestions[0].type}
+                {suggestions[suggestionNumber].type}
               </Text>}
             badgeStyle={styles.badgeStyle}
           />
@@ -132,16 +134,19 @@ function ResultScreen({navigation, addToWishlist}) {
 }
 
 function mapStateToProps(state) {
-  return {}
+  return {suggestionCount:state.suggestionCount, suggestionNumber:state.suggestionNumber}
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    addToWishlist: function(place) {dispatch({type:'addToWishlist', place:place})}
+    addToWishlist: function(place) {dispatch({type:'addToWishlist', place:place})},
+    resetSuggestionNumber: function() {dispatch({type:'resetSuggestionNumber'})}
   }
 };
   
 export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
+
+// export default withNavigationFocus(ReduxResult)
 
 const styles = StyleSheet.create({
   container: {

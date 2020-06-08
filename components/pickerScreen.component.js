@@ -16,7 +16,7 @@ var backgroundTexture = require('../assets/images/Texture.png');
 var pizzaBackground = require('../assets/images/pizzabackground.png');
 const {quartiers} = require('../scripts/quartiers');
 
-function HomeScreen({navigation, userPosition, updateUserPosition}) {
+function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount}) {
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
@@ -39,6 +39,10 @@ function HomeScreen({navigation, userPosition, updateUserPosition}) {
     };
     askPermissions();
 }, []);
+
+  useEffect(()=>{
+    resetSuggestionCount();
+  },[]);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -140,7 +144,9 @@ function HomeScreen({navigation, userPosition, updateUserPosition}) {
   }
   const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
 
-
+  if(suggestionCount===1) {
+    navigation.navigate('Result')
+  }
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -155,8 +161,8 @@ function HomeScreen({navigation, userPosition, updateUserPosition}) {
   } else {
     return (
       
-        <SafeAreaView style={styles.container}>
-          <ImageBackground source={backgroundTexture} style={styles.background}>
+      <SafeAreaView style={styles.container}>
+        <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
           <View style={styles.suggestionImageContainer}>
             <ImageBackground source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage} imageStyle={{borderRadius:8}}>
@@ -201,12 +207,13 @@ function HomeScreen({navigation, userPosition, updateUserPosition}) {
 };
 
 function mapStateToProps(state) {
-  return {userPosition:state.userPosition,}
+  return {userPosition:state.userPosition, suggestionCount:state.suggestionCount}
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})}
+    updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})},
+    resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})}
   }
 };
   

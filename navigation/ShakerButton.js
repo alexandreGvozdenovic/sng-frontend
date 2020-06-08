@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Button } from 'react-native-elements';
 import { Fontisto } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 
-export default function ButtonTest () {
+function ButtonTest ({changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount}) {
     return (
       <Button 
         containerStyle={{
@@ -20,7 +21,21 @@ export default function ButtonTest () {
         icon={
           <Fontisto name="cocktail" size={24} color="#fff" />
         }
-        onPress={() => console.log('Je clique')}
+        onPress={() => {changeSuggestionCount(1);changeSuggestionNumber(suggestionCount);changeShakeCount(1)}}
       />
     )
 }
+
+function mapStateToProps(state) {
+  return {suggestionCount:state.suggestionCount}
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    changeSuggestionCount: function(value) {dispatch({type:'changeSuggestionCount', value:value})}, 
+    changeSuggestionNumber: function(value) {dispatch({type:'changeSuggestionNumber', value:value})}, 
+    changeShakeCount: function(value) {dispatch({type:'changeShakeCount', value:value})}, 
+  }
+};
+  
+export default connect(mapStateToProps, mapDispatchToProps)(ButtonTest)

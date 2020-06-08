@@ -20,11 +20,12 @@ import {
   OpenSans_700Bold
 } from '@expo-google-fonts/dev';
 import { ScrollView } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
 
 // fake data pour travailler l'intégration
 const {suggestions} = require('../assets/datas/suggestions.json');
 
-export default function resultScreenDetails({navigation}) {
+function resultScreenDetails({navigation, suggestionNumber}) {
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -35,7 +36,7 @@ export default function resultScreenDetails({navigation}) {
   var today = new Date();
   console.log(today.getDay());
 
-  let comments = suggestions[0].reviews.map((l,i)=> {
+  let comments = suggestions[suggestionNumber].reviews.map((l,i)=> {
       let rating = [];
       for(let j = 0 ; j < 5 ; j++){
           if(j < Math.round(l.note)){
@@ -71,14 +72,14 @@ export default function resultScreenDetails({navigation}) {
         <View style={styles.mapContainer} >
             <MapView style={styles.mapStyle}
                 initialRegion={{
-                latitude: suggestions[0].coords.lat,
-                longitude: suggestions[0].coords.lng,
+                latitude: suggestions[suggestionNumber].coords.lat,
+                longitude: suggestions[suggestionNumber].coords.lng,
                 latitudeDelta: 0.0015,
                 longitudeDelta: 0.0015,
                 }}
             >
               <Marker
-                coordinate={{latitude: suggestions[0].coords.lat, longitude: suggestions[0].coords.lng}}
+                coordinate={{latitude: suggestions[suggestionNumber].coords.lat, longitude: suggestions[suggestionNumber].coords.lng}}
               />
             </MapView>
         </View>
@@ -91,7 +92,7 @@ export default function resultScreenDetails({navigation}) {
               : styles.textJours
             }
             >
-              {suggestions[0].openingHours[0].slice(0,5)}
+              {suggestions[suggestionNumber].openingHours[0].slice(0,5)}
             </Text>
             <Text style={
                 today.getDay() === 2
@@ -99,7 +100,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textJours
               }
             >
-              {suggestions[0].openingHours[1].slice(0,5)}
+              {suggestions[suggestionNumber].openingHours[1].slice(0,5)}
             </Text>
             <Text style={
                 today.getDay() === 3
@@ -107,7 +108,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textJours
               }
             >
-              {suggestions[0].openingHours[2].slice(0,8)}
+              {suggestions[suggestionNumber].openingHours[2].slice(0,8)}
             </Text>
             <Text style={
                 today.getDay() === 4
@@ -115,7 +116,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textJours
               }
             >
-              {suggestions[0].openingHours[3].slice(0,5)}
+              {suggestions[suggestionNumber].openingHours[3].slice(0,5)}
             </Text>
             <Text style={
                 today.getDay() === 5
@@ -123,7 +124,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textJours
               }
             >
-              {suggestions[0].openingHours[4].slice(0,8)}
+              {suggestions[suggestionNumber].openingHours[4].slice(0,8)}
             </Text>
             <Text style={
                 today.getDay() === 6
@@ -131,7 +132,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textJours
               }
             >
-              {suggestions[0].openingHours[5].slice(0,6)}
+              {suggestions[suggestionNumber].openingHours[5].slice(0,6)}
             </Text>
             <Text style={
                 today.getDay() === 0
@@ -139,7 +140,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textJours
               }
             >
-              {suggestions[0].openingHours[6].slice(0,8)}
+              {suggestions[suggestionNumber].openingHours[6].slice(0,8)}
             </Text>
           </View>
 
@@ -150,7 +151,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[0].slice(7,suggestions[0].openingHours[0].length)}
+              {suggestions[suggestionNumber].openingHours[0].slice(7,suggestions[suggestionNumber].openingHours[0].length)}
             </Text>
             <Text style={
                 today.getDay() === 2
@@ -158,7 +159,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[1].slice(7,suggestions[0].openingHours[1].length)}
+              {suggestions[suggestionNumber].openingHours[1].slice(7,suggestions[suggestionNumber].openingHours[1].length)}
             </Text>
             <Text style={
                 today.getDay() === 3
@@ -166,7 +167,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[2].slice(10,suggestions[0].openingHours[2].length)}
+              {suggestions[suggestionNumber].openingHours[2].slice(10,suggestions[suggestionNumber].openingHours[2].length)}
             </Text>
             <Text style={
                 today.getDay() === 4
@@ -174,7 +175,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[3].slice(7,suggestions[0].openingHours[3].length)}
+              {suggestions[suggestionNumber].openingHours[3].slice(7,suggestions[suggestionNumber].openingHours[3].length)}
             </Text>
             <Text style={
                 today.getDay() === 5
@@ -182,7 +183,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[4].slice(10,suggestions[0].openingHours[4].length)}
+              {suggestions[suggestionNumber].openingHours[4].slice(10,suggestions[suggestionNumber].openingHours[4].length)}
             </Text>
             <Text style={
                 today.getDay() === 6
@@ -190,7 +191,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[5].slice(8,suggestions[0].openingHours[5].length)}
+              {suggestions[suggestionNumber].openingHours[5].slice(8,suggestions[suggestionNumber].openingHours[5].length)}
             </Text>
             <Text style={
                 today.getDay() === 0
@@ -198,7 +199,7 @@ export default function resultScreenDetails({navigation}) {
                 : styles.textHoraires
               }
             >
-              {suggestions[0].openingHours[6].slice(10,suggestions[0].openingHours[6].length)}
+              {suggestions[suggestionNumber].openingHours[6].slice(10,suggestions[suggestionNumber].openingHours[6].length)}
             </Text>
           </View>
           
@@ -211,6 +212,12 @@ export default function resultScreenDetails({navigation}) {
   );
   }
 }
+
+function mapStateToProps(state) {
+  return {suggestionNumber:state.suggestionNumber}
+}
+
+export default connect(mapStateToProps, null)(resultScreenDetails)
 
 const styles = StyleSheet.create({
   container: {

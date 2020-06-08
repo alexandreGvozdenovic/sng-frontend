@@ -12,8 +12,12 @@ import { createStore, combineReducers } from 'redux';
 import userPosition from './reducers/userPosition.reducer';
 import userType from './reducers/userType.reducer';
 import wishlist from './reducers/wishlist.reducer';
+import suggestionCount from './reducers/suggestionCount.reducer';
+import suggestionNumber from './reducers/suggestionNumber.reducer';
+import shakeCount from './reducers/shakeCount.reducer';
+import userRadius from './reducers/userRadius.reducer';
 
-const store = createStore(combineReducers({userPosition, userType, wishlist}))
+const store = createStore(combineReducers({userPosition, userType, wishlist, suggestionCount, suggestionNumber, shakeCount, userRadius}))
 
   
 const Stack = createStackNavigator();
