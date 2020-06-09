@@ -1,9 +1,9 @@
-export default function (isRadius = 1500, action) {
+export default function (radius = 1500, action) {
     if(action.type === 'expandRadius') {
-        console.log('reducer radius')
-        let newIsRadius = 3000;
-        return newIsRadius
+        let newRadius = action.radius;
+        console.log('reducer radius. ma nouvelle valeur ', newRadius)
+        return newRadius
     } else {
-        return isRadius;
+        return radius;
     }
 }

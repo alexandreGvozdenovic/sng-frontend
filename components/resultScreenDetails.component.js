@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Text, 
   View, 
@@ -22,11 +22,15 @@ import {
 } from '@expo-google-fonts/dev';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+
 
 // fake data pour travailler l'intégration
 // const {suggestions} = require('../assets/datas/suggestions.json');
 
 function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
+
+  const [gestureName, setGestureName] = useState('none');
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -59,6 +63,21 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
           </View>
       )
   });
+
+  // Swipe
+  function onSwipeDown(gestureState) {
+    navigation.navigate('Result')
+  };
+
+  function onSwipe(gestureName, gestureState) {
+    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    setGestureName(gestureName);
+  };
+
+  const config = {
+    velocityThreshold: 0.,
+    directionalOffsetThreshold: 30,
+  };
 
   if(!fontsLoaded) {
     return (
@@ -203,12 +222,10 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
               {suggestions[suggestionNumber].openingHours[6].slice(10,suggestions[suggestionNumber].openingHours[6].length)}
             </Text>
           </View>
-          
-	
         </View>
         <Text style={styles.title}>Quelques avis</Text>
         {comments}
-        </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
   }

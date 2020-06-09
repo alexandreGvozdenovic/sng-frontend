@@ -17,8 +17,13 @@ import { useFocusEffect } from '@react-navigation/native'
 var backgroundTexture = require('../assets/images/Texture.png');
 const {quartiers} = require('../scripts/quartiers');
 
+<<<<<<< HEAD
 function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount, isAnim}) {
   
+=======
+function HomeScreen({navigation, userPosition, updateUserPosition, updateUserType, updateUserRadius, resetSuggestionCount, resetShakeCount, suggestionCount, isAnim}) {
+
+>>>>>>> a2a53d1f48bf9ba72f8d3bbb64083109d61f8dc4
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
   // const [date, setDate] = useState(new Date());
@@ -47,15 +52,16 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
   useFocusEffect(
     React.useCallback(()=> {
       resetSuggestionCount();
+      resetShakeCount();
+      updateUserType('');
+      updateUserRadius(1500);
     }, [])
   );
 
   let screenDisplay;
   if(isAnim) {
-    console.log(isAnim, 'on envoie le film')
-    screenDisplay = <Image source={shakeImg} style={{height:'90%', width:'100%'}}/>
+    screenDisplay = <Image source={shakeImg} style={{height:'100%', width:'100%'}}/>
   } else {
-    console.log(isAnim, 'on arrête le film')
     screenDisplay;
   };
 
@@ -175,9 +181,9 @@ function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggesti
     return (
       
       <SafeAreaView style={styles.container}>
-        {screenDisplay}
         <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
+          {screenDisplay}
           <View style={styles.suggestionImageContainer}>
             <ImageBackground source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage} imageStyle={{borderRadius:8}}>
               <Text style={styles.suggestionText}>Envie de pizza?</Text>
@@ -230,7 +236,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     updateUserPosition: function (position) {dispatch({type:'updateUserPosition', position:position})},
+    updateUserType: function(userType) {dispatch({type:'updateUserType', userType:userType})},
+    updateUserRadius: function(radius) {dispatch({type:'expandRadius', radius:radius})},
     resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})},
+    resetShakeCount: function() {dispatch({type:'resetShakeCount'})},
     launchAnim: function(status) {dispatch({type:'launchAnim', status:status})}
   }
 };
