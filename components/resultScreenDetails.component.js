@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Text, 
   View, 
@@ -21,11 +21,15 @@ import {
 } from '@expo-google-fonts/dev';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+
 
 // fake data pour travailler l'intégration
 // const {suggestions} = require('../assets/datas/suggestions.json');
 
 function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
+
+  const [gestureName, setGestureName] = useState('none');
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -34,7 +38,6 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
     OpenSans_700Bold
   });
   var today = new Date();
-  console.log(today.getDay());
 
   let comments = suggestions[suggestionNumber].reviews.map((l,i)=> {
       let rating = [];
@@ -60,6 +63,21 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
       )
   });
 
+  // Swipe
+  function onSwipeDown(gestureState) {
+    navigation.navigate('Result')
+  };
+
+  function onSwipe(gestureName, gestureState) {
+    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    setGestureName(gestureName);
+  };
+
+  const config = {
+    velocityThreshold: 0.9,
+    directionalOffsetThreshold: 30,
+  };
+
   if(!fontsLoaded) {
     return (
       <AppLoading />
@@ -67,147 +85,153 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
   } else {
     return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <Text style={styles.title}> Comment on y va ? </Text>
-        <View style={styles.mapContainer} >
-            <MapView style={styles.mapStyle}
-                initialRegion={{
-                latitude: suggestions[suggestionNumber].coords.lat,
-                longitude: suggestions[suggestionNumber].coords.lng,
-                latitudeDelta: 0.0015,
-                longitudeDelta: 0.0015,
-                }}
-            >
-              <Marker
-                coordinate={{latitude: suggestions[suggestionNumber].coords.lat, longitude: suggestions[suggestionNumber].coords.lng}}
-              />
-            </MapView>
-        </View>
-        <Text style={styles.title}>Horaires</Text>
-        <View style={styles.containerHoraires}>
-          <View style={styles.containerJours}>
-            <Text style={
-              today.getDay() === 1
-              ? styles.textJoursToday
-              : styles.textJours
-            }
-            >
-              {suggestions[suggestionNumber].openingHours[0].slice(0,5)}
-            </Text>
-            <Text style={
-                today.getDay() === 2
-                ? styles.textJoursToday
-                : styles.textJours
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[1].slice(0,5)}
-            </Text>
-            <Text style={
-                today.getDay() === 3
-                ? styles.textJoursToday
-                : styles.textJours
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[2].slice(0,8)}
-            </Text>
-            <Text style={
-                today.getDay() === 4
-                ? styles.textJoursToday
-                : styles.textJours
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[3].slice(0,5)}
-            </Text>
-            <Text style={
-                today.getDay() === 5
-                ? styles.textJoursToday
-                : styles.textJours
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[4].slice(0,8)}
-            </Text>
-            <Text style={
-                today.getDay() === 6
-                ? styles.textJoursToday
-                : styles.textJours
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[5].slice(0,6)}
-            </Text>
-            <Text style={
-                today.getDay() === 0
-                ? styles.textJoursToday
-                : styles.textJours
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[6].slice(0,8)}
-            </Text>
+        <GestureRecognizer
+          onSwipe={(direction, state) => onSwipe(direction, state)}
+          onSwipeDown={(state) => onSwipeDown(state)}
+          config={config}
+          >
+          <ScrollView>
+          <Text style={styles.title}> Comment on y va ? </Text>
+          <View style={styles.mapContainer} >
+              <MapView style={styles.mapStyle}
+                  initialRegion={{
+                  latitude: suggestions[suggestionNumber].coords.lat,
+                  longitude: suggestions[suggestionNumber].coords.lng,
+                  latitudeDelta: 0.0015,
+                  longitudeDelta: 0.0015,
+                  }}
+              >
+                <Marker
+                  coordinate={{latitude: suggestions[suggestionNumber].coords.lat, longitude: suggestions[suggestionNumber].coords.lng}}
+                />
+              </MapView>
           </View>
-
-          <View>
-            <Text style={
+          <Text style={styles.title}>Horaires</Text>
+          <View style={styles.containerHoraires}>
+            <View style={styles.containerJours}>
+              <Text style={
                 today.getDay() === 1
-                ? styles.textHorairesToday
-                : styles.textHoraires
+                ? styles.textJoursToday
+                : styles.textJours
               }
-            >
-              {suggestions[suggestionNumber].openingHours[0].slice(7,suggestions[suggestionNumber].openingHours[0].length)}
-            </Text>
-            <Text style={
-                today.getDay() === 2
-                ? styles.textHorairesToday
-                : styles.textHoraires
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[1].slice(7,suggestions[suggestionNumber].openingHours[1].length)}
-            </Text>
-            <Text style={
-                today.getDay() === 3
-                ? styles.textHorairesToday
-                : styles.textHoraires
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[2].slice(10,suggestions[suggestionNumber].openingHours[2].length)}
-            </Text>
-            <Text style={
-                today.getDay() === 4
-                ? styles.textHorairesToday
-                : styles.textHoraires
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[3].slice(7,suggestions[suggestionNumber].openingHours[3].length)}
-            </Text>
-            <Text style={
-                today.getDay() === 5
-                ? styles.textHorairesToday
-                : styles.textHoraires
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[4].slice(10,suggestions[suggestionNumber].openingHours[4].length)}
-            </Text>
-            <Text style={
-                today.getDay() === 6
-                ? styles.textHorairesToday
-                : styles.textHoraires
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[5].slice(8,suggestions[suggestionNumber].openingHours[5].length)}
-            </Text>
-            <Text style={
-                today.getDay() === 0
-                ? styles.textHorairesToday
-                : styles.textHoraires
-              }
-            >
-              {suggestions[suggestionNumber].openingHours[6].slice(10,suggestions[suggestionNumber].openingHours[6].length)}
-            </Text>
+              >
+                {suggestions[suggestionNumber].openingHours[0].slice(0,5)}
+              </Text>
+              <Text style={
+                  today.getDay() === 2
+                  ? styles.textJoursToday
+                  : styles.textJours
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[1].slice(0,5)}
+              </Text>
+              <Text style={
+                  today.getDay() === 3
+                  ? styles.textJoursToday
+                  : styles.textJours
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[2].slice(0,8)}
+              </Text>
+              <Text style={
+                  today.getDay() === 4
+                  ? styles.textJoursToday
+                  : styles.textJours
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[3].slice(0,5)}
+              </Text>
+              <Text style={
+                  today.getDay() === 5
+                  ? styles.textJoursToday
+                  : styles.textJours
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[4].slice(0,8)}
+              </Text>
+              <Text style={
+                  today.getDay() === 6
+                  ? styles.textJoursToday
+                  : styles.textJours
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[5].slice(0,6)}
+              </Text>
+              <Text style={
+                  today.getDay() === 0
+                  ? styles.textJoursToday
+                  : styles.textJours
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[6].slice(0,8)}
+              </Text>
+            </View>
+
+            <View>
+              <Text style={
+                  today.getDay() === 1
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[0].slice(7,suggestions[suggestionNumber].openingHours[0].length)}
+              </Text>
+              <Text style={
+                  today.getDay() === 2
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[1].slice(7,suggestions[suggestionNumber].openingHours[1].length)}
+              </Text>
+              <Text style={
+                  today.getDay() === 3
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[2].slice(10,suggestions[suggestionNumber].openingHours[2].length)}
+              </Text>
+              <Text style={
+                  today.getDay() === 4
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[3].slice(7,suggestions[suggestionNumber].openingHours[3].length)}
+              </Text>
+              <Text style={
+                  today.getDay() === 5
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[4].slice(10,suggestions[suggestionNumber].openingHours[4].length)}
+              </Text>
+              <Text style={
+                  today.getDay() === 6
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[5].slice(8,suggestions[suggestionNumber].openingHours[5].length)}
+              </Text>
+              <Text style={
+                  today.getDay() === 0
+                  ? styles.textHorairesToday
+                  : styles.textHoraires
+                }
+              >
+                {suggestions[suggestionNumber].openingHours[6].slice(10,suggestions[suggestionNumber].openingHours[6].length)}
+              </Text>
+            </View>
+            
+    
           </View>
-          
-	
-        </View>
-        <Text style={styles.title}>Quelques avis</Text>
-        {comments}
-        </ScrollView>
+          <Text style={styles.title}>Quelques avis</Text>
+          {comments}
+      </ScrollView>
+        </GestureRecognizer>
     </SafeAreaView>
   );
   }
