@@ -8,6 +8,7 @@ import {
   Image, 
   TouchableOpacity, 
   StyleSheet } from 'react-native';
+import Header from './headerScreen.component';
 import MapView, { Marker } from 'react-native-maps';
 import { ListItem } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
@@ -34,7 +35,6 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
     OpenSans_700Bold
   });
   var today = new Date();
-  console.log(today.getDay());
 
   let comments = suggestions[suggestionNumber].reviews.map((l,i)=> {
       let rating = [];
@@ -68,6 +68,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
     return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
+        <Header />
         <Text style={styles.title}> Comment on y va ? </Text>
         <View style={styles.mapContainer} >
             <MapView style={styles.mapStyle}
@@ -225,8 +226,7 @@ export default connect(mapStateToProps, null)(resultScreenDetails)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: '#FCFCFC',
   },
   title: {
     fontFamily: 'PTSans_700Bold',
@@ -280,12 +280,13 @@ const styles = StyleSheet.create({
   listItemContainer: {
       marginHorizontal: 32,
       marginTop: 16,
-      marginBottom: 15
+      marginBottom: 15,
   },
   ListItem: {
       paddingLeft:0,
       paddingRight: 16,
-      paddingVertical:0
+      paddingVertical:0,
+      backgroundColor:'#FCFCFC'
   },
   avatar: {
       width: 44,
