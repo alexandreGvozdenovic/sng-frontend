@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, Image, ImageBackground} from 'react-native';
-import { Button, Badge, Divider } from 'react-native-elements';
+import { Badge, Divider } from 'react-native-elements';
 import {
   useFonts,
   PTSans_400Regular,
@@ -15,11 +15,14 @@ import { connect } from 'react-redux';
 
 var backgroundTexture = require('../assets/images/Texture.png');
 const shakeImg = require('../assets/images/shaking-dog.gif');
+const chooseImg = require('../assets/images/choose.gif');
 
-function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggestionCount, resetSuggestionNumber, shakeCount, userType, userRadius, isAnim}) {
+function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRadius, resetSuggestionCount, resetSuggestionNumber, shakeCount, userType, userRadius, isAnim}) {
 
   const [selected, setSelected] = useState('');
-  const [stillDisplay, setStillDisplay] = useState(true);
+  const [toggleSelected, setToggleSelected] = useState(false);
+  const [stillDisplayTypeInvite, setStillDisplayTypeInvite] = useState(false);
+  const [stillDisplayRadiusInvite, setStillDisplayRadiusInvite] = useState(false);
 
   let typeList = ['bar', 'restaurant', 'supermarket'];
 
@@ -29,16 +32,15 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
     resetSuggestionNumber();
     return () => {
       resetSuggestionNumber();
-      setStillDisplay(false);
+      setStillDisplayTypeInvite(false);
+      setStillDisplayRadiusInvite(false);
     }
   },[]);
 
   let screenDisplay;
   if(isAnim) {
-    console.log(isAnim, 'on envoie le film')
-    screenDisplay = <Image source={shakeImg} style={{height:'90%', width:'100%'}}/>
+    screenDisplay = <Image source={shakeImg} style={{height:'100%', width:'100%'}}/>
   } else {
-    console.log(isAnim, 'on arrête le film')
     screenDisplay;
   };
 
@@ -67,7 +69,7 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
             {t}
         </Text>}
     badgeStyle={isActiveBadge(t)}
-    onPress={() => {setStillDisplay(true);updateUserType(t);setSelected(t)}}
+    onPress={() => {setStillDisplayTypeInvite(true);updateUserType(t);setSelected(t)}}
     />
   })
 
@@ -84,11 +86,14 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
     </Text> :
     <View>
       <Text style={styles.title}>Choisir c'est renoncer !</Text>
-      <Text style={styles.subtitle}>Pour le moment tu n'es pas prêt à choisir. Quittes l'application et essayes à nouveau dans 5 minutes...</Text>
+      <Text style={styles.subtitle}>Pour le moment tu n'es pas prêt•e à choisir. Quittes l'application et essayes à nouveau dans 5 minutes...</Text>
+      <View>
+        <Image source={chooseImg} containerStyle={{borderRadius:8}} style={{alignSelf:'center', marginTop:24, width:'75%', height:240, borderRadius:8}}/>
+      </View>
     </View>;
 
   let typeInvite;
-  if(shakeCount < 9 && userType ==='' || stillDisplay) {
+  if(shakeCount < 9 && userType ==='' || stillDisplayTypeInvite) {
     typeInvite = 
       <View>
         <Text style={styles.subtitle}>Commence par choisir parmi ces propositions :</Text>
@@ -98,29 +103,64 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
       </View>
   }
 
+  const isActiveExtendRadius = () => {
+    let badgeStyle = toggleSelected ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
+    return badgeStyle;
+  }
+  const isActiveExtendRadiusText = () => {
+    let textStyle = toggleSelected ? styles.badgeActiveText : styles.badgeInactiveText;
+    return textStyle
+  }
+
+  const isExtendedRadiusCheck = () => {
+    let check = toggleSelected ? <AntDesign name="check" size={16} color="#FFFFFF" /> : '';
+    return check
+  }
+
+  const hpExtendedRadius = () => {
+    if (!toggleSelected) {
+      setToggleSelected(!toggleSelected)
+      setStillDisplayRadiusInvite(!stillDisplayRadiusInvite)
+      updateUserRadius(3000);
+    } else {
+      setToggleSelected(!toggleSelected)
+      setStillDisplayRadiusInvite(!stillDisplayRadiusInvite)
+      updateUserRadius(1500);
+    }
+  }
   let radiusInvite;
-  if(!userRadius && shakeCount < 9) {
+  if(userRadius === 1500 && shakeCount < 9 || stillDisplayRadiusInvite) {
     radiusInvite = 
       <View>
-        <Text style={styles.subtitle}>Tu peux décider d'élargir tes horizons :</Text>
+        <Text style={styles.subtitle}>Tu peux aussi décider d'élargir tes horizons :</Text>
         <View style={styles.btnContainer}>
-          <Button
-              title="Je suis prêt•e à aller plus loin"
-              titleStyle={styles.btnText}
-              buttonStyle={styles.btnPrimary}
-              onPress={() => updateUserType(selected)}
+          <Badge 
+            key={1}
+            containerStyle={{marginRight: 8, marginTop:8}} 
+            value={
+                <Text style={isActiveExtendRadiusText()}>
+                        {isExtendedRadiusCheck()}Je suis prêt•e à aller plus loin
+                </Text>}
+            badgeStyle={isActiveExtendRadius()}
+            onPress={() => hpExtendedRadius()}
           />
+          <Text style={styles.radiusInfo}>dans un rayon de : {userRadius}m</Text>
         </View>
       </View>
   }
 
   let separateur;
-  if (shakeCount < 10 && userType === '' && !userRadius) {
+  if (shakeCount < 9 && ((userRadius === 1500 || stillDisplayRadiusInvite ) && (userType === '' || stillDisplayTypeInvite))) {
     separateur = 
     <View style={{alignItems:"center"}}>
-      <Divider style={{width:320, height: 1.2, backgroundColor:'#FF8367', marginTop:16}}/>
+      <Divider style={{width:320, height: 1.2, backgroundColor:'#FF8367', marginTop:36, marginBottom:24}}/>
     </View>
   }
+
+  if(shakeCount === 13) {
+    console.log('shakeCount = 13',shakeCount, 'on va la home')
+    navigation.navigate('Home');
+  };
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -135,9 +175,9 @@ function FilterScreen({navigation, suggestionCount, updateUserType, resetSuggest
   } else {
     return (
       <SafeAreaView style={styles.container}>
-        {screenDisplay}
         <ImageBackground source={backgroundTexture} style={styles.container}>
         <Header/>
+          {screenDisplay}
           {messageDisplay}
           {typeInvite}
           {separateur}
@@ -169,9 +209,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateUserType: function (userType) {dispatch({type:'updateUserType', userType:userType})},
+    updateUserType: function(userType) {dispatch({type:'updateUserType', userType:userType})},
+    updateUserRadius: function(radius) {dispatch({type:'expandRadius', radius:radius})},
     resetSuggestionCount: function() {dispatch({type:'resetSuggestionCount'})},
-    resetSuggestionNumber: function() {dispatch({type:'resetSuggestionNumber'})}
+    resetSuggestionNumber: function() {dispatch({type:'resetSuggestionNumber'})},
+
   }
 }
 
@@ -313,6 +355,11 @@ const styles = StyleSheet.create({
       fontFamily:'OpenSans_400Regular',
       fontSize: 14,
       marginTop:8
-
   },
+  radiusInfo: {
+    color: 'rgba(42, 43, 42, 0.8)',
+    fontFamily:'OpenSans_400Regular',
+    fontSize: 14,
+    marginTop:8
+  }
 });

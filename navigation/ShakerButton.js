@@ -4,7 +4,7 @@ import { Fontisto } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 
 
-function ButtonTest ({navigation, changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount, userPosition, userType, userRadius, storeSuggestions, launchAnim}) {
+function ShakerButton ({navigation, changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount, userPosition, userType, userRadius, storeSuggestions, launchAnim, shakeCount}) {
   
   async function getSuggestions(userPosition, userType, userRadius) {
     let rawResponse = await fetch('http://192.168.1.59:3000/shake', {
@@ -17,15 +17,17 @@ function ButtonTest ({navigation, changeSuggestionCount, changeSuggestionNumber,
   };
 
   async function shake(userPosition, userType, userRadius) {
-    if(suggestionCount === 0) {
+    if(shakeCount < 12 && suggestionCount === 0) {
       launchAnim(true);
       await getSuggestions(userPosition, userType, userRadius);
-      setTimeout(() => {
-        launchAnim(false);
-        changeSuggestionCount(1);
-        changeSuggestionNumber(suggestionCount);
-        changeShakeCount(1)
-      }, 3600)
+      launchAnim(false);
+      changeSuggestionCount(1);
+      changeSuggestionNumber(suggestionCount);
+      changeShakeCount(1)
+    } else if (shakeCount === 12) {
+      console.log('je dois aller à la home');
+      changeShakeCount(1)
+      // navigation.navigate('')
     } else {
       changeSuggestionCount(1);
       changeSuggestionNumber(suggestionCount);
@@ -60,6 +62,7 @@ function mapStateToProps(state) {
     userPosition:state.userPosition,
     userType:state.userType,
     userRadius:state.userRadius,
+    shakeCount:state.shakeCount, 
   }
 }
 
@@ -73,4 +76,4 @@ function mapDispatchToProps(dispatch) {
   }
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(ButtonTest)
+export default connect(mapStateToProps, mapDispatchToProps)(ShakerButton)
