@@ -21,9 +21,9 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
 
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
-  const [date, setDate] = useState(new Date());
+  // const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  // const [showDatePicker, setShowDatePicker] = useState(false);
   const [showPositionPicker, setShowPositionPicker] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -77,9 +77,9 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
     setMode(currentMode);
   };
  
-  const showDatePickerModal = () => {
-    showMode('date');
-  };
+  // const showDatePickerModal = () => {
+  //   showMode('date');
+  // };
  
   const showPositionPickerModal = () => {
     setShowPositionPicker(!showPositionPicker);
@@ -134,28 +134,28 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
   let latency = Platform.OS === "android" ? 1000 : 0;
 
   //Date picker infos
-  if(showDatePicker) {
-    displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
-    <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
-    <View style={{width:320, height:240}}>
-    <DateTimePicker
-                            testID="dateTimePicker"
-                            locale="fr-FR"
-                            value={date}
-                            mode={mode}
-                            display="default"
-                            onChange={onChange}
-                          />
-    </View>
-    <View style={styles.overlayBtns}>
-      <Button
-        title="Fermer"
-        titleStyle={styles.btnTextDismiss}
-        buttonStyle={styles.btnModalDismiss}
-        onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
-    </View>
-  </Overlay>
-  }
+  // if(showDatePicker) {
+  //   displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
+  //   <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
+  //   <View style={{width:320, height:240}}>
+  //   <DateTimePicker
+  //                           testID="dateTimePicker"
+  //                           locale="fr-FR"
+  //                           value={date}
+  //                           mode={mode}
+  //                           display="default"
+  //                           onChange={onChange}
+  //                         />
+  //   </View>
+  //   <View style={styles.overlayBtns}>
+  //     <Button
+  //       title="Fermer"
+  //       titleStyle={styles.btnTextDismiss}
+  //       buttonStyle={styles.btnModalDismiss}
+  //       onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
+  //   </View>
+  // </Overlay>
+  // }
   const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
 
   if(suggestionCount===1) {
@@ -196,7 +196,7 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
                   titleStyle={styles.pickerText}
                   buttonStyle={styles.pickers} 
                   />
-              <Button 
+              {/* <Button 
                   onPress={() => {showDatePickerModal();toggleOverlay()}}
                   icon={          
                     <AntDesign name="calendar" size={24} color="rgba(42, 43, 42, 0.4)" />
@@ -204,7 +204,7 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
                   title={`${new Intl.DateTimeFormat('fr-FR', options).format(date)}`}
                   titleStyle={styles.pickerText}
                   buttonStyle={styles.pickers} 
-                  />
+                  /> */}
             </View>
             {/* <Button
               title="On y va !"

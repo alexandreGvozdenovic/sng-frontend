@@ -92,7 +92,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
 
   const config = {
     velocityThreshold: 0.3,
-    directionalOffsetThreshold: 90,
+    directionalOffsetThreshold: 40,
   };
 
   let [fontsLoaded] = useFonts({
@@ -155,7 +155,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
                 {suggestions[suggestionNumber].adresse}
               </Text>
 
-                </View>
+        </View>
 
             <View style={styles.containerBadges}>
               <Badge 
@@ -209,12 +209,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FCFCFC',
     height: '100%'
   },
   containerCard: {
     marginTop: 128,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#FCFCFC',
     borderTopLeftRadius: 32,
     display: 'flex',
   },

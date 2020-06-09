@@ -6,6 +6,7 @@ import HomeScreen from '../components/pickerScreen.component';
 import ResultScreen from '../components/resultScreen.component';
 import ResultScreenDetail from '../components/resultScreenDetails.component';
 import FilterScreen from '../components/filterScreen.component';
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
@@ -18,13 +19,13 @@ export default function StackNavigator({ navigation, route }) {
                 name="Result" 
                 component={ResultScreen} 
                 options={{
-                    gestureDirection:"vertical", 
+                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
                 }}/>
             <Stack.Screen 
                 name="Details" 
                 component={ResultScreenDetail} 
                 options={{
-                    gestureDirection:"vertical",
+                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
                 }}/>
             <Stack.Screen name="Filter" component={FilterScreen} />
         </Stack.Navigator>     

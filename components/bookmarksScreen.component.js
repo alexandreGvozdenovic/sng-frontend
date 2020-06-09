@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar} from 'react-native';
-import { Badge, Button, Card, Icon } from 'react-native-elements';
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar, Share} from 'react-native';
+import { Badge, Button, Card, Icon, Overlay, ListItem } from 'react-native-elements';
+import MapView, { Marker } from 'react-native-maps';
 import {
     useFonts,
     PTSans_400Regular,
@@ -12,6 +13,7 @@ import Header from './headerScreen.component';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // fake data pour travailler l'intégration
 // const {suggestions} = require('../assets/datas/suggestions.json');
@@ -23,7 +25,56 @@ function BookMarksScreen({userWishlist}) {
     const [filter, setFilter] = useState('Tout');
     const [isFiltered, setIsFiltered] = useState(false);
     const [isActive, setIsActive] = useState(false);
-    
+    const [visible, setVisible] = useState(false);
+    const [overlayPhoto, setOverlayPhoto] = useState(''); 
+    const [overlayNom, setOverlayNom] = useState('');
+    const [overlayRating, setOverlayRating] = useState([]);
+    const [overlayComments, setOverlayComments] = useState([]);
+    const [overlayOpenClosed, setOverlayOpenClosed] = useState();
+    const [overlayAdresse, setOverlayAdresse] = useState('');
+    const [overlayPosition, setOverlayPosition] = useState({});
+    const [overlayHoraires, setOverlayHoraires] = useState([]);
+
+    // Sharing logic  {onShare}
+    const onShare = async (nom, adresse, type) => {
+        try {
+        const result = await Share.share({
+            message:
+            `Tiens, j'ai trouvé ce ${type} sur Shake'n'Go : ${nom}. C'est au ${adresse}. Ça te tente?`,
+        });
+        if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+            // shared with activity type of result.activityType
+            } else {
+            // shared
+            }
+        } else if (result.action === Share.dismissedAction) {
+            // dismissed
+        }
+        } catch (error) {
+        alert(error.message);
+    }
+    };
+
+    const toggleOverlay = () => {
+      setVisible(!visible);
+    };
+
+    const overlayDisplay = (photo,nom,rating,comments,openClosed,adresse,position,horaires) => {
+        console.log('il a cliqué')
+        toggleOverlay();
+        setOverlayPhoto(photo);
+        setOverlayNom(nom);
+        // setOverlayRating(overlayRating.length = 0)
+        setOverlayRating(rating);
+        setOverlayComments(comments);
+        setOverlayOpenClosed(openClosed);
+        setOverlayAdresse(adresse);
+        setOverlayPosition(position);
+        setOverlayHoraires(horaires)
+    }
+
+    var today = new Date();
     let filterList = ['Tout']
     userWishlist.map(e => {
         const type = e.type;
@@ -71,19 +122,246 @@ function BookMarksScreen({userWishlist}) {
                 rating.push(<AntDesign key={i+''+p.place_id} name="staro" size={16} color="#FF8367" />)
             }
         };
+        let comments = p.reviews.map((l,y)=> {
+            let ratingReview = [];
+            for(let j = 0 ; j < 5 ; j++){
+                if(j < Math.round(l.note)){
+                    ratingReview.push(<AntDesign key={y+j} name="star" size={16} color="#FF8367" />)
+                } else {
+                    ratingReview.push(<AntDesign key={y+j} name="staro" size={16} color="#FF8367" />)
+                }
+            }
+            return(
+                <View style={styles.overlayListItemContainer}>
+                  <ListItem
+                      key={y}
+                      containerStyle={styles.overlayListItem}
+                      titleStyle={styles.overlayName}
+                      leftAvatar={{ source: { uri: l.avatar },containerStyle: styles.overlayAvatar}}
+                      title={l.auteur}
+                      subtitle={<Text>{ratingReview}</Text>}
+                  />
+                  <Text style={styles.overlayComment}>{l.texte}</Text>
+                </View>
+            )
+        });
         return <Card
             key={p.place_id+''+i}
             containerStyle={styles.cardContainer}>
+            <TouchableOpacity onPress={()=> {overlayDisplay(p.photo,p.nom,rating,comments,p.isOpen,p.adresse,p.coords,p.openingHours)}}>
             <Image source={{uri:p.photo}} style={styles.cardImage}></Image>
-            <Text style={styles.cardTitle}>{p.nom}</Text>
-            <Text style={styles.rating}>
-                {rating}
-            </Text>
-            <Text style={styles.text}>
-                {p.reviews[0].texte}
-            </Text>
-        </Card>
+            </TouchableOpacity>
+            <View style={styles.cardTitleAndButtonsContainer}>
+                <View>
+                <Text style={styles.cardTitle}>{p.nom}</Text>
+                <Text style={styles.cardRating}>
+                    {rating}
+                </Text>
+                </View>
+                <View style={styles.cardButtonsContainerView}>
+                <Button
+                    onPress={()=>onShare(p.nom, p.adresse, p.type)}
+                        icon={
+                        <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginRight: 'auto' }} />
+                        }
+                        containerStyle={styles.cardButtonsContainerStyle}
+                        buttonStyle={styles.cardButtons}
+                />
+                <Button
+                    // onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
+                        icon={
+                        <AntDesign name="delete" size={24} color="#FFFFFF" />
+                        }
+                        containerStyle={styles.cardButtonsContainerStyle}
+                        buttonStyle={styles.cardButtons}
+                />
+                </View>
+            </View>
+        </Card>     
     })
+
+    var currentlyOpened =
+    <View style={styles.overlayContainerOpen}>
+      <AntDesign name="clockcircleo" size={16} color="#1DBC84" style={{ marginRight: 4 }} />
+      <Text style={styles.overlayOpen}>
+        Ouvert
+    </Text>
+    </View>
+  var currentlyClosed =
+    <View style={styles.overlayContainerOpen}>
+      <AntDesign name="clockcircleo" size={16} color="#DB331F" style={{ marginRight: 4 }} />
+      <Text style={styles.overlayClose}>
+        Fermé
+    </Text>
+    </View>
+    var overlayWishList;
+    if(wishlist.length > 0 && overlayHoraires.length > 0) {
+
+      overlayWishList =
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay} fullScreen={true}>
+            <ScrollView>
+                <Image source={{uri: overlayPhoto}} style={styles.overlayImage}></Image>
+                <Text style={styles.overlayTitleH1}>{overlayNom}</Text>
+                <View style={styles.overlayContainerRatingOpen}>
+                    <Text>
+                        {overlayRating}
+                    </Text>
+                    {  
+                        overlayOpenClosed === true
+                        ? currentlyOpened
+                        : currentlyClosed
+                    }
+                </View>
+                <View style={styles.overlayContainerAdress}>
+                    <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
+                    <Text style={styles.overlayAdressText}>
+                        {overlayAdresse}
+                    </Text>
+                </View>
+                <Text style={styles.overlayTitleH2}>On y va comment ?</Text>
+                <View style={styles.overlayMapContainer} >
+                    <MapView style={styles.overlayMapStyle}
+                        initialRegion={{
+                        latitude: overlayPosition.lat,
+                        longitude: overlayPosition.lng,
+                        latitudeDelta: 0.0015,
+                        longitudeDelta: 0.0015,
+                        }}
+                    >
+                    <Marker
+                        coordinate={{latitude: overlayPosition.lat, longitude: overlayPosition.lng}}
+                    />
+                    </MapView>
+                </View>
+
+                <Text style={styles.overlayTitleH2}>Horaires</Text>
+                <View style={styles.overlayContainerHoraires}>
+                <View style={styles.overlayContainerJours}>
+                    <Text style={
+                    today.getDay() === 1
+                    ? styles.overlayTextJoursToday
+                    : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[0].slice(0,5)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 2
+                        ? styles.overlayTextJoursToday
+                        : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[1].slice(0,5)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 3
+                        ? styles.overlayTextJoursToday
+                        : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[2].slice(0,8)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 4
+                        ? styles.overlayTextJoursToday
+                        : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[3].slice(0,5)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 5
+                        ? styles.overlayTextJoursToday
+                        : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[4].slice(0,8)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 6
+                        ? styles.overlayTextJoursToday
+                        : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[5].slice(0,6)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 0
+                        ? styles.overlayTextJoursToday
+                        : styles.overlayTextJours
+                    }
+                    >
+                    {overlayHoraires[6].slice(0,8)}
+                    </Text>
+                </View>
+    
+                <View>
+                    <Text style={
+                        today.getDay() === 1
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[0].slice(7,overlayHoraires[0].length)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 2
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[1].slice(7,overlayHoraires[1].length)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 3
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[2].slice(10,overlayHoraires[2].length)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 4
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[3].slice(7,overlayHoraires[3].length)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 5
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[4].slice(10,overlayHoraires[4].length)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 6
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[5].slice(8,overlayHoraires[5].length)}
+                    </Text>
+                    <Text style={
+                        today.getDay() === 0
+                        ? styles.overlayTextHorairesToday
+                        : styles.overlayTextHoraires
+                    }
+                    >
+                    {overlayHoraires[6].slice(10,overlayHoraires[6].length)}
+                    </Text>
+              </View>
+              
+        
+            </View>
+            <Text style={styles.overlayTitleH2}>Quelques avis</Text>
+
+                {overlayComments}
+            </ScrollView>
+        </Overlay>
+    }
 
     let [fontsLoaded] = useFonts({
         PTSans_400Regular,
@@ -108,6 +386,7 @@ function BookMarksScreen({userWishlist}) {
                         </ScrollView>
                         <View>
                             {wishlist}
+                            {overlayWishList}
                         </View>
                     </ScrollView>
                 </ImageBackground>    
@@ -186,6 +465,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
       },
     cardContainer: {
+        backgroundColor:'#FCFCFC',
         borderRadius:8,
         borderWidth:.5,
         shadowColor: "#000",
@@ -198,18 +478,40 @@ const styles = StyleSheet.create({
 
         elevation: 3,
     },
+    cardTitleAndButtonsContainer: {
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    cardButtonsContainerView: {
+        marginTop:8,
+        marginRight: -16,
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    cardButtonsContainerStyle: {
+        marginRight:16,
+    },
+    cardButtons:{
+        width: 44,
+        height: 44,
+        backgroundColor: '#FF8367',
+        borderRadius: 40
+    },
     cardTitle: {
         fontFamily: 'OpenSans_700Bold',
         fontSize: 16,
-        lineHeight:22,
         fontWeight:'bold',
-        marginBottom:8
+        marginTop:8
+    },
+    cardRating: {
+        marginTop:8
     },
     cardImage: {
-        width:'auto', 
+        width:'auto',
         height:150, 
         borderRadius:8, 
-        marginBottom:8
     },
     text: {
         color: '#2A2B2A',
@@ -217,6 +519,133 @@ const styles = StyleSheet.create({
         fontSize: 14,
         marginTop:8
 
+    },
+    overlayImage: {
+        marginHorizontal: 26,
+        marginTop:32,
+        width:'auto', 
+        height:150, 
+        borderRadius:8,
+    },
+    overlayTitleH1: {
+        fontFamily: 'OpenSans_700Bold',
+        fontSize: 32,
+        fontWeight:'bold',
+        marginTop:16,
+        marginLeft:26
+    },
+    overlayTitleH2: {
+        fontFamily: 'OpenSans_700Bold',
+        fontSize: 24,
+        fontWeight:'bold',
+        marginTop:32,
+        marginLeft:26
+    },
+    overlayContainerRatingOpen: {
+        marginLeft: 26,
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'row'
+    },
+    overlayContainerOpen: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginLeft: 20,
+        alignItems: 'center'
+    },
+    overlayOpen: {
+        color: '#1DBC84',
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 14,
+        fontWeight: 'bold'
+    },
+    overlayClose: {
+        color: '#DB331F',
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 14,
+        fontWeight: 'bold'
+    },
+    overlayContainerAdress: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+        marginLeft: 26
+    },
+    overlayAdressText: {
+        marginLeft: 8,
+        color: 'rgba(42, 43, 42, 0.4)',
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 16
+    },
+    overlayMapContainer: {
+        marginTop:16,
+        marginHorizontal: 26,
+        height:150,
+        borderRadius: 8,
+        overflow:'hidden'
+    },
+    overlayMapStyle: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 8
+    },
+    overlayContainerHoraires: {
+        display:'flex',
+        flexDirection:'row',
+        marginLeft:26,
+        marginTop: 16
+    },
+    overlayContainerJours: {
+        marginRight:26
+    },
+    overlayTextJours: {
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    overlayTextJoursToday: {
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 16,
+        fontWeight: 'bold',
+        color:'#FF8367'
+    },
+    overlayTextHoraires: {
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 16
+    },
+    overlayTextHorairesToday: {
+        fontFamily: 'OpenSans_400Regular',
+        fontSize: 16,
+        fontWeight:'bold',
+        color:'#FF8367'
+    },
+    overlayRating:{
+        marginLeft:26
+    },
+    overlayListItemContainer: {
+        marginHorizontal: 26,
+        marginTop: 16,
+        marginBottom: 15,
+    },
+    overlayListItem: {
+        paddingLeft:0,
+        paddingRight: 16,
+        paddingVertical:0,
+        backgroundColor:'#fff'
+    },
+    overlayAvatar: {
+        width: 44,
+        height: 44,
+        borderRadius: 50,
+    },
+    overlayName: {
+      fontFamily:'OpenSans_700Bold',
+      marginBottom:6
+    },
+    overlayComment: {
+      fontFamily:'OpenSans_400Regular',
+      marginTop: 8
     },
     background: {
         height:'100%'

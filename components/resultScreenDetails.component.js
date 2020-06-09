@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { 
   Text, 
   View, 
-  Platform, 
-  StatusBar, 
   SafeAreaView, 
-  Image, 
-  TouchableOpacity, 
   StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { ListItem } from 'react-native-elements';
@@ -74,8 +70,8 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
   };
 
   const config = {
-    velocityThreshold: 0.9,
-    directionalOffsetThreshold: 30,
+    velocityThreshold: 0.3,
+    directionalOffsetThreshold: 40,
   };
 
   if(!fontsLoaded) {
@@ -85,12 +81,11 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
   } else {
     return (
     <SafeAreaView style={styles.container}>
-        <GestureRecognizer
+      <ScrollView alwaysBounceVertical={false} >
+      <GestureRecognizer
           onSwipe={(direction, state) => onSwipe(direction, state)}
           onSwipeDown={(state) => onSwipeDown(state)}
-          config={config}
-          >
-          <ScrollView>
+          config={config}>
           <Text style={styles.title}> Comment on y va ? </Text>
           <View style={styles.mapContainer} >
               <MapView style={styles.mapStyle}
@@ -230,8 +225,8 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
           </View>
           <Text style={styles.title}>Quelques avis</Text>
           {comments}
-      </ScrollView>
         </GestureRecognizer>
+      </ScrollView>
     </SafeAreaView>
   );
   }
@@ -249,8 +244,7 @@ export default connect(mapStateToProps, null)(resultScreenDetails)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    backgroundColor: '#FCFCFC',
   },
   title: {
     fontFamily: 'PTSans_700Bold',
@@ -304,12 +298,13 @@ const styles = StyleSheet.create({
   listItemContainer: {
       marginHorizontal: 32,
       marginTop: 16,
-      marginBottom: 15
+      marginBottom: 15,
   },
   ListItem: {
       paddingLeft:0,
       paddingRight: 16,
-      paddingVertical:0
+      paddingVertical:0,
+      backgroundColor:'#FCFCFC'
   },
   avatar: {
       width: 44,
