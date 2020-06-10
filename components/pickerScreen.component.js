@@ -49,7 +49,7 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
       resetSuggestionCount();
       resetShakeCount();
       updateUserType('');
-      updateUserRadius(1500);
+      updateUserRadius(2000);
     }, [])
   );
 
