@@ -7,6 +7,10 @@ export default function (count = 0, action) {
         console.log('je reset le compteur de shake');
         var newCount = 0;
         return newCount;
+    } else if (action.type === 'setShakeCount'){
+        console.log('je set le compteur de shake à 12');
+        var newCount = 12;
+        return newCount;
     } else {
         return count
     }

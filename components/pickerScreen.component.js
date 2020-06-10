@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, Image, Platform, StyleSheet, ImageBackground, Picker } from 'react-native';
-import { Button, Overlay } from 'react-native-elements';
+import { SafeAreaView, View, Text, Image, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { useFonts, PTSans_400Regular, PTSans_700Bold, OpenSans_400Regular, OpenSans_700Bold} from '@expo-google-fonts/dev';
 import { AppLoading } from 'expo';
 import 'intl';
 import 'intl/locale-data/jsonp/fr-FR';
 import Header from './headerScreen.component';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { AntDesign } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions'; 
 import { connect } from 'react-redux';
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native';
+import { Badge } from 'react-native-elements';
+import { AntDesign } from '@expo/vector-icons';
 
-
+const {arrondissements} = require('../scripts/arrondissements');
 var backgroundTexture = require('../assets/images/Texture.png');
-const {quartiers} = require('../scripts/quartiers');
 
 function HomeScreen({navigation, userPosition, updateUserPosition, updateUserType, updateUserRadius, resetSuggestionCount, resetShakeCount, suggestionCount, isAnim}) {
 
-  const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
-  // const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
-  // const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showPositionPicker, setShowPositionPicker] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [arrondissement, setArrondissement] = useState(0);
 
   const shakeImg = require('../assets/images/shaking-dog.gif');
 
@@ -50,8 +43,46 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
       resetShakeCount();
       updateUserType('');
       updateUserRadius(2000);
+      setArrondissement(0);
     }, [])
   );
+
+  const isActiveBadge = arrdt => {
+    let badgeStyle = arrdt === arrondissement ? styles.badgeActiveStyle : styles.badgeInactiveStyle;
+    return badgeStyle
+  }
+
+  const isActiveText = arrdt => {
+    let textStyle = arrdt === arrondissement ? styles.badgeActiveText : styles.badgeInactiveText;
+    return textStyle
+  }
+
+  const isCheck = arrdt => {
+    let check = arrdt === arrondissement ? <AntDesign name="check" size={16} color="#FFFFFF" /> : '';
+    return check
+  }
+
+  const setUserPosition = coords => {
+    if (coords === '') {
+      updateUserPosition(position);
+    } else {
+      updateUserPosition(coords);
+    }
+  }
+
+  let displayArrondissementsBadges = arrondissements.map((arrdt, i) => {
+    return <Badge 
+    key={i}
+    containerStyle={{marginRight: 8, marginTop:8}} 
+    value={
+        <Text style={isActiveText(arrdt.id)}>
+                {isCheck(arrdt.id)}
+            {arrdt.label}
+        </Text>}
+    badgeStyle={isActiveBadge(arrdt.id)}
+    onPress={() => {setArrondissement(arrdt.id); setUserPosition(arrdt.value)}}
+    />
+  })
 
   let screenDisplay;
   if(isAnim) {
@@ -59,104 +90,6 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
   } else {
     screenDisplay;
   };
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(Platform.OS === 'ios');
-    setDate(currentDate);
-  };
- 
-  const onSubmit = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(Platform.OS === 'ios');
-    setDate(currentDate);
-  };
-
-  const showMode = currentMode => {
-    setShowDatePicker(!showDatePicker);
-    setMode(currentMode);
-  };
- 
-  // const showDatePickerModal = () => {
-  //   showMode('date');
-  // };
- 
-  const showPositionPickerModal = () => {
-    setShowPositionPicker(!showPositionPicker);
-    setPosition()
-  };
-
-  const toggleOverlay = () => {
-    setVisible(!visible);
-  }
-
-  // Quartier picker infos
-  let displayListeQuartiers;
-  displayListeQuartiers = quartiers.map(q => {
-    return <Picker.Item key={q.value} label={q.label} value={q.label} position={q.value}/>
-  })
-
-  let displayTitle;
-  if(quartier) {
-    displayTitle = quartier;
-  } else {
-    displayTitle = `Choisis ton quartier !`
-  }
-
-  // variable d'accueil et de display des pickers
-  let displayPicker;
-  //Date Position infos
-
-  if(showPositionPicker) {
-    displayPicker = <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay()}}>
-    <Text style={styles.overlayText}>Choisis un quartier parisien : </Text>
-    <View style={{width:320, height:240, margin:8}}>
-    <Picker
-      selectedValue={quartier}
-      style={{width: 320}}
-      onValueChange={(value) =>
-        {setQuartier(value)}
-      }>
-      {displayListeQuartiers}
-    </Picker>
-    </View>
-    <View style={styles.overlayBtns}>
-      <Button
-        title="Fermer"
-        titleStyle={styles.btnTextDismiss}
-        buttonStyle={styles.btnModalDismiss}
-        onPress={() => {toggleOverlay(); showPositionPickerModal()}}/> 
-    </View>
-  </Overlay>
-  }
-
-  // gestion du timeOut selon le device
-  let latency = Platform.OS === "android" ? 1000 : 0;
-
-  //Date picker infos
-  // if(showDatePicker) {
-  //   displayPicker =  <Overlay isVisible={visible} onBackdropPress={() => {toggleOverlay();showDatePickerModal()}}>
-  //   <Text style={styles.overlayText}>Alors si c'est pas ce soir, c'est quand ?</Text>
-  //   <View style={{width:320, height:240}}>
-  //   <DateTimePicker
-  //                           testID="dateTimePicker"
-  //                           locale="fr-FR"
-  //                           value={date}
-  //                           mode={mode}
-  //                           display="default"
-  //                           onChange={onChange}
-  //                         />
-  //   </View>
-  //   <View style={styles.overlayBtns}>
-  //     <Button
-  //       title="Fermer"
-  //       titleStyle={styles.btnTextDismiss}
-  //       buttonStyle={styles.btnModalDismiss}
-  //       onPress={() => {toggleOverlay();showDatePickerModal()}}/> 
-  //   </View>
-  // </Overlay>
-  // }
-  const options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
 
   if(suggestionCount===1) {
     navigation.navigate('Result')
@@ -179,40 +112,16 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
         <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
           {screenDisplay}
-          <View style={styles.suggestionImageContainer}>
+          <TouchableOpacity style={styles.suggestionImageContainer} onPress={() => {console.log('pizza !'); navigation.navigate('Sponso')}}>
             <ImageBackground source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage} imageStyle={{borderRadius:8}}>
               <Text style={styles.suggestionText}>Envie de pizza?</Text>
             </ImageBackground>
-          </View>
+          </TouchableOpacity>
           <Text style={styles.title}>On sort ?</Text>
-          <View style={styles.pickerContainer}>
-            <View>
-              <Button 
-                  onPress={() => {showPositionPickerModal();toggleOverlay()}}
-                  icon={          
-                    <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
-                } 
-                  title={displayTitle}
-                  titleStyle={styles.pickerText}
-                  buttonStyle={styles.pickers} 
-                  />
-              {/* <Button 
-                  onPress={() => {showDatePickerModal();toggleOverlay()}}
-                  icon={          
-                    <AntDesign name="calendar" size={24} color="rgba(42, 43, 42, 0.4)" />
-                } 
-                  title={`${new Intl.DateTimeFormat('fr-FR', options).format(date)}`}
-                  titleStyle={styles.pickerText}
-                  buttonStyle={styles.pickers} 
-                  /> */}
-            </View>
-            {/* <Button
-              title="On y va !"
-              titleStyle={styles.btnTextOK}
-              buttonStyle={styles.btnPrimary}
-              onPress={() => navigation.navigate('Result')}/>         */}
+          <Text style={styles.subTitle}>Tout près de toi, ou n'importe où dans Paris</Text>
+          <View style={styles.containerBadges}>
+            {displayArrondissementsBadges}
           </View>
-          {displayPicker}
         </ImageBackground>
       </SafeAreaView>
       
@@ -247,7 +156,6 @@ export default connect(mapStateToProps, mapDispatchToProps) (HomeScreen)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headerBackground:{
       backgroundColor: '#ffffff',
@@ -278,6 +186,13 @@ const styles = StyleSheet.create({
       marginLeft: 26,
       marginTop: 48
   },
+  subTitle:{
+    color: '#2A2B2A',
+    fontFamily:'OpenSans_400Regular',
+    fontSize: 14,
+    marginTop:8,
+    marginLeft: 26,
+  },
   suggestionImageContainer: {
     alignSelf:"center",
     marginTop:32,
@@ -297,11 +212,6 @@ const styles = StyleSheet.create({
     marginLeft: 24,
     marginBottom:16,
     alignSelf:'baseline',
-  },
-  pickerContainer:{
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center',
   },
   cardContainer: {
     width:'auto',
@@ -324,13 +234,6 @@ const styles = StyleSheet.create({
     lineHeight:31,
     color:"#FFFFFF",
   },
-  btnPrimary: {
-    backgroundColor: "#FF8367",
-    borderRadius:8,
-    width:320,
-    height:56,
-    marginTop:16,
-  },
   containerBadges: {
       display:'flex', 
       flexDirection:'row',
@@ -339,82 +242,33 @@ const styles = StyleSheet.create({
       marginLeft:26,
       marginEnd: 26,
     },
-  badgeText: {
-      fontSize: 16,
-      fontFamily:'OpenSans_400Regular',
-      color:'#FF8367', 
-      paddingHorizontal: 16, 
-      paddingVertical: 3
-    },
   badgeActiveStyle: {
-      backgroundColor: 'rgba(255, 131, 103, 0.24)',
-      borderColor: '#FF8367',
-      height:28,
-      borderRadius: 20
-    },
+    backgroundColor: 'rgba(255, 131, 103, 1)',
+    borderColor: '#FF8367',
+    height:28,
+    borderRadius: 20,
+  },
   badgeInactiveStyle: {
-      backgroundColor: '#FFFFFF',
-      borderColor: '#FF8367',
-      height:28,
-      borderRadius: 20
-    },
-  text: {
-      color: '#2A2B2A',
-      fontFamily:'OpenSans_400Regular',
-      fontSize: 14,
-      marginTop:8
+    backgroundColor: '#FFFFFF',
+    borderColor: '#FF8367',
+    height:28,
+    borderRadius: 20,
   },
-  pickers:{
-    backgroundColor:'#FFFFFF',
-    borderWidth:1,
-    borderColor:'rgba(42, 43, 42, 0.16)',
-    width:320,
-    marginBottom:16,
-    justifyContent:'flex-start',
-  },
-  pickerText:{
-    color:'rgba(42, 43, 42, 0.8)',
+  badgeActiveText: {
+    fontSize: 14,
+    lineHeight:22,
     fontFamily:'OpenSans_400Regular',
-    fontSize: 16,
-    lineHeight: 22,
-    marginLeft:10,
+    color:'#FFFFFF', 
+    paddingHorizontal: 16, 
+    paddingVertical: 3
   },
-  overlayText:{
-    textAlign:'left',
-    fontFamily:'PTSans_700Bold',
-    color: '#FF8367',
-    width:250,
-    fontSize:24,
-    lineHeight:31,
-    marginTop:8, 
-    marginLeft:16,
-  },
-  overlayBtns:{
-    alignItems:'flex-end'
-  },
-  btnModalSubmit:{
-    width:150,
-    margin:10,
-    backgroundColor:'#FF8367'
-  },
-  btnTextOK:{
-    fontFamily:'PTSans_700Bold',
-    fontSize:18,
-    lineHeight:23,
-    color:"#FFFFFF",
-  },
-  btnTextDismiss:{
-    fontFamily:'PTSans_700Bold',
-    fontSize:18,
-    lineHeight:23,
-    color:"#FF8367",
-  },
-  btnModalDismiss:{
-    width:150,
-    margin:10,
-    backgroundColor:'#FFFFFF',
-    borderWidth:1,
-    borderColor:"#FF8367"
+  badgeInactiveText: {
+    fontSize: 14,
+    lineHeight:22,
+    fontFamily:'OpenSans_400Regular',
+    color:'#FF8367',
+    paddingHorizontal: 16, 
+    paddingVertical: 3 
   },
   background: {
     height:'100%'

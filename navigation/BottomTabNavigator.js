@@ -18,10 +18,11 @@ function Shaker(){
 }
 export default function BottomTabNavigator({ navigation, route }) {
   return (
-    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}
+    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME} 
         tabBarOptions={{
             activeTintColor: '#FF8367',
             inactiveTintColor:'rgba(42, 43, 42, 0.4)',
+            showLabel:false,
             style: {
               backgroundColor:'#FFFFFF',
               borderTopColor:'transparent',
@@ -47,7 +48,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Bookmarks"
         component={BookmarksScreen}
         options={{
-          title: 'Bookmarks',
+          title: 'Wishlist',
           tabBarIcon: ({ color }) => <AntDesign color={color} name="hearto" size={24} />,
         }}/>
     </BottomTab.Navigator>

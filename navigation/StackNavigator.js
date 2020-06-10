@@ -6,6 +6,8 @@ import HomeScreen from '../components/pickerScreen.component';
 import ResultScreen from '../components/resultScreen.component';
 import ResultScreenDetail from '../components/resultScreenDetails.component';
 import FilterScreen from '../components/filterScreen.component';
+import SponsoResultScreen from '../components/SponsoResultScreen.component';
+import SponsoResultScreenDetail from '../components/SponsoResultScreenDetails.component';
 import { CardStyleInterpolators } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
@@ -28,6 +30,18 @@ export default function StackNavigator({ navigation, route }) {
                     cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
                 }}/>
             <Stack.Screen name="Filter" component={FilterScreen} />
+            <Stack.Screen 
+                name="Sponso" 
+                component={SponsoResultScreen} 
+                options={{
+                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                }}/>
+            <Stack.Screen 
+                name="SponsoDetails" 
+                component={SponsoResultScreenDetail} 
+                options={{
+                    cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                }}/>
         </Stack.Navigator>     
     )
 };

@@ -31,10 +31,6 @@ export default function App() {
           <BottomTabNavigator>
             <StackNavigator/>
           </BottomTabNavigator>
-          {/* <Stack.Navigator 
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Root" component={BottomTabNavigator} />
-          </Stack.Navigator> */}
         </Provider>
       </NavigationContainer>
     </View>
@@ -49,33 +45,3 @@ const styles = StyleSheet.create({
   }
 });
   
-
-
-// var BottomNav = createBottomTabNavigator({
-//     Home:HomeScreen,
-//     Results:ResultScreen,
-//     Bookmarks:BookmarksScreen,
-//     Filter:FilterScreen,
-//     Picker:TestPicker,
-//   }, {
-//     defaultNavigationOptions:({navigation}) => ({
-//       tabBarIcon:({tintColor}) => {
-//         var iconName;
-//         if (navigation.state.routeName ==='Home') {
-//           iconName = 'home'
-//         } else if (navigation.state.routeName ==='Results') {
-//           iconName = 'shake'
-//         } else if (navigation.state.routeName ==='Bookmarks','History') {
-//           iconName = 'hearto'
-//         } 
-//         return <AntDesign name={iconName} size={24} color={tintColor} />;
-//       }, 
-//       tabBarOptions: {
-//         activeTintColor: '#FF8367',
-//         inactiveTintColor:'rgba(42, 43, 42, 0.4)',
-//         tabStyle:{backgroundColor: '#ffffff'},
-//       }
-//     })
-//   })
-  
-//   const Navigation = createAppContainer(BottomNav)
