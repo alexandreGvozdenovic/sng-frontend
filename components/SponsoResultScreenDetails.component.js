@@ -18,14 +18,58 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import { useFocusEffect } from '@react-navigation/native';
 
 
-// fake data pour travailler l'intégration
-// const {suggestions} = require('../assets/datas/suggestions.json');
 
-function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
+const sponso = {
+  placeId:1000001,
+  type:'sponsorisé',
+  nom:'Yo Mamma Pizza !',
+  coords:{
+    "lat": 48.859407,
+    "lng": 2.3479707,
+    },
+  adresse:'18 Rue Saint-Denis, Paris',
+  rating:5,
+  isOpen:true,
+  openingHours:[
+    "lundi: 17:00 – 02:00",
+    "mardi: 17:00 – 03:00",
+    "mercredi: 17:00 – 04:00",
+    "jeudi: 17:00 – 05:00",
+    "vendredi: 17:00 – 05:00",
+    "samedi: 13:00 – 05:00",
+    "dimanche: 17:00 – 02:00",
+  ],
+  photo:'https://www.pariszigzag.fr/wp-content/uploads/2017/11/meilleur-pizza-monde-paris-zigzag-e1510331476865.jpg',
+  reviews:[{
+    auteur:'Jane Dough',
+    avatar:'https://lh5.ggpht.com/-WAucISfBNng/AAAAAAAAAAI/AAAAAAAAAAA/USFWfso9ct0/s128-c0x00000000-cc-rp-mo-ba4/photo.jpg',
+    note:5,
+    texte:`La réputation n'est pas usurpée. Yo Mamma Pizza ! est vraiment la meilleure pizzeria du monde.`,
+  },{
+    auteur:'Mario Pepperoni',
+    avatar:'https://lh5.ggpht.com/-fwzGjfQuG9M/AAAAAAAAAAI/AAAAAAAAAAA/NDnMpmTw5-c/s128-c0x00000000-cc-rp-mo-ba5/photo.jpg',
+    note:5,
+    texte:`Des pizzas comme celles de Yo Mamma Pizza ! il n'y en a nulle part. Les italiens mêmes pourraient nous les envier.`,
+  },{
+    auteur:'Zinedine Zidane',
+    avatar:'https://lh4.ggpht.com/-QSAosyYmqBM/AAAAAAAAAAI/AAAAAAAAAAA/ulVtCs4M49o/s128-c0x00000000-cc-rp-mo-ba2/photo.jpg',
+    note:5,
+    texte:`Si Materrazzi a pris un coup de boule c'est parce qu'il a osé dire du mal de Yo Mamma Pizza !`,
+  }],
+}
+
+function SponsoResultScreenDetails({navigation, shakeCount, setShakeCount}) {
 
   const [gestureName, setGestureName] = useState('none');
+
+  useFocusEffect(
+    React.useCallback(()=> {
+      setShakeCount(12)
+    }, [])
+  );
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
@@ -35,7 +79,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
   });
   var today = new Date();
 
-  let comments = suggestions[suggestionNumber].reviews.map((l,i)=> {
+  let comments = sponso.reviews.map((l,i)=> {
       let rating = [];
       for(let j = 0 ; j < 5 ; j++){
           if(j < Math.round(l.note)){
@@ -61,7 +105,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
 
   // Swipe
   function onSwipeDown(gestureState) {
-    navigation.navigate('Result')
+    navigation.navigate('Sponso')
   };
 
   function onSwipe(gestureName, gestureState) {
@@ -72,6 +116,10 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
   const config = {
     velocityThreshold: 0.3,
     directionalOffsetThreshold: 40,
+  };
+
+  if(shakeCount === 13) {
+    navigation.navigate('Home');
   };
 
   if(!fontsLoaded) {
@@ -90,14 +138,14 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
           <View style={styles.mapContainer} >
               <MapView style={styles.mapStyle}
                   initialRegion={{
-                  latitude: suggestions[suggestionNumber].coords.lat,
-                  longitude: suggestions[suggestionNumber].coords.lng,
+                  latitude: sponso.coords.lat,
+                  longitude: sponso.coords.lng,
                   latitudeDelta: 0.0015,
                   longitudeDelta: 0.0015,
                   }}
               >
                 <Marker
-                  coordinate={{latitude: suggestions[suggestionNumber].coords.lat, longitude: suggestions[suggestionNumber].coords.lng}}
+                  coordinate={{latitude: sponso.coords.lat, longitude: sponso.coords.lng}}
                 />
               </MapView>
           </View>
@@ -110,7 +158,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                 : styles.textJours
               }
               >
-                {suggestions[suggestionNumber].openingHours[0].slice(0,5)}
+                {sponso.openingHours[0].slice(0,5)}
               </Text>
               <Text style={
                   today.getDay() === 2
@@ -118,7 +166,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textJours
                 }
               >
-                {suggestions[suggestionNumber].openingHours[1].slice(0,5)}
+                {sponso.openingHours[1].slice(0,5)}
               </Text>
               <Text style={
                   today.getDay() === 3
@@ -126,7 +174,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textJours
                 }
               >
-                {suggestions[suggestionNumber].openingHours[2].slice(0,8)}
+                {sponso.openingHours[2].slice(0,8)}
               </Text>
               <Text style={
                   today.getDay() === 4
@@ -134,7 +182,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textJours
                 }
               >
-                {suggestions[suggestionNumber].openingHours[3].slice(0,5)}
+                {sponso.openingHours[3].slice(0,5)}
               </Text>
               <Text style={
                   today.getDay() === 5
@@ -142,7 +190,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textJours
                 }
               >
-                {suggestions[suggestionNumber].openingHours[4].slice(0,8)}
+                {sponso.openingHours[4].slice(0,8)}
               </Text>
               <Text style={
                   today.getDay() === 6
@@ -150,7 +198,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textJours
                 }
               >
-                {suggestions[suggestionNumber].openingHours[5].slice(0,6)}
+                {sponso.openingHours[5].slice(0,6)}
               </Text>
               <Text style={
                   today.getDay() === 0
@@ -158,7 +206,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textJours
                 }
               >
-                {suggestions[suggestionNumber].openingHours[6].slice(0,8)}
+                {sponso.openingHours[6].slice(0,8)}
               </Text>
             </View>
 
@@ -169,7 +217,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[0].slice(7,suggestions[suggestionNumber].openingHours[0].length)}
+                {sponso.openingHours[0].slice(7,sponso.openingHours[0].length)}
               </Text>
               <Text style={
                   today.getDay() === 2
@@ -177,7 +225,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[1].slice(7,suggestions[suggestionNumber].openingHours[1].length)}
+                {sponso.openingHours[1].slice(7,sponso.openingHours[1].length)}
               </Text>
               <Text style={
                   today.getDay() === 3
@@ -185,7 +233,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[2].slice(10,suggestions[suggestionNumber].openingHours[2].length)}
+                {sponso.openingHours[2].slice(10,sponso.openingHours[2].length)}
               </Text>
               <Text style={
                   today.getDay() === 4
@@ -193,7 +241,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[3].slice(7,suggestions[suggestionNumber].openingHours[3].length)}
+                {sponso.openingHours[3].slice(7,sponso.openingHours[3].length)}
               </Text>
               <Text style={
                   today.getDay() === 5
@@ -201,7 +249,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[4].slice(10,suggestions[suggestionNumber].openingHours[4].length)}
+                {sponso.openingHours[4].slice(10,sponso.openingHours[4].length)}
               </Text>
               <Text style={
                   today.getDay() === 6
@@ -209,7 +257,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[5].slice(8,suggestions[suggestionNumber].openingHours[5].length)}
+                {sponso.openingHours[5].slice(8,sponso.openingHours[5].length)}
               </Text>
               <Text style={
                   today.getDay() === 0
@@ -217,7 +265,7 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
                   : styles.textHoraires
                 }
               >
-                {suggestions[suggestionNumber].openingHours[6].slice(10,suggestions[suggestionNumber].openingHours[6].length)}
+                {sponso.openingHours[6].slice(10,sponso.openingHours[6].length)}
               </Text>
             </View>
             
@@ -234,12 +282,17 @@ function resultScreenDetails({navigation, suggestionNumber, suggestions}) {
 
 function mapStateToProps(state) {
   return {
-    suggestionNumber:state.suggestionNumber,
-    suggestions:state.suggestions
+    shakeCount:state.shakeCount,
   }
 }
 
-export default connect(mapStateToProps, null)(resultScreenDetails)
+function mapDispatchToProps(dispatch) {
+  return {
+    setShakeCount: function(value) {dispatch({type:'setShakeCount', value:value})},
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SponsoResultScreenDetails)
 
 const styles = StyleSheet.create({
   container: {

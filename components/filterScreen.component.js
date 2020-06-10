@@ -121,15 +121,15 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
     if (!toggleSelected) {
       setToggleSelected(!toggleSelected)
       setStillDisplayRadiusInvite(!stillDisplayRadiusInvite)
-      updateUserRadius(3000);
+      updateUserRadius(4000);
     } else {
       setToggleSelected(!toggleSelected)
       setStillDisplayRadiusInvite(!stillDisplayRadiusInvite)
-      updateUserRadius(1500);
+      updateUserRadius(2000);
     }
   }
   let radiusInvite;
-  if(userRadius === 1500 && shakeCount < 9 || stillDisplayRadiusInvite) {
+  if(userRadius === 2000 && shakeCount < 9 || stillDisplayRadiusInvite) {
     radiusInvite = 
       <View>
         <Text style={styles.subtitle}>Tu peux aussi décider d'élargir tes horizons :</Text>
@@ -150,7 +150,7 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
   }
 
   let separateur;
-  if (shakeCount < 9 && ((userRadius === 1500 || stillDisplayRadiusInvite ) && (userType === '' || stillDisplayTypeInvite))) {
+  if (shakeCount < 9 && ((userRadius === 2000 || stillDisplayRadiusInvite ) && (userType === '' || stillDisplayTypeInvite))) {
     separateur = 
     <View style={{alignItems:"center"}}>
       <Divider style={{width:320, height: 1.2, backgroundColor:'#FF8367', marginTop:36, marginBottom:24}}/>

@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  Share,
-  AsyncStorage
+  Share
 } from 'react-native';
 import Header from './headerScreen.component';
 import { Badge, Button } from 'react-native-elements';
@@ -17,19 +16,65 @@ import {
   useFonts,
   PTSans_400Regular,
   PTSans_700Bold,
-  OpenSans_400Regular
+  OpenSans_400Regular,
+  OpenSans_700Bold,
 } from '@expo-google-fonts/dev';
 //redux
 import { connect } from 'react-redux';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import { useFocusEffect } from '@react-navigation/native';
 
 
-// fake data pour travailler l'intégration
-// const {suggestions} = require('../assets/datas/suggestions.json');
+const sponso = {
+  placeId:1000001,
+  type:'sponsorisé',
+  nom:'Yo Mamma Pizza !',
+  coords:{
+    "lat": 48.859407,
+    "lng": 2.3479707,
+    },
+  adresse:'18 Rue Saint-Denis, Paris',
+  rating:5,
+  isOpen:true,
+  openingHours:[
+    "lundi: 17:00 – 02:00",
+    "mardi: 17:00 – 03:00",
+    "mercredi: 17:00 – 04:00",
+    "jeudi: 17:00 – 05:00",
+    "vendredi: 17:00 – 05:00",
+    "samedi: 13:00 – 05:00",
+    "dimanche: 17:00 – 02:00",
+  ],
+  photo:'https://www.pariszigzag.fr/wp-content/uploads/2017/11/meilleur-pizza-monde-paris-zigzag-e1510331476865.jpg',
+  reviews:[{
+    auteur:'Jane Dough',
+    avatar:'https://lh5.ggpht.com/-WAucISfBNng/AAAAAAAAAAI/AAAAAAAAAAA/USFWfso9ct0/s128-c0x00000000-cc-rp-mo-ba4/photo.jpg',
+    note:5,
+    texte:`La réputation n'est pas usurpée. Yo Mamma Pizza ! est vraiment la meilleure pizzeria du monde.`,
+  },{
+    auteur:'Mario Pepperoni',
+    avatar:'https://lh5.ggpht.com/-fwzGjfQuG9M/AAAAAAAAAAI/AAAAAAAAAAA/NDnMpmTw5-c/s128-c0x00000000-cc-rp-mo-ba5/photo.jpg',
+    note:5,
+    texte:`Des pizzas comme celles de Yo Mamma Pizza ! il n'y en a nulle part. Les italiens mêmes pourraient nous les envier.`,
+  },{
+    auteur:'Zinedine Zidane',
+    avatar:'https://lh4.ggpht.com/-QSAosyYmqBM/AAAAAAAAAAI/AAAAAAAAAAA/ulVtCs4M49o/s128-c0x00000000-cc-rp-mo-ba2/photo.jpg',
+    note:5,
+    texte:`Si Materrazzi a pris un coup de boule c'est parce qu'il a osé dire du mal de Yo Mamma Pizza !`,
+  }],
+}
 
-function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNumber, suggestions}) {
+
+function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCount}) {
 
   const [gestureName, setGestureName] = useState('none');
+  const B = (props) => <Text style={{fontFamily: 'OpenSans_700Bold'}}>{props.children}</Text>
+
+  useFocusEffect(
+    React.useCallback(()=> {
+      setShakeCount(12)
+    }, [])
+  );
 
   // Sharing logic  {onShare}
   const onShare = async (nom, adresse, type) => {
@@ -51,27 +96,6 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
       alert(error.message);
   }
 };
-  // Fonction d'ajout en Wishlist dans le local storage
-  const onLike = async (place) => {
-    // AsyncStorage.clear()
-    var readWishlist = await AsyncStorage.getItem('wishlist', 
-              function(error, data){
-                var wishlistData = JSON.parse(data);
-                return wishlistData;
-              })
-    if(readWishlist === null){
-      AsyncStorage.setItem('wishlist',JSON.stringify([place]))
-    } else {
-      var parsedReadWishlist = JSON.parse(readWishlist);
-      var newWishList = [...parsedReadWishlist,place];
-      AsyncStorage.setItem('wishlist',JSON.stringify(newWishList));
-    }
-  }
-
-  if(suggestionCount > 3) {
-    console.log('suggestionNumber',suggestionNumber)
-    navigation.navigate('Filter')
-  }
 
   var currentlyOpened =
     <View style={styles.containerOpen}>
@@ -90,7 +114,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
 
   var rating = [];
   for(let i = 0; i < 5; i++) {
-    if(i < Math.round(suggestions[suggestionNumber].rating)) {
+    if(i < Math.round(sponso.rating)) {
       rating.push(<AntDesign key={i} name="star" size={16} color="#FF8367" />)
     } else {
       rating.push(<AntDesign key={i} name="staro" size={16} color="#FF8367" />)
@@ -99,7 +123,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
 
   // Swipe
   function onSwipeUp(gestureState) {
-    navigation.navigate('Details')
+    navigation.navigate('SponsoDetails')
   };
 
   function onSwipe(gestureName, gestureState) {
@@ -112,13 +136,18 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
     directionalOffsetThreshold: 40,
   };
 
+  if(shakeCount === 13) {
+    navigation.navigate('Home');
+  };
+
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
     PTSans_700Bold,
     OpenSans_400Regular,
+    OpenSans_700Bold,
   });
 
-  if(!fontsLoaded && suggestions.length>0) {
+  if(!fontsLoaded) {
     return (
       <AppLoading />
     )
@@ -126,42 +155,9 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
     return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
-        source={{uri: suggestions[suggestionNumber].photo}}
+        source={{uri: sponso.photo}}
         style={styles.picture}
       >
-<<<<<<< HEAD
-      <Header />
-      <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-        <Button
-            onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
-                icon={
-                  <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginTop: 'auto' }} />
-                }
-                containerStyle={styles.likeButtonContainer}
-                buttonStyle={styles.likeButton}
-              />
-        <Button
-          icon={
-            <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
-          }
-          containerStyle= {styles.likeButtonContainer}
-          buttonStyle= {styles.likeButton}
-          onPress= {() => {console.log('add to wishlist ?');onLike(suggestions[suggestionNumber]);addToWishlist(suggestions[suggestionNumber])}}
-        />
-      </View>
-      <View style={styles.containerCard}>
-      <Text style={styles.title}>{suggestions[suggestionNumber].nom}</Text>
-        <View style={styles.containerRatingOpen}>
-          <Text>
-            {rating}
-          </Text>
-          {  
-            suggestions[suggestionNumber].isOpen === true
-            ? currentlyOpened
-            : currentlyClosed
-          }
-        </View>
-=======
         <Header />
         <GestureRecognizer
           onSwipe={(direction, state) => onSwipe(direction, state)}
@@ -170,7 +166,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
           >
           <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
             <Button
-                onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
+                onPress={()=>onShare(sponso.nom, sponso.adresse, sponso.type)}
                     icon={
                       <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginTop: 'auto' }} />
                     }
@@ -183,27 +179,26 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
               }
               containerStyle= {styles.likeButtonContainer}
               buttonStyle= {styles.likeButton}
-              onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[suggestionNumber])}}
+              onPress= {() => {addToWishlist(sponso)}}
             />
           </View>
           <View style={styles.containerCard}>
-          <Text style={styles.title}>{suggestions[suggestionNumber].nom}</Text>
+          <Text style={styles.title}>{sponso.nom}</Text>
             <View style={styles.containerRatingOpen}>
               <Text>
                 {rating}
               </Text>
               {  
-                suggestions[suggestionNumber].isOpen === true
+                sponso.isOpen === true
                 ? currentlyOpened
                 : currentlyClosed
               }
             </View>
->>>>>>> 1e07f1737b61d844fc798ef33b269422604a98dc
 
             <View style={styles.containerAdress}>
               <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
               <Text style={styles.adressText}>
-                {suggestions[suggestionNumber].adresse}
+                {sponso.adresse}
               </Text>
 
         </View>
@@ -213,7 +208,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
                 containerStyle={{marginRight: 8, marginTop:8}} 
                 value={
                   <Text style={styles.badgeText}>
-                    {suggestions[suggestionNumber].type}
+                    {sponso.type}
                   </Text>}
                 badgeStyle={styles.badgeStyle}
               />
@@ -221,7 +216,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
                 </View>
 
                 <Text style={styles.description}>
-                  Cet espace contemporain avec terrasse et vue sur le canal sert bières artisanales, planches et glaces.
+                Pour déguster la meilleure pizza du monde, inutile de se rendre en Italie. Il suffit de faire un détour par <B>Yo Mamma Pizza !</B>, où Giuseppe Cutraro, alias Peppe, vient d'ouvrir sa pizzeria..
                 </Text>
 
             </View>
@@ -229,7 +224,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
       </ImageBackground>
         <TouchableOpacity
           style={styles.moreDetails}
-          onPress={() => navigation.navigate('Details')}
+          onPress={() => navigation.navigate('SponsoDetails')}
         >
           <Text style={styles.moreDetailsText}>
             En savoir plus <AntDesign name="down" size={16} color="#FF8367" />
@@ -242,20 +237,18 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
 
 function mapStateToProps(state) {
   return {
-    suggestionCount:state.suggestionCount, 
-    suggestionNumber:state.suggestionNumber,
-    suggestions:state.suggestions
+    shakeCount:state.shakeCount
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     addToWishlist: function(place) {dispatch({type:'addToWishlist', place:place})},
-    resetSuggestionNumber: function() {dispatch({type:'resetSuggestionNumber'})}
+    setShakeCount: function(value) {dispatch({type:'setShakeCount', value:value})},
   }
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(ResultScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SponsoResultScreen)
 
 const styles = StyleSheet.create({
   container: {
