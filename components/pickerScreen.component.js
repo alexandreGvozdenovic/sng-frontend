@@ -112,7 +112,7 @@ function HomeScreen({navigation, userPosition, updateUserPosition, updateUserTyp
         <ImageBackground source={backgroundTexture} style={styles.background}>
           <Header/>
           {screenDisplay}
-          <TouchableOpacity style={styles.suggestionImageContainer} onPress={() => {console.log('pizza !'); navigation.navigate('Sponso')}}>
+          <TouchableOpacity style={styles.suggestionImageContainer} onPress={() => {navigation.navigate('Sponso')}}>
             <ImageBackground source={require('../assets/images/pizzabackground.png')} style={styles.suggestionImage} imageStyle={{borderRadius:8}}>
               <Text style={styles.suggestionText}>Envie de pizza?</Text>
             </ImageBackground>

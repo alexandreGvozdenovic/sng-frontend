@@ -16,7 +16,8 @@ import {
   useFonts,
   PTSans_400Regular,
   PTSans_700Bold,
-  OpenSans_400Regular
+  OpenSans_400Regular,
+  OpenSans_700Bold,
 } from '@expo-google-fonts/dev';
 //redux
 import { connect } from 'react-redux';
@@ -44,28 +45,30 @@ const sponso = {
     "samedi: 13:00 – 05:00",
     "dimanche: 17:00 – 02:00",
   ],
-  photo:'https://www.pariszigzag.fr/wp-content/uploads/2017/11/meilleur-pizza-monde-paris-zigzag-e1510331476865.jpg'
-  // reviews:[{
-  //   auteur:'',
-  //   avatar:resultatDetail.result.reviews[0].profile_photo_url,
-  //   note:resultatDetail.result.reviews[0].rating,
-  //   texte:resultatDetail.result.reviews[0].text,
-  // },{
-  //   auteur:capitalize(resultatDetail.result.reviews[1].author_name),
-  //   avatar:resultatDetail.result.reviews[1].profile_photo_url,
-  //   note:resultatDetail.result.reviews[1].rating,
-  //   texte:resultatDetail.result.reviews[1].text,
-  // },{
-  //   auteur:capitalize(resultatDetail.result.reviews[2].author_name),
-  //   avatar:resultatDetail.result.reviews[2].profile_photo_url,
-  //   note:resultatDetail.result.reviews[2].rating,
-  //   texte:resultatDetail.result.reviews[2].text,
-  // }],
+  photo:'https://www.pariszigzag.fr/wp-content/uploads/2017/11/meilleur-pizza-monde-paris-zigzag-e1510331476865.jpg',
+  reviews:[{
+    auteur:'Jane Dough',
+    avatar:'https://lh5.ggpht.com/-WAucISfBNng/AAAAAAAAAAI/AAAAAAAAAAA/USFWfso9ct0/s128-c0x00000000-cc-rp-mo-ba4/photo.jpg',
+    note:5,
+    texte:`La réputation n'est pas usurpée. Yo Mamma Pizza ! est vraiment la meilleure pizzeria du monde.`,
+  },{
+    auteur:'Mario Pepperoni',
+    avatar:'https://lh5.ggpht.com/-fwzGjfQuG9M/AAAAAAAAAAI/AAAAAAAAAAA/NDnMpmTw5-c/s128-c0x00000000-cc-rp-mo-ba5/photo.jpg',
+    note:5,
+    texte:`Des pizzas comme celles de Yo Mamma Pizza ! il n'y en a nulle part. Les italiens mêmes pourraient nous les envier.`,
+  },{
+    auteur:'Zinedine Zidane',
+    avatar:'https://lh4.ggpht.com/-QSAosyYmqBM/AAAAAAAAAAI/AAAAAAAAAAA/ulVtCs4M49o/s128-c0x00000000-cc-rp-mo-ba2/photo.jpg',
+    note:5,
+    texte:`Si Materrazzi a pris un coup de boule c'est parce qu'il a osé dire du mal de Yo Mamma Pizza !`,
+  }],
 }
+
 
 function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCount}) {
 
   const [gestureName, setGestureName] = useState('none');
+  const B = (props) => <Text style={{fontFamily: 'OpenSans_700Bold'}}>{props.children}</Text>
 
   useFocusEffect(
     React.useCallback(()=> {
@@ -134,7 +137,6 @@ function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCoun
   };
 
   if(shakeCount === 13) {
-    console.log('shakeCount = 13',shakeCount, 'on va la home')
     navigation.navigate('Home');
   };
 
@@ -142,6 +144,7 @@ function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCoun
     PTSans_400Regular,
     PTSans_700Bold,
     OpenSans_400Regular,
+    OpenSans_700Bold,
   });
 
   if(!fontsLoaded) {
@@ -176,7 +179,7 @@ function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCoun
               }
               containerStyle= {styles.likeButtonContainer}
               buttonStyle= {styles.likeButton}
-              onPress= {() => {console.log('add to wishlist ?');addToWishlist(sponso)}}
+              onPress= {() => {addToWishlist(sponso)}}
             />
           </View>
           <View style={styles.containerCard}>
@@ -213,7 +216,7 @@ function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCoun
                 </View>
 
                 <Text style={styles.description}>
-                Pour déguster la meilleure pizza du monde, inutile de se rendre en Italie. Il suffit de faire un détour par Yo Mamma Pizza !, où Giuseppe Cutraro, alias Peppe, vient d'ouvrir sa pizzeria..
+                Pour déguster la meilleure pizza du monde, inutile de se rendre en Italie. Il suffit de faire un détour par <B>Yo Mamma Pizza !</B>, où Giuseppe Cutraro, alias Peppe, vient d'ouvrir sa pizzeria..
                 </Text>
 
             </View>
@@ -221,7 +224,7 @@ function SponsoResultScreen({navigation, addToWishlist, shakeCount, setShakeCoun
       </ImageBackground>
         <TouchableOpacity
           style={styles.moreDetails}
-          onPress={() => navigation.navigate('Details')}
+          onPress={() => navigation.navigate('SponsoDetails')}
         >
           <Text style={styles.moreDetailsText}>
             En savoir plus <AntDesign name="down" size={16} color="#FF8367" />

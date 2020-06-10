@@ -47,17 +47,17 @@ const sponso = {
     auteur:'Jane Dough',
     avatar:'https://lh5.ggpht.com/-WAucISfBNng/AAAAAAAAAAI/AAAAAAAAAAA/USFWfso9ct0/s128-c0x00000000-cc-rp-mo-ba4/photo.jpg',
     note:5,
-    texte:`La réputation n'est pas usurpée. Yo Mamma Pizza ! est vraiment la meilleure pizzeria du monde`,
+    texte:`La réputation n'est pas usurpée. Yo Mamma Pizza ! est vraiment la meilleure pizzeria du monde.`,
   },{
     auteur:'Mario Pepperoni',
     avatar:'https://lh5.ggpht.com/-fwzGjfQuG9M/AAAAAAAAAAI/AAAAAAAAAAA/NDnMpmTw5-c/s128-c0x00000000-cc-rp-mo-ba5/photo.jpg',
     note:5,
-    texte:`Des pizzas comme celles de Yo Mamma Pizza ! il n'y en a nulle part. Les italiens mêmes pourraient nous les envier`,
+    texte:`Des pizzas comme celles de Yo Mamma Pizza ! il n'y en a nulle part. Les italiens mêmes pourraient nous les envier.`,
   },{
     auteur:'Zinedine Zidane',
     avatar:'https://lh4.ggpht.com/-QSAosyYmqBM/AAAAAAAAAAI/AAAAAAAAAAA/ulVtCs4M49o/s128-c0x00000000-cc-rp-mo-ba2/photo.jpg',
     note:5,
-    texte:`Si Materrazzi a pris un coup de boule c'est parce qu'il a osé dire du mal de Yo Mamma Pizza`,
+    texte:`Si Materrazzi a pris un coup de boule c'est parce qu'il a osé dire du mal de Yo Mamma Pizza !`,
   }],
 }
 
@@ -119,7 +119,6 @@ function SponsoResultScreenDetails({navigation, shakeCount, setShakeCount}) {
   };
 
   if(shakeCount === 13) {
-    console.log('shakeCount = 13',shakeCount, 'on va la home')
     navigation.navigate('Home');
   };
 
