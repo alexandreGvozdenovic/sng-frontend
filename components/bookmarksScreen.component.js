@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar, Share} from 'react-native';
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, ImageBackground, Image, Platform, StatusBar, Share, AsyncStorage} from 'react-native';
 import { Badge, Button, Card, Icon, Overlay, ListItem } from 'react-native-elements';
 import MapView, { Marker } from 'react-native-maps';
 import {
@@ -13,7 +13,9 @@ import Header from './headerScreen.component';
 import { AppLoading } from 'expo';
 import { AntDesign } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native'
+
 
 // fake data pour travailler l'intégration
 // const {suggestions} = require('../assets/datas/suggestions.json');
@@ -22,6 +24,7 @@ var backgroundTexture = require('../assets/images/Texture.png')
 
 function BookMarksScreen({userWishlist}) {
 
+    const [localStorageWishlist, setLocalStorageWishlist] = useState([]);
     const [filter, setFilter] = useState('Tout');
     const [isFiltered, setIsFiltered] = useState(false);
     const [isActive, setIsActive] = useState(false);
@@ -34,6 +37,19 @@ function BookMarksScreen({userWishlist}) {
     const [overlayAdresse, setOverlayAdresse] = useState('');
     const [overlayPosition, setOverlayPosition] = useState({});
     const [overlayHoraires, setOverlayHoraires] = useState([]);
+
+    useFocusEffect(
+        React.useCallback(()=> {
+            AsyncStorage.getItem('wishlist', 
+            function(error, data){
+                var wishlistData = JSON.parse(data);
+                setLocalStorageWishlist(wishlistData);
+        })
+        }, [])
+      );
+    console.log('LOCAL STORAGE WISHLIST : ====>' + localStorageWishlist);
+    // console.log(localStorageWishlist);
+
 
     // Sharing logic  {onShare}
     const onShare = async (nom, adresse, type) => {
@@ -56,6 +72,13 @@ function BookMarksScreen({userWishlist}) {
     }
     };
 
+    const onDelete = (placeId) => {
+        var arrayCopy = [...localStorageWishlist];
+        var updatedArray = arrayCopy.filter(e => e.place_id !== placeId)
+        setLocalStorageWishlist(updatedArray);
+        AsyncStorage.setItem('wishlist',JSON.stringify(updatedArray));
+    }
+
     const toggleOverlay = () => {
       setVisible(!visible);
     };
@@ -75,8 +98,9 @@ function BookMarksScreen({userWishlist}) {
     }
 
     var today = new Date();
+
     let filterList = ['Tout']
-    userWishlist.map(e => {
+    localStorageWishlist.map(e => {
         const type = e.type;
         if (!filterList.includes(type)) {
             filterList.push(type)
@@ -103,10 +127,10 @@ function BookMarksScreen({userWishlist}) {
     let filteredWishlist = []
     function filterByCat(categorie) {
         if(isFiltered && filter !== 'Tout') {
-            filteredWishlist = userWishlist.filter((e => e.type === categorie))
+            filteredWishlist = localStorageWishlist.filter((e => e.type === categorie))
         }
         else {
-            filteredWishlist = userWishlist;
+            filteredWishlist = localStorageWishlist;
         }
     }
     
@@ -168,12 +192,10 @@ function BookMarksScreen({userWishlist}) {
                         buttonStyle={styles.cardButtons}
                 />
                 <Button
-                    // onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
-                        icon={
-                        <AntDesign name="delete" size={24} color="#FFFFFF" />
-                        }
-                        containerStyle={styles.cardButtonsContainerStyle}
-                        buttonStyle={styles.cardButtons}
+                    onPress={()=>onDelete(p.place_id)}
+                    icon={<AntDesign name="delete" size={24} color="#FFFFFF" />}
+                    containerStyle={styles.cardButtonsContainerStyle}
+                    buttonStyle={styles.cardButtons}
                 />
                 </View>
             </View>
@@ -199,7 +221,19 @@ function BookMarksScreen({userWishlist}) {
 
       overlayWishList =
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} fullScreen={true}>
-            <ScrollView>
+            {/* <Button
+                onPress={()=>console.log('jeferme')}
+                icon={<AntDesign name="close" size={24} color="#FFFFFF" />}
+                containerStyle={{position:'absolute',right:26,top:8}}
+                buttonStyle={styles.overlayCloseButton}
+            /> */}
+            {/* <TouchableOpacity onPress={()=>console.log('jeferme')} style={{position:'absolute',right:26}}>
+                <AntDesign name="closecircleo" size={24} color="black" />
+            </TouchableOpacity> */}
+            <ScrollView stickyHeaderIndices={[0]}>
+                <TouchableOpacity onPress={()=>toggleOverlay()} style={{alignItems:'flex-end', marginRight:26}}>
+                    <AntDesign name="closecircle" size={40} color="rgba(255, 131, 103, 0.8)" />
+                </TouchableOpacity>
                 <Image source={{uri: overlayPhoto}} style={styles.overlayImage}></Image>
                 <Text style={styles.overlayTitleH1}>{overlayNom}</Text>
                 <View style={styles.overlayContainerRatingOpen}>
@@ -518,6 +552,13 @@ const styles = StyleSheet.create({
         fontFamily:'OpenSans_400Regular',
         fontSize: 14,
         marginTop:8
+
+    },
+    overlayCloseButton: {
+        width: 44,
+        height: 44,
+        backgroundColor: '#FF8367',
+        borderRadius: 40
 
     },
     overlayImage: {

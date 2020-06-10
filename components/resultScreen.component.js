@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  Share
+  Share,
+  AsyncStorage
 } from 'react-native';
 import Header from './headerScreen.component';
 import { Badge, Button } from 'react-native-elements';
@@ -48,6 +49,22 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
       alert(error.message);
   }
 };
+  // Fonction d'ajout en Wishlist dans le local storage
+  const onLike = async (place) => {
+    // AsyncStorage.clear()
+    var readWishlist = await AsyncStorage.getItem('wishlist', 
+              function(error, data){
+                var wishlistData = JSON.parse(data);
+                return wishlistData;
+              })
+    if(readWishlist === null){
+      AsyncStorage.setItem('wishlist',JSON.stringify([place]))
+    } else {
+      var parsedReadWishlist = JSON.parse(readWishlist);
+      var newWishList = [...parsedReadWishlist,place];
+      AsyncStorage.setItem('wishlist',JSON.stringify(newWishList));
+    }
+  }
 
   if(suggestionCount > 3) {
     console.log('suggestionNumber',suggestionNumber)
@@ -111,7 +128,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
           }
           containerStyle= {styles.likeButtonContainer}
           buttonStyle= {styles.likeButton}
-          onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[suggestionNumber])}}
+          onPress= {() => {console.log('add to wishlist ?');onLike(suggestions[suggestionNumber]);addToWishlist(suggestions[suggestionNumber])}}
         />
       </View>
       <View style={styles.containerCard}>

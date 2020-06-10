@@ -17,13 +17,8 @@ import { useFocusEffect } from '@react-navigation/native'
 var backgroundTexture = require('../assets/images/Texture.png');
 const {quartiers} = require('../scripts/quartiers');
 
-<<<<<<< HEAD
-function HomeScreen({navigation, userPosition, updateUserPosition, resetSuggestionCount, suggestionCount, isAnim}) {
-  
-=======
 function HomeScreen({navigation, userPosition, updateUserPosition, updateUserType, updateUserRadius, resetSuggestionCount, resetShakeCount, suggestionCount, isAnim}) {
 
->>>>>>> a2a53d1f48bf9ba72f8d3bbb64083109d61f8dc4
   const [quartier, setQuartier] = useState();
   const [position, setPosition] = useState();
   // const [date, setDate] = useState(new Date());
