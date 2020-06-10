@@ -17,10 +17,6 @@ var backgroundTexture = require('../assets/images/Texture.png');
 
 function HomeScreen({navigation, userPosition, updateUserPosition, updateUserType, updateUserRadius, resetSuggestionCount, resetShakeCount, suggestionCount, isAnim}) {
 
-<<<<<<< HEAD
-  const [quartier, setQuartier] = useState();
-=======
->>>>>>> 1e07f1737b61d844fc798ef33b269422604a98dc
   const [position, setPosition] = useState();
   const [arrondissement, setArrondissement] = useState(0);
 
