@@ -14,7 +14,7 @@ function ShakerButton ({navigation, changeSuggestionCount, changeSuggestionNumbe
       })
     console.log('en front voici le retour du fetch:',rawResponse.status)
     if(rawResponse.status < 305) {
-      let response = await rawResponse.json()
+      response = await rawResponse.json()
       storeSuggestions(response.suggestions);
     } else {
       await getSuggestions(userPosition, userType, userRadius);
@@ -32,7 +32,6 @@ function ShakerButton ({navigation, changeSuggestionCount, changeSuggestionNumbe
     } else if (shakeCount === 12) {
       console.log('je dois aller à la home');
       changeShakeCount(1)
-      // navigation.navigate('')
     } else {
       changeSuggestionCount(1);
       changeSuggestionNumber(suggestionCount);
