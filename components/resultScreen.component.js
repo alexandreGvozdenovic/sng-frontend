@@ -129,8 +129,12 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
         source={{uri: suggestions[suggestionNumber].photo}}
         style={styles.picture}
       >
-<<<<<<< HEAD
       <Header />
+      <GestureRecognizer
+          onSwipe={(direction, state) => onSwipe(direction, state)}
+          onSwipeUp={(state) => onSwipeUp(state)}
+          config={config}
+          >
       <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
         <Button
             onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
@@ -161,44 +165,6 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
             : currentlyClosed
           }
         </View>
-=======
-        <Header />
-        <GestureRecognizer
-          onSwipe={(direction, state) => onSwipe(direction, state)}
-          onSwipeUp={(state) => onSwipeUp(state)}
-          config={config}
-          >
-          <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
-            <Button
-                onPress={()=>onShare(suggestions[suggestionNumber].nom, suggestions[suggestionNumber].adresse, suggestions[suggestionNumber].type)}
-                    icon={
-                      <AntDesign name="sharealt" size={24} color="#FFFFFF" style={{ marginTop: 'auto' }} />
-                    }
-                    containerStyle={styles.likeButtonContainer}
-                    buttonStyle={styles.likeButton}
-                  />
-            <Button
-              icon={
-                <AntDesign name="hearto" size={24} color="#FFFFFF" style={{marginTop:'auto'}}/>
-              }
-              containerStyle= {styles.likeButtonContainer}
-              buttonStyle= {styles.likeButton}
-              onPress= {() => {console.log('add to wishlist ?');addToWishlist(suggestions[suggestionNumber])}}
-            />
-          </View>
-          <View style={styles.containerCard}>
-          <Text style={styles.title}>{suggestions[suggestionNumber].nom}</Text>
-            <View style={styles.containerRatingOpen}>
-              <Text>
-                {rating}
-              </Text>
-              {  
-                suggestions[suggestionNumber].isOpen === true
-                ? currentlyOpened
-                : currentlyClosed
-              }
-            </View>
->>>>>>> 1e07f1737b61d844fc798ef33b269422604a98dc
 
             <View style={styles.containerAdress}>
               <AntDesign name="enviromento" size={24} color="rgba(42, 43, 42, 0.4)" />
@@ -221,7 +187,7 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
                 </View>
 
                 <Text style={styles.description}>
-                  Cet espace contemporain avec terrasse et vue sur le canal sert bières artisanales, planches et glaces.
+                {suggestions[suggestionNumber].description}
                 </Text>
 
             </View>
