@@ -37,6 +37,7 @@ function BookMarksScreen({userWishlist}) {
     const [overlayAdresse, setOverlayAdresse] = useState('');
     const [overlayPosition, setOverlayPosition] = useState({});
     const [overlayHoraires, setOverlayHoraires] = useState([]);
+    const [overlayDescription, setOverlayDescription] = useState('');
 
     useFocusEffect(
         React.useCallback(()=> {
@@ -83,7 +84,7 @@ function BookMarksScreen({userWishlist}) {
       setVisible(!visible);
     };
 
-    const overlayDisplay = (photo,nom,rating,comments,openClosed,adresse,position,horaires) => {
+    const overlayDisplay = (photo,nom,rating,comments,openClosed,adresse,position,horaires,description) => {
         console.log('il a cliqué')
         toggleOverlay();
         setOverlayPhoto(photo);
@@ -95,6 +96,7 @@ function BookMarksScreen({userWishlist}) {
         setOverlayAdresse(adresse);
         setOverlayPosition(position);
         setOverlayHoraires(horaires)
+        setOverlayDescription(description);
     }
 
     var today = new Date();
@@ -172,11 +174,11 @@ function BookMarksScreen({userWishlist}) {
         return <Card
             key={p.place_id+''+i}
             containerStyle={styles.cardContainer}>
-            <TouchableOpacity onPress={()=> {overlayDisplay(p.photo,p.nom,rating,comments,p.isOpen,p.adresse,p.coords,p.openingHours)}}>
+            <TouchableOpacity onPress={()=> {overlayDisplay(p.photo,p.nom,rating,comments,p.isOpen,p.adresse,p.coords,p.openingHours,p.description)}}>
             <Image source={{uri:p.photo}} style={styles.cardImage}></Image>
             </TouchableOpacity>
             <View style={styles.cardTitleAndButtonsContainer}>
-                <View>
+                <View style={styles.cardTitleAndRating}>
                 <Text style={styles.cardTitle}>{p.nom}</Text>
                 <Text style={styles.cardRating}>
                     {rating}
@@ -221,15 +223,7 @@ function BookMarksScreen({userWishlist}) {
 
       overlayWishList =
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} fullScreen={true}>
-            {/* <Button
-                onPress={()=>console.log('jeferme')}
-                icon={<AntDesign name="close" size={24} color="#FFFFFF" />}
-                containerStyle={{position:'absolute',right:26,top:8}}
-                buttonStyle={styles.overlayCloseButton}
-            /> */}
-            {/* <TouchableOpacity onPress={()=>console.log('jeferme')} style={{position:'absolute',right:26}}>
-                <AntDesign name="closecircleo" size={24} color="black" />
-            </TouchableOpacity> */}
+            <SafeAreaView>
             <ScrollView stickyHeaderIndices={[0]}>
                 <TouchableOpacity onPress={()=>toggleOverlay()} style={{alignItems:'flex-end', marginRight:26}}>
                     <AntDesign name="closecircle" size={40} color="rgba(255, 131, 103, 0.8)" />
@@ -252,6 +246,7 @@ function BookMarksScreen({userWishlist}) {
                         {overlayAdresse}
                     </Text>
                 </View>
+                <Text style={styles.overlayDescription}>{overlayDescription}</Text>
                 <Text style={styles.overlayTitleH2}>On y va comment ?</Text>
                 <View style={styles.overlayMapContainer} >
                     <MapView style={styles.overlayMapStyle}
@@ -394,6 +389,7 @@ function BookMarksScreen({userWishlist}) {
 
                 {overlayComments}
             </ScrollView>
+            </SafeAreaView>
         </Overlay>
     }
 
@@ -515,7 +511,10 @@ const styles = StyleSheet.create({
     cardTitleAndButtonsContainer: {
         display:'flex',
         flexDirection:'row',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+    },
+    cardTitleAndRating: {
+        maxWidth:'65%',
     },
     cardButtonsContainerView: {
         marginTop:8,
@@ -523,6 +522,7 @@ const styles = StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
+        
     },
     cardButtonsContainerStyle: {
         marginRight:16,
@@ -537,7 +537,8 @@ const styles = StyleSheet.create({
         fontFamily: 'OpenSans_700Bold',
         fontSize: 16,
         fontWeight:'bold',
-        marginTop:8
+        marginTop:8,
+        marginEnd:8
     },
     cardRating: {
         marginTop:8
@@ -611,13 +612,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: 8,
-        marginLeft: 26
+        marginHorizontal: 26,
     },
     overlayAdressText: {
         marginLeft: 8,
         color: 'rgba(42, 43, 42, 0.4)',
         fontFamily: 'OpenSans_400Regular',
-        fontSize: 16
+        fontSize: 16,
+        marginRight:26
+    },
+    overlayDescription: {
+        marginHorizontal:26,
+        marginTop:8,
+        fontFamily: 'OpenSans_400Regular'
     },
     overlayMapContainer: {
         marginTop:16,
