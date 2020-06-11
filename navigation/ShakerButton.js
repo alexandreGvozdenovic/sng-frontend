@@ -5,15 +5,20 @@ import { connect } from 'react-redux';
 
 
 function ShakerButton ({navigation, changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount, userPosition, userType, userRadius, storeSuggestions, launchAnim, shakeCount}) {
-  
+
   async function getSuggestions(userPosition, userType, userRadius) {
     let rawResponse = await fetch('http://192.168.1.59:3000/shake', {
         method:'POST',
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
         body: `position=${userPosition.latitude},${userPosition.longitude}&type=${userType}&radius=${userRadius}`
       })
-    let response = await rawResponse.json()
-    storeSuggestions(response.suggestions);
+    console.log('en front voici le retour du fetch:',rawResponse.status)
+    if(rawResponse.status < 305) {
+      let response = await rawResponse.json()
+      storeSuggestions(response.suggestions);
+    } else {
+      await getSuggestions(userPosition, userType, userRadius);
+    }
   };
 
   async function shake(userPosition, userType, userRadius) {
