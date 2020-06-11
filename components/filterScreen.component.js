@@ -24,7 +24,7 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
   const [stillDisplayTypeInvite, setStillDisplayTypeInvite] = useState(false);
   const [stillDisplayRadiusInvite, setStillDisplayRadiusInvite] = useState(false);
 
-  let typeList = ['bar', 'restaurant', 'supermarket'];
+  let typeList = ['bar', 'restaurant', 'club'];
 
   useEffect(()=>{
     console.log('je suis dans le filter')
