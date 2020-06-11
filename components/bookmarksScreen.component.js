@@ -48,9 +48,6 @@ function BookMarksScreen({userWishlist}) {
         })
         }, [])
       );
-    console.log('LOCAL STORAGE WISHLIST : ====>' + localStorageWishlist);
-    // console.log(localStorageWishlist);
-
 
     // Sharing logic  {onShare}
     const onShare = async (nom, adresse, type) => {
@@ -115,7 +112,7 @@ function BookMarksScreen({userWishlist}) {
     }
     const filters = []
     filterList.map((e, i) => {
-        filters.push(<Badge 
+        filters.push(<Badge key={'badge'+i}
             containerStyle={{marginRight: 8, marginTop:8}} 
             value={
         <Text style={styles.badgeText}>
@@ -141,11 +138,11 @@ function BookMarksScreen({userWishlist}) {
     let wishlist = [];
     wishlist = filteredWishlist.map((p,i) => {
         var rating = []
-        for (var i = 0; i<5; i++){
-            if(i<Math.floor(p.rating)) {
-                rating.push(<AntDesign key={i+''+p.place_id} name="star" size={16} color="#FF8367" />)
+        for (var k = 0; k<5; k++){
+            if(k<Math.floor(p.rating)) {
+                rating.push(<AntDesign key={k+''+p.place_id} name="star" size={16} color="#FF8367" />)
             } else {
-                rating.push(<AntDesign key={i+''+p.place_id} name="staro" size={16} color="#FF8367" />)
+                rating.push(<AntDesign key={k+''+p.place_id} name="staro" size={16} color="#FF8367" />)
             }
         };
         let comments = p.reviews.map((l,y)=> {
