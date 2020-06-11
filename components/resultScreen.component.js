@@ -7,7 +7,8 @@ import {
   StyleSheet,
   ImageBackground,
   Share,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 import Header from './headerScreen.component';
 import { Badge, Button } from 'react-native-elements';
@@ -30,7 +31,16 @@ import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures'
 function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNumber, suggestions}) {
 
   const [gestureName, setGestureName] = useState('none');
-
+  // Alert for wishList
+  const alertWishlist = (title,message) => Alert.alert(
+    title,
+    message,
+    [
+      {
+        text: 'Ok'
+      }
+    ],
+    { cancelable: false });
   // Sharing logic  {onShare}
   const onShare = async (nom, adresse, type) => {
     try {
@@ -63,8 +73,14 @@ function ResultScreen({navigation, addToWishlist, suggestionCount, suggestionNum
       AsyncStorage.setItem('wishlist',JSON.stringify([place]))
     } else {
       var parsedReadWishlist = JSON.parse(readWishlist);
-      var newWishList = [...parsedReadWishlist,place];
-      AsyncStorage.setItem('wishlist',JSON.stringify(newWishList));
+      var placeExist = parsedReadWishlist.find(e => e.place_id == place.place_id);
+      if(placeExist === undefined){
+        var newWishList = [...parsedReadWishlist,place];
+        AsyncStorage.setItem('wishlist',JSON.stringify(newWishList));
+        alertWishlist('Super !',`${place.nom} a bien été ajouté à la wishlist`);
+      } else {
+        alertWishlist('Oups !',`${place.nom} est déjà dans la wishlist`);
+      }
     }
   }
 
@@ -280,7 +296,8 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: 'rgba(42, 43, 42, 0.4)',
     fontFamily: 'OpenSans_400Regular',
-    fontSize: 16
+    fontSize: 16,
+    marginRight:26
   },
   containerBadges: {
     display: 'flex',
