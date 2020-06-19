@@ -129,7 +129,7 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
     }
   }
   let radiusInvite;
-  if(userRadius === 2000 && shakeCount < 9 || stillDisplayRadiusInvite) {
+  if(userRadius === 2000 && shakeCount > 5 && shakeCount < 9 || stillDisplayRadiusInvite) {
     radiusInvite = 
       <View>
         <Text style={styles.subtitle}>Tu peux aussi décider d'élargir tes horizons :</Text>
@@ -150,7 +150,7 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
   }
 
   let separateur;
-  if (shakeCount < 9 && ((userRadius === 2000 || stillDisplayRadiusInvite ) && (userType === '' || stillDisplayTypeInvite))) {
+  if (shakeCount > 5 && shakeCount < 9 && ((userRadius === 2000 || stillDisplayRadiusInvite ) && (userType === '' || stillDisplayTypeInvite))) {
     separateur = 
     <View style={{alignItems:"center"}}>
       <Divider style={{width:320, height: 1.2, backgroundColor:'#FF8367', marginTop:36, marginBottom:24}}/>
