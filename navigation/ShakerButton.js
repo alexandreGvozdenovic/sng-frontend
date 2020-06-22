@@ -3,7 +3,7 @@ import { Button } from 'react-native-elements';
 import { Fontisto } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 
-const APIUrl = 'http://localhost:3000/shake' // indiquer ici l'url du backend
+const APIUrl = 'https://shake-n-go.herokuapp.com' // 'http://localhost:3000/shake' indiquer ici l'url du backend
 function ShakerButton ({navigation, changeSuggestionCount, changeSuggestionNumber, suggestionCount, changeShakeCount, userPosition, userType, userRadius, storeSuggestions, launchAnim, shakeCount}) {
 
   async function getSuggestions(userPosition, userType, userRadius) {
