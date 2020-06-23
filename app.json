@@ -1,7 +1,7 @@
 {
     "expo": {
         "name": "Shake'N'Go",
-        "slug": "ShakeNGo-frontend",
+        "slug": "shakengo-frontend",
         "platforms": ["ios", "android", "web"],
         "version": "1.0.0",
         "orientation": "portrait",
