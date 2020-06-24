@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     SafeAreaView,
     ScrollView,
@@ -7,19 +7,10 @@ import {
     StyleSheet,
     ImageBackground,
     Image,
-    Platform,
-    StatusBar,
     Share,
     AsyncStorage,
 } from "react-native";
-import {
-    Badge,
-    Button,
-    Card,
-    Icon,
-    Overlay,
-    ListItem,
-} from "react-native-elements";
+import { Badge, Button, Card, Overlay, ListItem } from "react-native-elements";
 import MapView, { Marker } from "react-native-maps";
 import {
     useFonts,
@@ -31,7 +22,6 @@ import {
 import Header from "./headerScreen.component";
 import { AppLoading } from "expo";
 import { AntDesign } from "@expo/vector-icons";
-import { connect } from "react-redux";
 import { TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -40,11 +30,11 @@ import { useFocusEffect } from "@react-navigation/native";
 
 var backgroundTexture = require("../assets/images/Texture.png");
 
-function BookMarksScreen({ userWishlist }) {
+export default function BookMarksScreen() {
+    // State Hooks
     const [localStorageWishlist, setLocalStorageWishlist] = useState([]);
     const [filter, setFilter] = useState("Tout");
     const [isFiltered, setIsFiltered] = useState(false);
-    const [isActive, setIsActive] = useState(false);
     const [visible, setVisible] = useState(false);
     const [overlayPhoto, setOverlayPhoto] = useState("");
     const [overlayNom, setOverlayNom] = useState("");
@@ -56,6 +46,10 @@ function BookMarksScreen({ userWishlist }) {
     const [overlayHoraires, setOverlayHoraires] = useState([]);
     const [overlayDescription, setOverlayDescription] = useState("");
 
+    // Date used for the opening hours in order to highlight the current day of the week
+    var today = new Date();
+
+    // On Focus we update the state localStorageWishlist with what's in local storage
     useFocusEffect(
         React.useCallback(() => {
             AsyncStorage.getItem("wishlist", function (error, data) {
@@ -85,6 +79,7 @@ function BookMarksScreen({ userWishlist }) {
         }
     };
 
+    // Function for deleting an item from the wishlist in the state and in the local storage
     const onDelete = (placeId) => {
         var arrayCopy = [...localStorageWishlist];
         var updatedArray = arrayCopy.filter((e) => e.place_id !== placeId);
@@ -92,10 +87,12 @@ function BookMarksScreen({ userWishlist }) {
         AsyncStorage.setItem("wishlist", JSON.stringify(updatedArray));
     };
 
+    // Overlay Toggle function
     const toggleOverlay = () => {
         setVisible(!visible);
     };
 
+    // Overlay specific elements to be displayed all stored in states
     const overlayDisplay = (
         photo,
         nom,
@@ -120,10 +117,8 @@ function BookMarksScreen({ userWishlist }) {
         setOverlayDescription(description);
     };
 
-    var today = new Date();
-
+    // Creation of the array that will permit to filter places by types
     let filterList = ["Tout"];
-
     if (localStorageWishlist != null) {
         localStorageWishlist.map((e) => {
             const type = e.type;
@@ -133,6 +128,7 @@ function BookMarksScreen({ userWishlist }) {
         });
     }
 
+    // Badge style used when focused
     const isActiveFunct = (type) => {
         let badgeStyle =
             type === filter || type === ""
@@ -140,6 +136,8 @@ function BookMarksScreen({ userWishlist }) {
                 : styles.badgeInactiveStyle;
         return badgeStyle;
     };
+
+    // Creation of the badges that will be used to filter in the wishlist
     const filters = [];
     filterList.map((e, i) => {
         filters.push(
@@ -156,6 +154,7 @@ function BookMarksScreen({ userWishlist }) {
         );
     });
 
+    // function used to filter the results
     let filteredWishlist = [];
     function filterByCat(categorie) {
         if (isFiltered && filter !== "Tout") {
@@ -170,16 +169,15 @@ function BookMarksScreen({ userWishlist }) {
     }
 
     filterByCat(filter);
-
+    // Creation of the wishList
     let wishlist = [];
-
     wishlist = filteredWishlist.map((p, i) => {
         var rating = [];
         for (var k = 0; k < 5; k++) {
             if (k < Math.floor(p.rating)) {
                 rating.push(
                     <AntDesign
-                        key={k + "" + p.place_id}
+                        key={i + "globalRating" + k}
                         name="star"
                         size={16}
                         color="#FF8367"
@@ -188,7 +186,7 @@ function BookMarksScreen({ userWishlist }) {
             } else {
                 rating.push(
                     <AntDesign
-                        key={k + "" + p.place_id}
+                        key={i + "globalRating" + k}
                         name="staro"
                         size={16}
                         color="#FF8367"
@@ -202,7 +200,7 @@ function BookMarksScreen({ userWishlist }) {
                 if (j < Math.round(l.note)) {
                     ratingReview.push(
                         <AntDesign
-                            key={y + j + l.auteur}
+                            key={i + "userRating" + y + j}
                             name="star"
                             size={16}
                             color="#FF8367"
@@ -211,7 +209,7 @@ function BookMarksScreen({ userWishlist }) {
                 } else {
                     ratingReview.push(
                         <AntDesign
-                            key={y + j + l.auteur}
+                            key={i + "userRating" + y + j}
                             name="staro"
                             size={16}
                             color="#FF8367"
@@ -222,7 +220,7 @@ function BookMarksScreen({ userWishlist }) {
             return (
                 <View style={styles.overlayListItemContainer}>
                     <ListItem
-                        key={y}
+                        key={i + "userReview" + y}
                         containerStyle={styles.overlayListItem}
                         titleStyle={styles.overlayName}
                         leftAvatar={{
@@ -238,7 +236,7 @@ function BookMarksScreen({ userWishlist }) {
         });
         return (
             <Card
-                key={p.place_id + "" + i}
+                key={"wishListCard" + i}
                 containerStyle={styles.cardContainer}
             >
                 <TouchableOpacity
@@ -297,7 +295,7 @@ function BookMarksScreen({ userWishlist }) {
             </Card>
         );
     });
-
+    // Style of the place opening hours if it's currently open
     var currentlyOpened = (
         <View style={styles.overlayContainerOpen}>
             <AntDesign
@@ -309,6 +307,7 @@ function BookMarksScreen({ userWishlist }) {
             <Text style={styles.overlayOpen}>Ouvert</Text>
         </View>
     );
+    // Style of the place opening hours if it's currently closed
     var currentlyClosed = (
         <View style={styles.overlayContainerOpen}>
             <AntDesign
@@ -585,12 +584,6 @@ function BookMarksScreen({ userWishlist }) {
         );
     }
 }
-
-function mapStateToProps(state) {
-    return { userWishlist: state.wishlist };
-}
-
-export default connect(mapStateToProps, null)(BookMarksScreen);
 
 const styles = StyleSheet.create({
     container: {

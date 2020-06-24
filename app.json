@@ -21,6 +21,11 @@
             "supportsTablet": true
         },
         "android": {
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyAjXjDy10pQcT-DGIzpeVnGIeOzNE7zEq8"
+                }
+            },
             "package": "com.yourcompany.yourappname",
             "versionCode": 1
         }
