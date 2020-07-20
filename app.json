@@ -1,7 +1,7 @@
 {
     "expo": {
         "name": "Shake'N'Go",
-        "slug": "ShakeNGo-frontend",
+        "slug": "shakengo-frontend",
         "platforms": ["ios", "android", "web"],
         "version": "1.0.0",
         "orientation": "portrait",
@@ -21,6 +21,11 @@
             "supportsTablet": true
         },
         "android": {
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyAjXjDy10pQcT-DGIzpeVnGIeOzNE7zEq8"
+                }
+            },
             "package": "com.yourcompany.yourappname",
             "versionCode": 1
         }

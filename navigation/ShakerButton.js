@@ -31,6 +31,7 @@ function ShakerButton({
     }
   }
 
+<<<<<<< HEAD
   async function shake(userPosition, userType, userRadius) {
     if (shakeCount < 12 && suggestionCount === 0) {
       launchAnim(true);
@@ -45,6 +46,23 @@ function ShakerButton({
       changeSuggestionCount(1);
       changeSuggestionNumber(suggestionCount);
       changeShakeCount(1);
+=======
+    async function shake(userPosition, userType, userRadius) {
+        if (shakeCount < 12 && suggestionCount === 0) {
+            launchAnim(true);
+            await getSuggestions(userPosition, userType, userRadius);
+            launchAnim(false);
+            changeSuggestionCount(1);
+            changeSuggestionNumber(suggestionCount);
+            changeShakeCount(1);
+        } else if (shakeCount === 12) {
+            changeShakeCount(1);
+        } else {
+            changeSuggestionCount(1);
+            changeSuggestionNumber(suggestionCount);
+            changeShakeCount(1);
+        }
+>>>>>>> a4cdd1476bdc6ab0d782f6d75317a807da1228cb
     }
   }
 

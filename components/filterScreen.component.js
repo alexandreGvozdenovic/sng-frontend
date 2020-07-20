@@ -236,9 +236,15 @@ function FilterScreen({
     );
   }
 
+<<<<<<< HEAD
   if (shakeCount === 13) {
     navigation.navigate("Home");
   }
+=======
+  if(shakeCount === 13) {
+    navigation.navigate('Home');
+  };
+>>>>>>> a4cdd1476bdc6ab0d782f6d75317a807da1228cb
 
   let [fontsLoaded] = useFonts({
     PTSans_400Regular,
