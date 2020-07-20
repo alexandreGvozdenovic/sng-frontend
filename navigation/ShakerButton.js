@@ -23,7 +23,6 @@ function ShakerButton({
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `position=${userPosition.latitude},${userPosition.longitude}&type=${userType}&radius=${userRadius}`,
         });
-        console.log("en front voici le retour du fetch:", rawResponse.status);
         if (rawResponse.status < 305) {
             response = await rawResponse.json();
             storeSuggestions(response.suggestions);
@@ -41,7 +40,6 @@ function ShakerButton({
             changeSuggestionNumber(suggestionCount);
             changeShakeCount(1);
         } else if (shakeCount === 12) {
-            console.log("je dois aller à la home");
             changeShakeCount(1);
         } else {
             changeSuggestionCount(1);

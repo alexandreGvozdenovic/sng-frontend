@@ -70,7 +70,6 @@ function ResultScreen({
     };
     // Fonction d'ajout en Wishlist dans le local storage
     const onLike = async (place) => {
-        // AsyncStorage.clear();
         var readWishlist = await AsyncStorage.getItem("wishlist", function (
             error,
             data
@@ -106,7 +105,6 @@ function ResultScreen({
     };
 
     if (suggestionCount > 3) {
-        console.log("suggestionNumber", suggestionNumber);
         navigation.navigate("Filter");
     }
 
@@ -227,7 +225,6 @@ function ResultScreen({
                                 containerStyle={styles.likeButtonContainer}
                                 buttonStyle={styles.likeButton}
                                 onPress={() => {
-                                    console.log("add to wishlist ?");
                                     onLike(suggestions[suggestionNumber]);
                                     addToWishlist(
                                         suggestions[suggestionNumber]

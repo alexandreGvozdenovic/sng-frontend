@@ -27,7 +27,6 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
   let typeList = ['bar', 'restaurant', 'club'];
 
   useEffect(()=>{
-    console.log('je suis dans le filter')
     resetSuggestionCount();
     resetSuggestionNumber();
     return () => {
@@ -158,7 +157,6 @@ function FilterScreen({navigation, suggestionCount, updateUserType, updateUserRa
   }
 
   if(shakeCount === 13) {
-    console.log('shakeCount = 13',shakeCount, 'on va la home')
     navigation.navigate('Home');
   };
 

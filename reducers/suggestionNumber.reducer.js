@@ -7,7 +7,6 @@ export default function (number = 0, action) {
             return newNumber
         };
     } else if (action.type === 'resetSuggestionNumber'){
-        console.log('je reset le suggestion Number');
         var newNumber = 0;
         return newNumber;
     } else {
