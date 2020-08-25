@@ -12,4 +12,4 @@ Shake'n'Go est une application mobile, compagnon de découverte et d'exploration
 - React Gesture Handler
 
 ## Lien
-Lien vers le repository du backend : 
+Lien vers le repository du backend : https://github.com/alexandreGvozdenovic/sng-backend
