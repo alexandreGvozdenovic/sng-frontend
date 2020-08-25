@@ -10,3 +10,6 @@ Shake'n'Go est une application mobile, compagnon de découverte et d'exploration
 - Géolocalisation (via *Expo*)
 - React Native Elements
 - React Gesture Handler
+
+## Lien
+Lien vers le repository du backend : 
